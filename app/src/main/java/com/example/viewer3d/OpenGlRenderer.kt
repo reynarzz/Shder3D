@@ -13,32 +13,48 @@ class OpenGlRenderer : GLSurfaceView.Renderer {
 
     private val vertexShaderCode =
         "attribute vec4 vPosition;" +
+                "uniform mat4 _MVP_;"+
                 "void main() {" +
-                "  gl_Position = vPosition;" +
+                "gl_Position = _MVP_ * vPosition;" +
                 "}"
 
-    private val fragmentShaderCode =
+    private val fragmentShaderCode = "precision mediump float;"+
+    "uniform vec4 vColor;"+
+    "void main()"+
+    "{"+
+        "gl_FragColor = vec4(1.0);"+
+    "}"
 
     var triangleCoords = floatArrayOf(// in counterclockwise order:
-        -1.0f, 0.0f,      // top
-        0.0f, 1.0f,    // bottom left
-        1.0f, 0.0f     // bottom right
+        -10.0f, 0.0f,      // top
+        0.0f, 10.0f,    // bottom left
+        10.0f, 0.0f     // bottom right
     )
 
+    private var width = 0;
+    private var height = 0
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
-        var mesh = Mesh(triangleCoords, null)
-        var shader = Shader(vertexShaderCode, fragmentShaderCode)
-        var program = shader.Bind()
-        mesh.Bind_Test(program)
-    }
 
+    }
 
     private val vertexCount: Int = triangleCoords.size / COORDS_PER_VERTEX
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+        this.width = width
+        this.height = height
 
+        var camera = Camera()
+
+        camera.updateProjection(width, height)
+        camera.updateView()
+
+        var mesh = Mesh(triangleCoords, null)
+        var shader = Shader(vertexShaderCode, fragmentShaderCode)
+
+        var program = shader.Bind(camera)
+        mesh.Bind_Test(program)
     }
 
     override fun onDrawFrame(gl: GL10?) {
