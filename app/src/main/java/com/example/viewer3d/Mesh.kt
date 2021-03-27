@@ -4,13 +4,18 @@ import android.opengl.GLES20.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 const val FLOAT_BYTES = 4
 
-class Mesh(vertices : FloatArray, indices: ByteArray?) {
+class Mesh(vertices : FloatArray, var indices: IntArray) {
 
 
-     private var vertexBuffer: FloatBuffer
+     public var vertexBuffer: FloatBuffer
+          private set
+     public var indexBuffer: IntBuffer
+          private set
+
      private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
 
      init {
@@ -29,11 +34,19 @@ class Mesh(vertices : FloatArray, indices: ByteArray?) {
                     position(0)
                }
           }
+
+          indexBuffer = ByteBuffer.allocateDirect(3 * 4).run {
+               order(ByteOrder.nativeOrder())
+              asIntBuffer().apply {
+                    put(indices)
+                    position(0)
+               }
+          }
      }
 
      public fun Bind_Test(program: Int){
 
-          var positionHandle = glGetAttribLocation(program, "vPosition").also {
+          glGetAttribLocation(program, "vPosition").also {
 
                // Enable a handle to the triangle vertices
                glEnableVertexAttribArray(it)

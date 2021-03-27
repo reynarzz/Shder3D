@@ -25,10 +25,10 @@ class OpenGlRenderer : GLSurfaceView.Renderer {
         "gl_FragColor = vec4(1.0);"+
     "}"
 
-    var triangleCoords = floatArrayOf(// in counterclockwise order:
-        -10.0f, 0.0f,      // top
-        0.0f, 10.0f,    // bottom left
-        10.0f, 0.0f     // bottom right
+    var triangleCoords = floatArrayOf(
+        -10.0f, 0.0f,
+        0.0f, 10.0f,
+        10.0f, 0.0f
     )
 
     private var width = 0;
@@ -36,10 +36,7 @@ class OpenGlRenderer : GLSurfaceView.Renderer {
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
-
     }
-
-    private val vertexCount: Int = triangleCoords.size / COORDS_PER_VERTEX
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         this.width = width
@@ -50,18 +47,19 @@ class OpenGlRenderer : GLSurfaceView.Renderer {
         camera.updateProjection(width, height)
         camera.updateView()
 
-        var mesh = Mesh(triangleCoords, null)
+        mesh = Mesh(triangleCoords, intArrayOf(0, 1, 2))
         var shader = Shader(vertexShaderCode, fragmentShaderCode)
 
         var program = shader.Bind(camera)
         mesh.Bind_Test(program)
     }
 
-    override fun onDrawFrame(gl: GL10?) {
+    lateinit var mesh : Mesh
+
+    override fun onDrawFrame(gl: GL10?)
+    {
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
 
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount)
-
-        //glDisableVertexAttribArray(it)
+        glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
     }
 }
