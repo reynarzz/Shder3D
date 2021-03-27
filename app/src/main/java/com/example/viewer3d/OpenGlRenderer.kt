@@ -1,5 +1,6 @@
 package com.example.viewer3d
 
+import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
@@ -7,9 +8,8 @@ import java.nio.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-const val COORDS_PER_VERTEX = 2
 
-class OpenGlRenderer : GLSurfaceView.Renderer {
+class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private val vertexShaderCode =
         "attribute vec4 vPosition;" +
@@ -22,36 +22,32 @@ class OpenGlRenderer : GLSurfaceView.Renderer {
     "uniform vec4 vColor;"+
     "void main()"+
     "{"+
-        "gl_FragColor = vec4(1.0);"+
+        "gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);"+
     "}"
-
-    var triangleCoords = floatArrayOf(
-        -10.0f, 0.0f,
-        0.0f, 10.0f,
-        10.0f, 0.0f
-    )
-
-    private var width = 0;
-    private var height = 0
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        this.width = width
-        this.height = height
 
         var camera = Camera()
+        glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LEQUAL)
 
         camera.updateProjection(width, height)
         camera.updateView()
+        ObjParser(context, "models/cube.obj").also {
 
-        mesh = Mesh(triangleCoords, intArrayOf(0, 1, 2))
-        var shader = Shader(vertexShaderCode, fragmentShaderCode)
+            var data = it.getModelData()
 
-        var program = shader.Bind(camera)
-        mesh.Bind_Test(program)
+                mesh = Mesh(data.mVertices, data.mIndices)
+                var shader = Shader(vertexShaderCode, fragmentShaderCode)
+
+                var program = shader.Bind(camera)
+                mesh.Bind_Test(program)
+        }
+
     }
 
     lateinit var mesh : Mesh

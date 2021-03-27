@@ -1,24 +1,24 @@
 package com.example.viewer3d
 
 import android.opengl.GLES20.*
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
-import java.nio.IntBuffer
+import java.lang.Exception
+import java.nio.*
 
 const val FLOAT_BYTES = 4
+const val COORDS_PER_VERTEX = 3
 
 class Mesh(vertices : FloatArray, var indices: IntArray) {
 
 
-     public var vertexBuffer: FloatBuffer
+     lateinit var vertexBuffer: FloatBuffer
           private set
-     public var indexBuffer: IntBuffer
+     lateinit var indexBuffer: IntBuffer
           private set
 
      private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
 
      init {
+
           vertexBuffer = ByteBuffer.allocateDirect(vertices.size * FLOAT_BYTES).run {
 
                // use the device hardware's native byte order
@@ -35,23 +35,21 @@ class Mesh(vertices : FloatArray, var indices: IntArray) {
                }
           }
 
-          indexBuffer = ByteBuffer.allocateDirect(3 * 4).run {
+          indexBuffer = ByteBuffer.allocateDirect(indices.size * FLOAT_BYTES).run {
                order(ByteOrder.nativeOrder())
-              asIntBuffer().apply {
+               asIntBuffer().apply {
                     put(indices)
                     position(0)
                }
           }
      }
 
-     public fun Bind_Test(program: Int){
+     fun Bind_Test(program: Int){
 
           glGetAttribLocation(program, "vPosition").also {
 
-               // Enable a handle to the triangle vertices
                glEnableVertexAttribArray(it)
 
-               // Prepare the triangle coordinate data
                glVertexAttribPointer(
                     it,
                     COORDS_PER_VERTEX,

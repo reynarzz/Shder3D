@@ -9,7 +9,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) : GLSurfaceView(c
     init {
          setEGLContextClientVersion(2)
          setPreserveEGLContextOnPause(true)
-         setRenderer(OpenGlRenderer())
+         setRenderer(OpenGlRenderer(context))
     }
 
     override fun onTouchEvent(e: MotionEvent?): Boolean {
