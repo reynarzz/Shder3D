@@ -8,8 +8,8 @@ class MyObjParser(context: Context, file: String) {
 
     private val mFinalVertices = mutableListOf<Float>()
     private val mFinalNormals = mutableListOf<Float>()
-    private val mFinalUVs = mutableListOf<Float>()
-    private val mFinalIndices = mutableListOf<Int>()
+    private val finalUVs = mutableListOf<Float>()
+    private val finalIndices = mutableListOf<Int>()
 
     /**
      * Init - parses the file in assets that matches the file string passed.
@@ -58,10 +58,20 @@ class MyObjParser(context: Context, file: String) {
                 }
 
                 for (i in 0 until  faceIndex.size-1){
-                    mFinalIndices.add(faceIndex[0])
-                    mFinalIndices.add(faceIndex[i])
-                    mFinalIndices.add(faceIndex[i+1])
+                    finalIndices.add(faceIndex[0])
+                    finalIndices.add(faceIndex[i])
+                    finalIndices.add(faceIndex[i+1])
                 }
+            }
+
+            if(it.startsWith("vt ")) {
+                var splited = it.split(" ").toMutableList()
+
+                splited.retainAll(){ it.toFloatOrNull() != null}
+
+                finalUVs.add(splited[0].toFloat())
+                finalUVs.add(splited[1].toFloat())
+
             }
         }
     }
@@ -72,8 +82,8 @@ class MyObjParser(context: Context, file: String) {
     fun getModelData(): ModelData {
         return ModelData(mFinalVertices.toFloatArray(),
                 mFinalNormals.toFloatArray(),
-                mFinalUVs.toFloatArray(),
-                mFinalIndices.toIntArray(),
+                finalUVs.toFloatArray(),
+                finalIndices.toIntArray(),
                 emptyArray<Float>().toFloatArray(),
                 emptyArray<Float>().toFloatArray(),
                 emptyArray<Float>().toFloatArray(),

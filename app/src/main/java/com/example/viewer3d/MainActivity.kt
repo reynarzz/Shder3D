@@ -1,7 +1,13 @@
 package com.example.viewer3d
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import java.io.ByteArrayOutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,6 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         openGLView = findViewById(R.id.OpenGLView_activity)
+      //  Toast.makeText(this, "bitmap.width.toString()", Toast.LENGTH_SHORT).show()
+
     }
 
     override fun onResume() {
@@ -23,4 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         openGLView.onPause()
     }
+
+
+
 }
