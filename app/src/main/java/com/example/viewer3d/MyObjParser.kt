@@ -29,15 +29,18 @@ class MyObjParser(context: Context, file: String) {
 
             if(it.startsWith("v "))
             {
-                var splited = it.split(" ")
+                var splited = it.split(" ").toMutableList()
+
+                splited.retainAll(){ it.toFloatOrNull() != null}
+
+                mFinalVertices.add(splited[0].toFloat())
                 mFinalVertices.add(splited[1].toFloat())
                 mFinalVertices.add(splited[2].toFloat())
-                mFinalVertices.add(splited[3].toFloat())
             }
 
             if(it.startsWith("f ")) {
-                var splited = it.split(" ")
-
+                var splited = it.split(" ").toMutableList()
+                splited.removeAll{ it.isEmpty() }
                 var faceIndex = mutableListOf<Int>()
 
                 for (i in 0 until splited.size - 1)
@@ -45,7 +48,6 @@ class MyObjParser(context: Context, file: String) {
                     var number = ""
 
                     for (c in splited[i+1]){
-
                         if(c != '/')
                         number += c
                         else
@@ -55,34 +57,11 @@ class MyObjParser(context: Context, file: String) {
                     faceIndex.add(number.toInt()-1)
                 }
 
-                mFinalIndices.add(faceIndex[0])
-                mFinalIndices.add(faceIndex[1])
-                mFinalIndices.add(faceIndex[2])
-
-                if(faceIndex.size > 3) {
+                for (i in 0 until  faceIndex.size-1){
                     mFinalIndices.add(faceIndex[0])
-                    mFinalIndices.add(faceIndex[2])
-                    mFinalIndices.add(faceIndex[3])
+                    mFinalIndices.add(faceIndex[i])
+                    mFinalIndices.add(faceIndex[i+1])
                 }
-
-                if(faceIndex.size > 7) {
-                    mFinalIndices.add(faceIndex[0])
-                    mFinalIndices.add(faceIndex[3])
-                    mFinalIndices.add(faceIndex[4])
-
-                    mFinalIndices.add(faceIndex[0])
-                    mFinalIndices.add(faceIndex[4])
-                    mFinalIndices.add(faceIndex[5])
-
-                    mFinalIndices.add(faceIndex[0])
-                    mFinalIndices.add(faceIndex[5])
-                    mFinalIndices.add(faceIndex[6])
-
-                    mFinalIndices.add(faceIndex[0])
-                    mFinalIndices.add(faceIndex[6])
-                    mFinalIndices.add(faceIndex[7])
-                }
-
             }
         }
     }

@@ -24,9 +24,13 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
     private val fragmentShaderCode = "precision mediump float;"+
     "uniform vec4 vColor;"+
             "varying vec4 pos;"+
+            "float linearize_depth(float d,float zNear,float zFar)"+
+            "{"+
+            "return (2.0 * zNear) / (zFar + zNear - d * (zFar - zNear));"+
+            "}"+
     "void main()"+
     "{"+
-        "gl_FragColor = vec4(pos.xyz, 1);"+
+        "gl_FragColor = vec4(linearize_depth(gl_FragCoord.z, 1.0, 1000.0));"+
     "}"
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -41,7 +45,8 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         camera.updateProjection(width, height)
         camera.updateView()
-        MyObjParser(context, "models/CoffeeRestaurant.obj").also {
+        //CoffeeRestaurant
+        MyObjParser(context, "models/house.obj").also {
 
             var data = it.getModelData()
 
@@ -59,7 +64,7 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     override fun onDrawFrame(gl: GL10?)
     {
-        glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         shader.TestRotation()
 
         glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)

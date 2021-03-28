@@ -9,7 +9,6 @@ const val COORDS_PER_VERTEX = 3
 
 class Mesh(vertices : FloatArray, var indices: IntArray) {
 
-
      lateinit var vertexBuffer: FloatBuffer
           private set
      lateinit var indexBuffer: IntBuffer
@@ -18,7 +17,6 @@ class Mesh(vertices : FloatArray, var indices: IntArray) {
      private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
 
      init {
-
           vertexBuffer = ByteBuffer.allocateDirect(vertices.size * FLOAT_BYTES).run {
 
                // use the device hardware's native byte order
