@@ -16,11 +16,11 @@ class Camera {
     }
 
     fun updateProjection(width : Int, height: Int) {
-        Matrix.perspectiveM(projectionM,0, 45.0f, width.toFloat() / height.toFloat(), 1.0f, 100.0f)
+        Matrix.perspectiveM(projectionM,0, 45.0f, width.toFloat() / height.toFloat(), 1.0f, 35.0f)
     }
 
     fun updateView() {
-        Matrix.translateM(viewM, 0,0.0f,0.0f,-5.9f)
+        Matrix.translateM(viewM, 0,0.0f,0.0f,-25.9f)
     }
 
 }
