@@ -1,2 +1,5 @@
+include ':glm-all'
+include ':glm'
+include ':lwjgl-stb'
 include ':app'
 rootProject.name = "Viewer3D"

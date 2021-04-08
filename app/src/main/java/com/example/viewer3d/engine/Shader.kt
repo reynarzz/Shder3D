@@ -1,4 +1,4 @@
-package com.example.viewer3d
+package com.example.viewer3d.engine
 
 import android.opengl.GLES20.*
 import android.opengl.Matrix
@@ -57,5 +57,9 @@ class Shader(vertexSource: String, fragmentSource: String) {
         Matrix.rotateM(modelM, 0, 0.3f, 0.0f, 1.0f, 0.0f)
 
         glUniformMatrix4fv(modelID, 1, false, modelM, 0)
+    }
+
+    fun GetProgram() : Int {
+        return program;
     }
 }

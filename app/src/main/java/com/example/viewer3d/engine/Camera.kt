@@ -1,4 +1,4 @@
-package com.example.viewer3d
+package com.example.viewer3d.engine
 
 import android.opengl.Matrix
 
@@ -20,7 +20,7 @@ class Camera {
     }
 
     fun updateView() {
-        Matrix.translateM(viewM, 0,0.0f,0.0f,-15.9f)
+        Matrix.translateM(viewM, 0,0.0f,-3.0f,-25.9f)
     }
 
 }

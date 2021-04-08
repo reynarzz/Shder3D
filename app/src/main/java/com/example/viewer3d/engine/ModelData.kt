@@ -1,4 +1,4 @@
-package com.example.viewer3d
+package com.example.viewer3d.engine
 
 data class ModelData(val mVertices: FloatArray,
                      val mNormals: FloatArray,
