@@ -1,15 +1,19 @@
 package com.example.viewer3d.engine
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.opengl.GLUtils
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.InputStreamReader
-import java.nio.*
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+
 
 class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
@@ -32,7 +36,7 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
             uniform vec4 vColor;
             varying vec4 pos;
             varying vec2 _uv;
-            uniform sampler2D _texture;
+            uniform sampler2D sTexture;
             
             float linearize_depth(float d,float zNear,float zFar)
             {
@@ -40,11 +44,11 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
             }
             void main()
             {
-                gl_FragColor = pos * vec4(linearize_depth(gl_FragCoord.z, 1.0, 20.0));
+                gl_FragColor = texture2D(sTexture, _uv);
             }
             """
 
-    //texture2D(_texture, _uv) * vec4(linearize_depth(gl_FragCoord.z, 1.0, 30.0));
+    //texture2D(sTexture, _uv) * vec4(linearize_depth(gl_FragCoord.z, 1.0, 30.0));
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
@@ -63,7 +67,7 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
         camera.updateView()
         //CoffeeRestaurant
         //SimpleScene
-        MyObjParser(context, "models/CoffeeRestaurant.obj").also {
+        ObjParser(context, "models/girl.obj").also {
 
             var data = it.getModelData()
 
@@ -75,47 +79,33 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             // Texture
             var bitmap = doInBackground("textures/girlsmooth.png")
-            val inStream = context.assets.open("textures/girlsmooth.png")
-
-            val isr = InputStreamReader(inStream)
-            val reader = BufferedReader(isr)
-            val bl = mutableListOf<Byte>()
 
             val imageArray = imageToBitmap(bitmap)
             bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
 
-            val loc = glGetAttribLocation(program, "_UV_")
+            loadTexture(bitmap);
 
-            val imageBuffer = ByteBuffer.allocateDirect(imageArray.size * 4).apply {
-                order(ByteOrder.nativeOrder())
-                put(imageArray)
-                position(0)
-            }
 
-            //STBImage.stbi_set_flip_vertically_on_load(true)
-            //STBImage.stbi_load("asd", 1, 2, 0, 4)
+//            val imageBuffer = ByteBuffer.allocateDirect(imageArray.size * 4).apply {
+//                order(ByteOrder.nativeOrder())
+//                put(imageArray)
+//                position(0)
+//            }
 
-            var buffer = IntArray(1)
-            glGenTextures(1, buffer, 0)
-            glBindTexture(GL_TEXTURE_2D, buffer[0])
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-            glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RGB5_A1,
-                bitmap.width,
-                bitmap.height,
-                0,
-                GL_RGBA,
-                GL_UNSIGNED_BYTE,
-                imageBuffer
-            )
+//            var buffer = IntArray(1)
+//
+//            glGenTextures(1, buffer, 0)
+//            glBindTexture(GL_TEXTURE_2D, buffer[0])
+//
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+//            GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0)
 
-            glActiveTexture(GL_TEXTURE0)
+            //glActiveTexture(GL_TEXTURE0)
+            val uvAttrib = glGetAttribLocation(program, "_UV_")
 
             val uvBuffer = ByteBuffer.allocateDirect(data.mUVs.size * 4).run {
                 order(ByteOrder.nativeOrder())
@@ -125,12 +115,32 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
                 }
             }
 
-            glVertexAttribPointer(loc, 2, GL_FLOAT, true, 2 * 4, uvBuffer)
-            glEnableVertexAttribArray(loc)
-
+            glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, uvBuffer)
+            glEnableVertexAttribArray(uvAttrib)
         }
     }
 
+    // Loads a texture into OpenGL
+    private fun loadTexture(bitmap: Bitmap): Int {
+        val textures = IntArray(1)
+        glGenTextures(1, textures, 0)
+        val textureWidth = bitmap.width
+        val textureHeight = bitmap.height
+        glBindTexture(GL_TEXTURE_2D, textures[0])
+        GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        return textures[0]
+    }
+
+    // Unloads a texture from OpenGL
+    private fun unloadTexture(textureId: Int) {
+        val textures = IntArray(1)
+        textures[0] = textureId
+        glDeleteTextures(1, textures, 0)
+    }
 
     lateinit var mesh: Mesh
     lateinit var shader: Shader
@@ -145,19 +155,10 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     fun imageToBitmap(bitmap: Bitmap): ByteArray {
-        //val bitmap = (image.drawable as BitmapDrawable).bitmap
 
         val stream = ByteArrayOutputStream()
-        //bitmap?.reconfigure(512, 512, Bitmap.Config.ARGB_8888)
 
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-
-//        for (x in 0 until bitmap!!.width){
-//
-//            for (y in 0 until bitmap!!.height){
-//                bitmap?.setPixel(x, y, Color.rgb(1, 0, 0))
-//            }
-//        }
 
         return stream.toByteArray()
     }

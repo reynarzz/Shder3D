@@ -18,13 +18,6 @@ class MyObjParser(context: Context, file: String) {
         val inStream = context.assets.open(file)
         val reader = BufferedReader(InputStreamReader(inStream))
 
-        val vertices = ArrayList<Triple<Float, Float, Float>>()
-        val normals = ArrayList<Triple<Float, Float, Float>>()
-        val uvs = ArrayList<Pair<Float, Float>>()
-
-        val faceMap = HashMap<Triple<Int, Int?, Int?>, Int>()
-        var nextIndex: Int = 0
-
         reader.forEachLine {
 
             if(it.startsWith("v "))
@@ -64,15 +57,25 @@ class MyObjParser(context: Context, file: String) {
                 }
             }
 
-            if(it.startsWith("vt ")) {
-                var splited = it.split(" ").toMutableList()
+            if ( it.startsWith( "vt" ) ) {
 
-                splited.retainAll(){ it.toFloatOrNull() != null}
+                val split = it.split( " " )
 
-                finalUVs.add(splited[0].toFloat())
-                finalUVs.add(splited[1].toFloat())
-
+                // split[0] is the prefix
+                val uv = Pair(split[1].toFloat(), split[2].toFloat())
+                finalUVs.add(split[1].toFloat())
+                finalUVs.add(split[2].toFloat())
             }
+
+//            if(it.startsWith("vt ")) {
+//                var splited = it.split(" ").toMutableList()
+//
+//                splited.retainAll(){ it.toFloatOrNull() != null}
+//
+//                finalUVs.add(splited[0].toFloat())
+//                finalUVs.add(splited[1].toFloat())
+//
+//            }
         }
     }
 

@@ -60,6 +60,6 @@ class Shader(vertexSource: String, fragmentSource: String) {
     }
 
     fun GetProgram() : Int {
-        return program;
+        return program
     }
 }

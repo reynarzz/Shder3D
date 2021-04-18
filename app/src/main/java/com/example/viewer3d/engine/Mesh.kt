@@ -26,22 +26,6 @@ class Mesh(vertices : FloatArray, var indices: IntArray) {
                }
           }
 
-//          vertexBuffer = ByteBuffer.allocateDirect(vertices.size * FLOAT_BYTES).run {
-//
-//               // use the device hardware's native byte order
-//               order(ByteOrder.nativeOrder())
-//
-//               // create a floating point buffer from the ByteBuffer
-//               asFloatBuffer().apply {
-//
-//                    // add the coordinates to the FloatBuffer
-//                    put(vertices)
-//
-//                    // set the buffer to read the first coordinate
-//                    position(0)
-//               }
-//          }
-
           indexBuffer = ByteBuffer.allocateDirect(indices.size * FLOAT_BYTES).run {
                order(ByteOrder.nativeOrder())
                asIntBuffer().apply {
@@ -49,8 +33,6 @@ class Mesh(vertices : FloatArray, var indices: IntArray) {
                     position(0)
                }
           }
-
-
      }
 
      fun Bind_Test(program: Int){
