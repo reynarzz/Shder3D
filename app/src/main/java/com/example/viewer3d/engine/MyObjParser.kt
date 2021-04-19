@@ -50,7 +50,7 @@ class MyObjParser(context: Context, file: String) {
                     faceIndex.add(number.toInt()-1)
                 }
 
-                for (i in 0 until  faceIndex.size-1){
+                for (i in 1 until  faceIndex.size-1){
                     finalIndices.add(faceIndex[0])
                     finalIndices.add(faceIndex[i])
                     finalIndices.add(faceIndex[i+1])

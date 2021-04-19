@@ -6,11 +6,13 @@ import java.nio.*
 const val FLOAT_BYTES = 4
 const val COORDS_PER_VERTEX = 3
 
-class Mesh(vertices : FloatArray, var indices: IntArray) {
+class Mesh(vertices : FloatArray, var indices: IntArray, uv : FloatArray) {
 
      lateinit var vertexBuffer: FloatBuffer
           private set
      lateinit var indexBuffer: IntBuffer
+          private set
+      lateinit var uvBuffer : FloatBuffer
           private set
 
      private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
@@ -30,6 +32,14 @@ class Mesh(vertices : FloatArray, var indices: IntArray) {
                order(ByteOrder.nativeOrder())
                asIntBuffer().apply {
                     put(indices)
+                    position(0)
+               }
+          }
+
+          uvBuffer = ByteBuffer.allocateDirect(uv.size * 4).run {
+               order(ByteOrder.nativeOrder())
+               asFloatBuffer().apply {
+                    put(uv)
                     position(0)
                }
           }

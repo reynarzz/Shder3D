@@ -6,8 +6,12 @@ import android.graphics.BitmapFactory
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
+import com.mokiat.data.front.parser.IOBJParser
+import com.mokiat.data.front.parser.OBJModel
+import com.mokiat.data.front.parser.OBJParser
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -44,7 +48,7 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
             }
             void main()
             {
-                gl_FragColor = texture2D(sTexture, _uv);
+                gl_FragColor = texture2D(sTexture, vec2(_uv.x, 1.-_uv.y));
             }
             """
 
@@ -52,6 +56,67 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
+
+fun getMeshes(path : String) : List<Mesh> {
+
+    val vertices = mutableListOf<Float>()
+    val index = mutableListOf<Int>()
+    val tempIndex = mutableListOf<Int>()
+    val uv = mutableListOf<Float>()
+    val meshes = mutableListOf<Mesh>()
+
+    // Open a stream to your OBJ resource
+    val inStream = context.assets.open(path)
+    BufferedReader(InputStreamReader(inStream)).use {
+        val parser: IOBJParser = OBJParser()
+        val model: OBJModel = parser.parse(it)
+
+        for (mObj in model.objects) {
+
+            for (mesh in mObj.meshes) {
+                var intIndex = 0
+                vertices.clear()
+                index.clear()
+                uv.clear()
+                for (face in mesh.faces) {
+                    tempIndex.clear()
+
+                    for (reference in face.references) {
+                        val vertex = model.getVertex(reference)
+
+                        vertices.add(vertex.x)
+                        vertices.add(vertex.y)
+                        vertices.add(vertex.z)
+
+                        if(reference.hasVertexIndex()){
+                            tempIndex.add(reference.vertexIndex)
+                        }
+
+                        if (reference.hasNormalIndex()) {
+                            val normal = model.getNormal(reference)
+                        }
+
+                        if (reference.hasTexCoordIndex()) {
+                            val texcoord = model.getTexCoord(reference)
+                            uv.add(texcoord.u)
+                            uv.add(texcoord.v)
+                        }
+                    }
+
+                    for (i in 1 until  tempIndex.size-1){
+                        index.add(tempIndex[0])
+                        index.add(tempIndex[i])
+                        index.add(tempIndex[i+1])
+                    }
+                }
+                meshes.add(Mesh(vertices.toFloatArray(), index.toIntArray(), uv.toFloatArray()))
+            }
+        }
+    }
+
+    return meshes
+}
+
 
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -67,30 +132,63 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
         camera.updateView()
         //CoffeeRestaurant
         //SimpleScene
+
+        loadedMeshes = mutableListOf<Mesh>()
+        // loadedMeshes = getMeshes("models/cube.obj")
+
+//        loadedMeshes.also {
+//            shader = Shader(vertexShaderCode, fragmentShaderCode)
+//
+//            for (mesh in it){
+//
+//                var program = shader.Bind(camera)
+//                mesh.Bind_Test(program)
+//
+//                // Texture
+//                var bitmap = doInBackground("textures/girltex2.jpg")
+//
+//                val imageArray = imageToBitmap(bitmap)
+//                bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
+//
+//                loadTexture(bitmap)
+//                val uvAttrib = glGetAttribLocation(program, "_UV_")
+//
+//                glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, mesh.uvBuffer)
+//                glEnableVertexAttribArray(uvAttrib)
+//            }
+//
+//        }
         ObjParser(context, "models/girl.obj").also {
 
             var data = it.getModelData()
 
-            mesh = Mesh(data.mVertices, data.mIndices)
+            val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
             shader = Shader(vertexShaderCode, fragmentShaderCode)
+            loadedMeshes.add(mesh)
 
             var program = shader.Bind(camera)
             mesh.Bind_Test(program)
 
             // Texture
-            var bitmap = doInBackground("textures/girlsmooth.png")
+            var bitmap = doInBackground("textures/girltex2.jpg")
 
             val imageArray = imageToBitmap(bitmap)
             bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
 
-            loadTexture(bitmap);
+            loadTexture(bitmap)
+            val uvAttrib = glGetAttribLocation(program, "_UV_")
+
+            glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, mesh.uvBuffer)
+            glEnableVertexAttribArray(uvAttrib)
+ //Open a stream to your OBJ resource
 
 
-//            val imageBuffer = ByteBuffer.allocateDirect(imageArray.size * 4).apply {
-//                order(ByteOrder.nativeOrder())
-//                put(imageArray)
-//                position(0)
-//            }
+
+            val imageBuffer = ByteBuffer.allocateDirect(imageArray.size * 4).apply {
+                order(ByteOrder.nativeOrder())
+                put(imageArray)
+                position(0)
+            }
 
 
 //            var buffer = IntArray(1)
@@ -105,18 +203,15 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 //            GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0)
 
             //glActiveTexture(GL_TEXTURE0)
-            val uvAttrib = glGetAttribLocation(program, "_UV_")
 
-            val uvBuffer = ByteBuffer.allocateDirect(data.mUVs.size * 4).run {
-                order(ByteOrder.nativeOrder())
-                asFloatBuffer().apply {
-                    put(data.mUVs)
-                    position(0)
-                }
-            }
+//            val uvBuffer = ByteBuffer.allocateDirect(data.mUVs.size * 4).run {
+//                order(ByteOrder.nativeOrder())
+//                asFloatBuffer().apply {
+//                    put(data.mUVs)
+//                    position(0)
+//                }
+//            }
 
-            glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, uvBuffer)
-            glEnableVertexAttribArray(uvAttrib)
         }
     }
 
@@ -127,9 +222,9 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
         val textureWidth = bitmap.width
         val textureHeight = bitmap.height
         glBindTexture(GL_TEXTURE_2D, textures[0])
-        GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        GLUtils.texImage2D(GL_TEXTURE_2D, 0,bitmap, 0)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         return textures[0]
@@ -142,7 +237,7 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
         glDeleteTextures(1, textures, 0)
     }
 
-    lateinit var mesh: Mesh
+    lateinit var loadedMeshes : MutableList<Mesh>
     lateinit var shader: Shader
 
     fun doInBackground(path: String): Bitmap {
@@ -168,6 +263,9 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         shader.TestRotation()
 
-        glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
+        for(mesh in loadedMeshes){
+            glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
+
+        }
     }
 }
