@@ -36,22 +36,40 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
      fun Bind(cameraTest: Camera) : Int {
         glUseProgram(program)
 
-        var mvpLocation = glGetUniformLocation(program, "_VP_")
+        var UNITY_MATRIX_MVP = glGetUniformLocation(program, "UNITY_MATRIX_MVP")
+        var UNITY_MATRIX_MV = glGetUniformLocation(program, "UNITY_MATRIX_MV")
+        var UNITY_MATRIX_V = glGetUniformLocation(program, "UNITY_MATRIX_V")
+        var UNITY_MATRIX_P = glGetUniformLocation(program, "UNITY_MATRIX_P")
+        var UNITY_MATRIX_T_MV = glGetUniformLocation(program, "UNITY_MATRIX_T_MV")
+        var UNITY_MATRIX_IT_MV = glGetUniformLocation(program, "UNITY_MATRIX_IT_MV")
+        var unity_ObjectToWorld = glGetUniformLocation(program, "unity_ObjectToWorld")
+        var unity_WorldToObject = glGetUniformLocation(program, "unity_WorldToObject")
 
-        var identity = FloatArray(16)
+        var _ScreenParams = glGetUniformLocation(program, "_ScreenParams")
+        var _WorldSpaceCameraPos = glGetUniformLocation(program, "_WorldSpaceCameraPos")
+        var _ProjectionParams = glGetUniformLocation(program, "_ProjectionParams")
+        var _ZBufferParams = glGetUniformLocation(program, "_ZBufferParams")
 
-        Matrix.setIdentityM(identity, 0)
+        var _WorldSpaceLightPos0 = glGetUniformLocation(program, "_WorldSpaceLightPos0")
+        var _LightColor0 = glGetUniformLocation(program, "_LightColor0")
 
-        var result = FloatArray(16)
+        var _Time = glGetUniformLocation(program, "_Time")
+        var unity_DeltaTime = glGetUniformLocation(program, "unity_DeltaTime")
 
-        Matrix.multiplyMM(result,0, cameraTest.projectionM, 0, cameraTest.viewM, 0)
-        glUniformMatrix4fv(mvpLocation, 1, false, result , 0)
+        var _VP_ = glGetUniformLocation(program, "_VP_")
+        var _M_ = glGetUniformLocation(program, "_M_")
+
+
+        var MVP = FloatArray(16)
+
+        Matrix.multiplyMM(MVP,0, cameraTest.projectionM, 0, cameraTest.viewM, 0)
 
         modelM = FloatArray(16)
         Matrix.setIdentityM(modelM, 0)
 
-         val modelID = glGetUniformLocation(program, "_M_")
-         glUniformMatrix4fv(modelID, 1, false, modelM, 0)
+
+         glUniformMatrix4fv(_M_, 1, false, modelM, 0)
+         glUniformMatrix4fv(_VP_, 1, false, MVP , 0)
 
         return program
     }

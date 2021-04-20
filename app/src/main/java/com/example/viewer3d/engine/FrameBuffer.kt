@@ -1,9 +1,19 @@
 package com.example.viewer3d.engine
 
+import android.opengl.GLES20.glGenFramebuffers
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+
 class FrameBuffer {
     fun frameBufferCode(){
 //        // Create a frame buffer
-//        glGenFramebuffers( 1, &(frame_buffer ) );
+//        ByteBuffer.allocateDirect(1).run {
+//            order(ByteOrder.nativeOrder())
+//            asIntBuffer()
+//
+//        }
+//
+//        //glGenFramebuffers( 1, );
 //
 //        // Generate a texture to hold the colour buffer
 //        glGenTextures(1, &(colour_texture) );

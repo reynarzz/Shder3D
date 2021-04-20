@@ -14,37 +14,8 @@ import javax.microedition.khronos.opengles.GL10
 
 class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
-    private var vertexShaderCode ="""
-        attribute vec4 _VERTEX_; 
-                uniform mat4 _VP_;
-                uniform mat4 _M_;
-                uniform sampler2D _texture;
-                attribute vec2 _UV_;
-                varying vec2 _uv;
-                varying  vec4 pos;
-                void main() {
-                pos = _VERTEX_;
-                _uv = _UV_;
-                gl_Position = _VP_ * _M_ * _VERTEX_;
-               // gl_Position =  _VERTEX_;
-                }"""
-
-    private var fragmentShaderCode = """
-            precision mediump float;
-            uniform vec4 vColor;
-            varying vec4 pos;
-            varying vec2 _uv;
-            uniform sampler2D sTexture;
-            
-            float linearize_depth(float d,float zNear,float zFar)
-            {
-                 return (2.0 * zNear) / (zFar + zNear - d * (zFar - zNear));
-            }
-            void main()
-            {
-                gl_FragColor = texture2D(sTexture, _uv);
-            }
-            """
+    private lateinit var vertexShaderCode: String
+    private lateinit  var fragmentShaderCode  :String
 
     //texture2D(sTexture, _uv) * vec4(linearize_depth(gl_FragCoord.z, 1.0, 30.0));
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -179,7 +150,7 @@ var camera = Camera()
 
         shader.TestRotation()
 
-        for(mesh in loadedMeshes){
+        for(mesh in loadedMeshes) {
 
             glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
         }

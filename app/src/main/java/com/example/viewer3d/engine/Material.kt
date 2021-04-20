@@ -10,7 +10,7 @@ class Material(val shader: Shader) {
 
         if(program != 0)
         {
-            val u_color = glGetUniformLocation(program, "_color_")
+            val u_color = glGetUniformLocation(program, "COLOR_")
             glUniform4f(u_color, color.r, color.g, color.b, color.a)
         }
     }
