@@ -177,7 +177,7 @@ var camera = Camera()
             glEnableVertexAttribArray(uvAttrib)
         }
 
-        //shader.TestRotation()
+        shader.TestRotation()
 
         for(mesh in loadedMeshes){
 

@@ -20,7 +20,7 @@ class Camera {
     }
 
     fun updateView() {
-        Matrix.translateM(viewM, 0,0.0f,-3.0f,-225.9f)
+        Matrix.translateM(viewM, 0,0.0f,-33.0f,-225.9f)
     }
 
 }

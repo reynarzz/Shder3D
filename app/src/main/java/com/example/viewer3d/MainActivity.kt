@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val viewShader = findViewById<Button>(R.id.btn_switchShaderView)
 
 
-        var vertexTex = """attribute vec4 vPosition; 
+        var vertexTex = """attribute vec4 _VERTEX_; 
             
 uniform mat4 _VP_;
 uniform mat4 _M_;
@@ -40,15 +40,17 @@ varying  vec4 pos;
 
 void main() 
 {
-   pos = vPosition;
+   pos = _VERTEX_;
    _uv = _UV_;
-   gl_Position = _VP_ * _M_ * vPosition;
+   gl_Position = _VP_ * _M_ * _VERTEX_;
 }"""
 
-        var fragTex = """precision mediump float;
+        var fragTex = """precision mediump float; 
+            
 uniform vec4 vColor;
 varying vec4 pos;
 varying vec2 _uv;
+
 uniform sampler2D sTexture;
 
 void main()

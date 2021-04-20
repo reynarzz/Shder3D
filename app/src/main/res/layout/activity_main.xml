@@ -31,7 +31,7 @@
       android:paddingRight="10dp"
 
       android:background="#0000"
-      android:inputType="textMultiLine"
+      android:inputType="textMultiLine|textNoSuggestions"
       android:scrollbars="vertical"
       android:fontFamily="@font/consola"
       android:text="Code here"
