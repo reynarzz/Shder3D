@@ -1,9 +1,10 @@
 package com.example.viewer3d.engine
 
+import android.opengl.GLES20
 import android.opengl.GLES20.*
 import android.opengl.Matrix
 
-class Shader(val vertexSource: String, val fragmentSource: String) {
+class Shader(vertexSource: String, fragmentSource: String) {
 
     var program = 0
         private set
@@ -12,26 +13,12 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
     private var fragmentShader = 0
 
     init {
-        vertexShader = GetCompiledShader(GL_VERTEX_SHADER, vertexSource)
-        fragmentShader = GetCompiledShader(GL_FRAGMENT_SHADER, fragmentSource)
 
-        program = glCreateProgram();
+        createShaders(vertexSource, fragmentSource)
 
-        glAttachShader(program, vertexShader)
-        glAttachShader(program, fragmentShader)
-
-        glLinkProgram(program)
     }
 
-    private fun GetCompiledShader(type: Int, shaderCode: String): Int {
 
-        var shaderID = glCreateShader(type);
-
-        glShaderSource(shaderID, shaderCode)
-        glCompileShader(shaderID)
-
-        return shaderID
-    }
 
     fun Bind(cameraTest: Camera): Int {
         glUseProgram(program)
@@ -60,7 +47,7 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
         val MVP = FloatArray(16)
         val MV = FloatArray(16)
 
-        val modelM = FloatArray(16)
+        modelM = FloatArray(16)
         val inverseModelM = FloatArray(16)
 
         Matrix.setIdentityM(modelM, 0)
@@ -68,7 +55,7 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
         Matrix.multiplyMM(MVP, 0, cameraTest.projectionM, 0, cameraTest.viewM, 0)
         Matrix.multiplyMM(MVP, 0, MVP, 0, modelM, 0)
 
-        Matrix.multiplyMM(MV, 0,cameraTest.viewM, 0, modelM , 0)
+        Matrix.multiplyMM(MV, 0, cameraTest.viewM, 0, modelM, 0)
 
 
         Matrix.invertM(inverseModelM, 0, modelM, 0)
@@ -94,13 +81,76 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
         glDetachShader(program, vertexShader)
         glDeleteShader(vertexShader)
 
-        fragmentShader = GetCompiledShader(GL_FRAGMENT_SHADER, fragment)
-        vertexShader = GetCompiledShader(GL_VERTEX_SHADER, vertex)
+        createShaders(vertex, fragment)
+    }
 
-        glAttachShader(program, fragmentShader)
+    private fun createShaders(vertex: String, fragment: String){
+        var vertexResult = GetCompiledShader(GL_VERTEX_SHADER, vertex);
+        var fragmentResult = GetCompiledShader(GL_FRAGMENT_SHADER, fragment);
+
+        vertexShader = vertexResult.first
+        fragmentShader = fragmentResult.first
+
+        val couldVertexShaderCompile = vertexResult.second
+        val couldFragmentShaderCompile = fragmentResult.second
+
+        val anErrorhappened = !couldVertexShaderCompile || !couldFragmentShaderCompile
+
+        if (anErrorhappened) {
+
+            if(!couldVertexShaderCompile) {
+                val log = glGetShaderInfoLog(vertexShader)
+            }
+
+            if(!couldFragmentShaderCompile)
+            {
+                val log = glGetShaderInfoLog(fragmentShader)
+            }
+
+            val errorShader = Utils.getErrorShaderCode()
+
+            vertexResult = GetCompiledShader(GL_VERTEX_SHADER, errorShader.first);
+            fragmentResult = GetCompiledShader(GL_FRAGMENT_SHADER, errorShader.second);
+
+            vertexShader = vertexResult.first
+            fragmentShader = fragmentResult.first
+        }
+        else
+        {
+
+        }
+
+        program = glCreateProgram();
+
         glAttachShader(program, vertexShader)
+        glAttachShader(program, fragmentShader)
 
         glLinkProgram(program)
+    }
+
+    private fun GetCompiledShader(type: Int, shaderCode: String): Pair<Int, Boolean> {
+
+        var shaderID = glCreateShader(type);
+
+        glShaderSource(shaderID, shaderCode)
+        glCompileShader(shaderID)
+        val result = IntArray(1);
+
+        glGetShaderiv(shaderID, GL_COMPILE_STATUS, result, 0 )
+
+
+
+        return Pair(shaderID, result[0] == 1)
+    }
+
+    lateinit var modelM: FloatArray
+
+    fun TestRotation() {
+        val modelID = glGetUniformLocation(program, "unity_ObjectToWorld")
+
+        Matrix.rotateM(modelM, 0, 0.3f, 0.0f, 1.0f, 0.0f)
+
+        glUniformMatrix4fv(modelID, 1, false, modelM, 0)
     }
 
     fun GetProgram(): Int {

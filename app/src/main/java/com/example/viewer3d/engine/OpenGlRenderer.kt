@@ -146,6 +146,8 @@ var camera = Camera()
             glEnableVertexAttribArray(uvAttrib)
         }
 
+        shader.TestRotation()
+
         for(mesh in loadedMeshes) {
 
             glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)

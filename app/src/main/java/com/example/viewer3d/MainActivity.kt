@@ -58,9 +58,10 @@ struct v2f
 } o;
 
 void main() 
-{
+{a
    _uv = _UV_;
-   gl_Position = UnityObjectToClipPos(_VERTEX_);
+   gl_Position = UNITY_MATRIX_P * UNITY_MATRIX_V * unity_ObjectToWorld * _VERTEX_; 
+   //gl_Position = UnityObjectToClipPos(_VERTEX_);
 }"""
 
         var fragTex = """precision mediump float; 

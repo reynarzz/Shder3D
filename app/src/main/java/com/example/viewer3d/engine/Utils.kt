@@ -8,42 +8,62 @@ import java.io.File
 import java.io.InputStreamReader
 
 class Utils {
-     companion object {
-         fun getScreenSizeQuad() : Mesh{
-             var screenQuadVerts: FloatArray = listOf(-1f, -1f, 0f,
-                     -1f, 1f,0f,
-                     1f, 1f,0f,
-                     1f, -1f,0f).toFloatArray()
+    companion object {
+        fun getScreenSizeQuad(): Mesh {
+            var screenQuadVerts: FloatArray = listOf(-1f, -1f, 0f,
+                    -1f, 1f, 0f,
+                    1f, 1f, 0f,
+                    1f, -1f, 0f).toFloatArray()
 
-             var screenQuadIndex = listOf(0, 1, 2,
-                     0, 2, 3).toIntArray()
+            var screenQuadIndex = listOf(0, 1, 2,
+                    0, 2, 3).toIntArray()
 
-             val screenQuadUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
+            val screenQuadUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
 
-             return Mesh(screenQuadVerts, screenQuadIndex, screenQuadUV)
-         }
-     }
+            return Mesh(screenQuadVerts, screenQuadIndex, screenQuadUV)
+        }
 
-     class ShaderUtils {
-         companion object {
-             fun processInclude( include: String, shaderCode : String) : String {
+        fun getErrorShaderCode(): Pair<String, String> {
+            var vertexTex = """
+            
+            attribute vec4 _VERTEX_; 
+            uniform mat4 UNITY_MATRIX_MVP;
+            
+            void main() 
+            {
+               gl_Position = UNITY_MATRIX_MVP * _VERTEX_;
+            }"""
 
-                 var shader = shaderCode
+            var fragTex = """precision mediump float; 
 
-                 shaderCode.reader().forEachLine {
-                     if(!it.contains("//") && it.contains("#")){
+            void main()
+            {
+                gl_FragColor = vec4(1., 0., 1., 1.); //pink
+            }"""
+            return Pair(vertexTex, fragTex)
+        }
+    }
 
-                         var lowerCase = it.toLowerCase()
+    class ShaderUtils {
+        companion object {
+            fun processInclude(include: String, shaderCode: String): String {
 
-                         if(lowerCase.contains("unity.h")){
+                var shader = shaderCode
 
-                             shader = shaderCode.replace(it, include)
-                         }
-                     }
-                 }
+                shaderCode.reader().forEachLine {
+                    if (!it.contains("//") && it.contains("#")) {
 
-                 return shader;
-             }
-         }
-     }
+                        var lowerCase = it.toLowerCase()
+
+                        if (lowerCase.contains("unity.h")) {
+
+                            shader = shaderCode.replace(it, include)
+                        }
+                    }
+                }
+
+                return shader;
+            }
+        }
+    }
 }
