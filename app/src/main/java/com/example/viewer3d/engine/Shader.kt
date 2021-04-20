@@ -6,21 +6,21 @@ import android.opengl.Matrix
 class Shader(val vertexSource: String, val fragmentSource: String) {
 
     var program = 0
-    private set
+        private set
 
     private var vertexShader = 0
     private var fragmentShader = 0
 
     init {
-           vertexShader = GetCompiledShader(GL_VERTEX_SHADER, vertexSource)
-           fragmentShader = GetCompiledShader(GL_FRAGMENT_SHADER, fragmentSource)
+        vertexShader = GetCompiledShader(GL_VERTEX_SHADER, vertexSource)
+        fragmentShader = GetCompiledShader(GL_FRAGMENT_SHADER, fragmentSource)
 
-           program = glCreateProgram();
+        program = glCreateProgram();
 
-           glAttachShader(program, vertexShader)
-           glAttachShader(program, fragmentShader)
+        glAttachShader(program, vertexShader)
+        glAttachShader(program, fragmentShader)
 
-           glLinkProgram(program)
+        glLinkProgram(program)
     }
 
     private fun GetCompiledShader(type: Int, shaderCode: String): Int {
@@ -33,7 +33,7 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
         return shaderID
     }
 
-     fun Bind(cameraTest: Camera) : Int {
+    fun Bind(cameraTest: Camera): Int {
         glUseProgram(program)
 
         var UNITY_MATRIX_MVP = glGetUniformLocation(program, "UNITY_MATRIX_MVP")
@@ -56,27 +56,38 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
         var _Time = glGetUniformLocation(program, "_Time")
         var unity_DeltaTime = glGetUniformLocation(program, "unity_DeltaTime")
 
-        var _VP_ = glGetUniformLocation(program, "_VP_")
-        var _M_ = glGetUniformLocation(program, "_M_")
 
+        val MVP = FloatArray(16)
+        val MV = FloatArray(16)
 
-        var MVP = FloatArray(16)
+        val modelM = FloatArray(16)
+        val inverseModelM = FloatArray(16)
 
-        Matrix.multiplyMM(MVP,0, cameraTest.projectionM, 0, cameraTest.viewM, 0)
-
-        modelM = FloatArray(16)
         Matrix.setIdentityM(modelM, 0)
 
+        Matrix.multiplyMM(MVP, 0, cameraTest.projectionM, 0, cameraTest.viewM, 0)
+        Matrix.multiplyMM(MVP, 0, MVP, 0, modelM, 0)
 
-         glUniformMatrix4fv(_M_, 1, false, modelM, 0)
-         glUniformMatrix4fv(_VP_, 1, false, MVP , 0)
+        Matrix.multiplyMM(MV, 0,cameraTest.viewM, 0, modelM , 0)
+
+
+        Matrix.invertM(inverseModelM, 0, modelM, 0)
+
+        glUniformMatrix4fv(UNITY_MATRIX_MVP, 1, false, MVP, 0)
+        glUniformMatrix4fv(UNITY_MATRIX_MV, 1, false, MV, 0)
+        glUniformMatrix4fv(UNITY_MATRIX_V, 1, false, cameraTest.viewM, 0)
+        glUniformMatrix4fv(UNITY_MATRIX_P, 1, false, cameraTest.projectionM, 0)
+
+
+        glUniformMatrix4fv(unity_ObjectToWorld, 1, false, modelM, 0)
+        glUniformMatrix4fv(unity_WorldToObject, 1, false, inverseModelM, 0)
+
 
         return program
     }
 
-    lateinit var modelM :FloatArray
 
-    fun replaceShaders(vertex : String, fragment : String) {
+    fun replaceShaders(vertex: String, fragment: String) {
         glDetachShader(program, fragmentShader)
         glDeleteShader(fragmentShader)
 
@@ -92,15 +103,7 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
         glLinkProgram(program)
     }
 
-    fun TestRotation(){
-        val modelID = glGetUniformLocation(program, "_M_")
-
-        Matrix.rotateM(modelM, 0, 0.3f, 0.0f, 1.0f, 0.0f)
-
-        glUniformMatrix4fv(modelID, 1, false, modelM, 0)
-    }
-
-    fun GetProgram() : Int {
+    fun GetProgram(): Int {
         return program
     }
 }

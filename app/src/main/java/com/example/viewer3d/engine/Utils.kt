@@ -31,7 +31,7 @@ class Utils {
                  var shader = shaderCode
 
                  shaderCode.reader().forEachLine {
-                     if(!it.contains("//") && it.contains("#include")){
+                     if(!it.contains("//") && it.contains("#")){
 
                          var lowerCase = it.toLowerCase()
 

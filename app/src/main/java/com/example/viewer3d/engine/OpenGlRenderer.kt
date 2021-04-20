@@ -19,10 +19,8 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     //texture2D(sTexture, _uv) * vec4(linearize_depth(gl_FragCoord.z, 1.0, 30.0));
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-
-
-
     }
+
 var changed = false
 
 var camera = Camera()
@@ -147,8 +145,6 @@ var camera = Camera()
             glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, loadedMeshes[0].uvBuffer)
             glEnableVertexAttribArray(uvAttrib)
         }
-
-        shader.TestRotation()
 
         for(mesh in loadedMeshes) {
 

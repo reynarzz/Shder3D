@@ -44,33 +44,38 @@ class MainActivity : AppCompatActivity() {
         val codeContainer = findViewById<ConstraintLayout>(R.id.codeContainer)
         val viewShader = findViewById<Button>(R.id.btn_switchShaderView)
 
-        var vertexTex = """#include Unity.h 
+        var vertexTex = """#Unity.h 
             
 attribute vec4 _VERTEX_; 
            
-uniform mat4 _VP_;
-uniform mat4 _M_;
-
-uniform sampler2D _texture;
-
 attribute vec2 _UV_;
 varying vec2 _uv;
-varying  vec4 pos;
+
+struct v2f
+{
+    vec4 pos;
+    vec2 uv;
+} o;
 
 void main() 
 {
-   pos = _VERTEX_;
    _uv = _UV_;
-   gl_Position = _VP_ * _M_ * _VERTEX_;
+   gl_Position = UnityObjectToClipPos(_VERTEX_);
 }"""
 
         var fragTex = """precision mediump float; 
             
-uniform vec4 vColor;
-varying vec4 pos;
 varying vec2 _uv;
 
 uniform sampler2D sTexture;
+
+struct Output
+{
+    vec4 pos;
+    vec2 uv;
+};
+
+uniform Output o;
 
 void main()
 {
