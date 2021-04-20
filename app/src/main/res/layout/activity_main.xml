@@ -27,12 +27,17 @@
       android:id="@+id/et_fragmentCode"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:paddingLeft="10dp"
+      android:paddingRight="10dp"
+
       android:background="#0000"
       android:inputType="textMultiLine"
       android:scrollbars="vertical"
       android:fontFamily="@font/consola"
       android:text="Code here"
       android:textSize="13dp"
+      android:textColor="@color/white"
+
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -49,7 +54,7 @@
 
   <Button
       android:id="@+id/buttonCompile"
-      android:layout_width="140dp"
+      android:layout_width="100dp"
       android:layout_height="match_parent"
       android:text="Compile"
       android:backgroundTint="@color/white"
@@ -59,7 +64,7 @@
   <Button
       android:layout_marginLeft="20dp"
       android:id="@+id/btn_showHide"
-      android:layout_width="140dp"
+      android:layout_width="100dp"
       android:layout_height="match_parent"
       android:text="Show/Hide"
       android:backgroundTint="@color/white"
@@ -71,6 +76,8 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:text="Vertex/Fragment"
+      android:backgroundTint="@color/design_default_color_error"
+      android:textColor="@color/white"
       app:layout_constraintEnd_toEndOf="parent" />
 
  </androidx.constraintlayout.widget.ConstraintLayout>

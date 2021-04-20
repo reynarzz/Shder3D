@@ -8,11 +8,11 @@ const val COORDS_PER_VERTEX = 3
 
 class Mesh(vertices : FloatArray, var indices: IntArray, uv : FloatArray) {
 
-     lateinit var vertexBuffer: FloatBuffer
+      var vertexBuffer: FloatBuffer
           private set
-     lateinit var indexBuffer: IntBuffer
+      var indexBuffer: IntBuffer
           private set
-      lateinit var uvBuffer : FloatBuffer
+       var uvBuffer : FloatBuffer
           private set
 
      private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
@@ -47,7 +47,7 @@ class Mesh(vertices : FloatArray, var indices: IntArray, uv : FloatArray) {
 
      fun Bind_Test(program: Int){
 
-          glGetAttribLocation(program, "vPosition").also {
+          glGetAttribLocation(program, "_VERTEX_").also {
 
                glEnableVertexAttribArray(it)
 
@@ -60,5 +60,10 @@ class Mesh(vertices : FloatArray, var indices: IntArray, uv : FloatArray) {
                     vertexBuffer
                )
           }
+
+          val uvAttrib = glGetAttribLocation(program, "_UV_")
+
+          glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, uvBuffer)
+          glEnableVertexAttribArray(uvAttrib)
      }
 }

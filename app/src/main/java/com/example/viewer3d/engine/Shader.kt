@@ -50,17 +50,26 @@ class Shader(val vertexSource: String, val fragmentSource: String) {
         modelM = FloatArray(16)
         Matrix.setIdentityM(modelM, 0)
 
+         val modelID = glGetUniformLocation(program, "_M_")
+         glUniformMatrix4fv(modelID, 1, false, modelM, 0)
+
         return program
     }
 
     lateinit var modelM :FloatArray
 
-    fun replaceFragmentShader(fragment : String) {
+    fun replaceShaders(vertex : String, fragment : String) {
         glDetachShader(program, fragmentShader)
         glDeleteShader(fragmentShader)
 
+        glDetachShader(program, vertexShader)
+        glDeleteShader(vertexShader)
+
         fragmentShader = GetCompiledShader(GL_FRAGMENT_SHADER, fragment)
+        vertexShader = GetCompiledShader(GL_VERTEX_SHADER, vertex)
+
         glAttachShader(program, fragmentShader)
+        glAttachShader(program, vertexShader)
 
         glLinkProgram(program)
     }

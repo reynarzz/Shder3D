@@ -7,33 +7,27 @@ import android.graphics.Matrix
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
-import com.mokiat.data.front.parser.IOBJParser
-import com.mokiat.data.front.parser.OBJModel
-import com.mokiat.data.front.parser.OBJParser
-import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
-import java.io.InputStreamReader
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 
 class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
-    private val vertexShaderCode =
-        "attribute vec4 vPosition;" +
-                "uniform mat4 _VP_;" +
-                "uniform mat4 _M_;" +
-                "uniform sampler2D _texture;" +
-                "attribute vec2 _UV_;" +
-                "varying vec2 _uv;" +
-                "varying  vec4 pos;" +
-                "void main() {" +
-                "pos = vPosition;" +
-                "_uv = _UV_;" +
-                "gl_Position = _VP_ * _M_ * vPosition;" +
-                "}"
+    private var vertexShaderCode ="""
+        attribute vec4 _VERTEX_; 
+                uniform mat4 _VP_;
+                uniform mat4 _M_;
+                uniform sampler2D _texture;
+                attribute vec2 _UV_;
+                varying vec2 _uv;
+                varying  vec4 pos;
+                void main() {
+                pos = _VERTEX_;
+                _uv = _UV_;
+                gl_Position = _VP_ * _M_ * _VERTEX_;
+               // gl_Position =  _VERTEX_;
+                }"""
 
     private var fragmentShaderCode = """
             precision mediump float;
@@ -83,34 +77,31 @@ var camera = Camera()
             var data = it.getModelData()
 
             val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
-            loadedMeshes.add(mesh)
+            //val quad = Utils.getScreenSizeQuad()
+
+            //loadedMeshes.add(quad)
 
             var program = shader.Bind(camera)
+            //quad.Bind_Test(program)
             mesh.Bind_Test(program)
+            loadedMeshes.add(mesh)
 
             // Texture
-            var bitmap = doInBackground("textures/girltex_small.jpg")
-
-            val imageArray = imageToBitmap(bitmap)
-            bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
-
-            loadTexture(bitmap)
-            val uvAttrib = glGetAttribLocation(program, "_UV_")
-
-            glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, mesh.uvBuffer)
-            glEnableVertexAttribArray(uvAttrib)
+            loadTexture("textures/girltex_small.jpg")
         }
     }
 
-    fun createFlippedBitmap(source: Bitmap, xFlip: Boolean, yFlip: Boolean): Bitmap? {
-        val matrix = Matrix()
-        matrix.postScale(if (xFlip) -1f else 1f, if (yFlip) -1f else 1f, source.width / 2f, source.height / 2f)
-        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
-    }
-    // Loads a texture into OpenGL
-    private fun loadTexture(bit: Bitmap): Int {
 
-        val bitmap = createFlippedBitmap(bit, false, true)
+    // Loads a texture into OpenGL
+    private fun loadTexture(path : String): Int {
+
+        var bitmap = doInBackground(path)
+
+        val imageArray = imageToBitmap(bitmap)
+        bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
+
+
+         bitmap = createFlippedBitmap(bitmap, false, true)
         val textures = IntArray(1)
         glGenTextures(1, textures, 0)
 
@@ -123,6 +114,11 @@ var camera = Camera()
         return textures[0]
     }
 
+    fun createFlippedBitmap(source: Bitmap, xFlip: Boolean, yFlip: Boolean): Bitmap {
+        val matrix = Matrix()
+        matrix.postScale(if (xFlip) -1f else 1f, if (yFlip) -1f else 1f, source.width / 2f, source.height / 2f)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
     // Unloads a texture from OpenGL
     private fun unloadTexture(textureId: Int) {
         val textures = IntArray(1)
@@ -139,6 +135,7 @@ var camera = Camera()
         //val `in` = java.net.URL(imageURL).openStream()
         val image = BitmapFactory.decodeStream(imageAsset)
 
+
         return Bitmap.createBitmap(image)
     }
 
@@ -151,22 +148,15 @@ var camera = Camera()
         return stream.toByteArray()
     }
 
+    // Commands to do in the render thread.
     fun PushCommand(/*A delegate here to call a command*/){
     }
 
-    fun setFragmentShader(fragmentCode: String){
+    fun setShaders(vertexCode: String, fragmentCode: String){
         fragmentShaderCode = fragmentCode
+        vertexShaderCode = vertexCode
+
         changed = true
-//
-//        shader.replaceFragmentShader(fragmentCode)
-//
-//        val program = shader.Bind(camera)
-//        loadedMeshes[0].Bind_Test(program)
-//
-//        val uvAttrib = glGetAttribLocation(program, "_UV_")
-//
-////        glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, loadedMeshes[0].uvBuffer)
-////        glEnableVertexAttribArray(uvAttrib)
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -176,7 +166,7 @@ var camera = Camera()
         {
             changed = false
 
-            shader.replaceFragmentShader(fragmentShaderCode)
+            shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
 
             val program = shader.Bind(camera)
             loadedMeshes[0].Bind_Test(program)
@@ -187,9 +177,10 @@ var camera = Camera()
             glEnableVertexAttribArray(uvAttrib)
         }
 
-        shader.TestRotation()
+        //shader.TestRotation()
 
         for(mesh in loadedMeshes){
+
             glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
         }
     }

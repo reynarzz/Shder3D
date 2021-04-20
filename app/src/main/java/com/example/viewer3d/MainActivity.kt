@@ -1,19 +1,13 @@
 package com.example.viewer3d
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.viewer3d.engine.OpenGLView
-import java.io.ByteArrayOutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,15 +20,53 @@ class MainActivity : AppCompatActivity() {
         openGLView = findViewById(R.id.OpenGLView_activity)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         val button = findViewById<Button>(R.id.buttonCompile)
-        val fragmentTex = findViewById<EditText>(R.id.et_fragmentCode)
+        val codeEditTex = findViewById<EditText>(R.id.et_fragmentCode)
         
         val showHideButton = findViewById<Button>(R.id.btn_showHide)
         val codeContainer = findViewById<ConstraintLayout>(R.id.codeContainer)
         val viewShader = findViewById<Button>(R.id.btn_switchShaderView)
 
-        viewShader.setOnClickListener{
-            
 
+        var vertexTex = """attribute vec4 vPosition; 
+            
+uniform mat4 _VP_;
+uniform mat4 _M_;
+
+uniform sampler2D _texture;
+
+attribute vec2 _UV_;
+varying vec2 _uv;
+varying  vec4 pos;
+
+void main() 
+{
+   pos = vPosition;
+   _uv = _UV_;
+   gl_Position = _VP_ * _M_ * vPosition;
+}"""
+
+        var fragTex = """precision mediump float;
+uniform vec4 vColor;
+varying vec4 pos;
+varying vec2 _uv;
+uniform sampler2D sTexture;
+
+void main()
+{
+    gl_FragColor = texture2D(sTexture, _uv);
+}"""
+
+        var fragShaderFocused = true
+        viewShader.setOnClickListener{
+            fragShaderFocused = !fragShaderFocused
+
+            if(fragShaderFocused){
+                codeEditTex.setText(fragTex)
+            }
+            else {
+                codeEditTex.setText(vertexTex)
+
+            }
         }
 
         showHideButton.setOnClickListener {
@@ -43,25 +75,17 @@ class MainActivity : AppCompatActivity() {
             codeContainer.alpha = 1-codeContainer.alpha
             }
 
-        fragmentTex.setText(
-                """precision mediump float;
-uniform vec4 vColor;
-varying vec4 pos;
-varying vec2 _uv;
-uniform sampler2D sTexture;
+        codeEditTex.setText(fragTex)
+        button.setOnClickListener {
 
-float linearize_depth(float d,float zNear,float zFar)
-{
-     return (2.0 * zNear) / (zFar + zNear - d * (zFar - zNear));
-}
-void main()
-{
-    gl_FragColor = texture2D(sTexture, _uv);
-}""")
+            if(fragShaderFocused) {
+                fragTex = codeEditTex.editableText.toString()
+            }
+            else {
+                vertexTex = codeEditTex.editableText.toString()
+            }
 
-      //
-        button.setOnClickListener{
-            openGLView.renderer.setFragmentShader(fragmentTex.editableText.toString())
+            openGLView.renderer.setShaders(vertexTex, fragTex)
             Toast.makeText(this, "Compiled", Toast.LENGTH_SHORT).show()
             openGLView.clearFocus()
 
