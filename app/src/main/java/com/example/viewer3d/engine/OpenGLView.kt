@@ -19,4 +19,8 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) : GLSurfaceView(c
         return super.onTouchEvent(e)
 
     }
+
+    fun Refresh(){
+        refreshDrawableState()
+    }
 }

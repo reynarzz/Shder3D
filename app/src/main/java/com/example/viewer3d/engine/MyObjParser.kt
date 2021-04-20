@@ -1,6 +1,9 @@
 package com.example.viewer3d.engine
 
 import android.content.Context
+import com.mokiat.data.front.parser.IOBJParser
+import com.mokiat.data.front.parser.OBJModel
+import com.mokiat.data.front.parser.OBJParser
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -93,4 +96,64 @@ class MyObjParser(context: Context, file: String) {
                 emptyArray<Float>().toFloatArray(),
                 emptyArray<Float>().toFloatArray())
     }
+
+//    fun getMeshes(path: String) : List<Mesh> {
+//
+//        val vertices = mutableListOf<Float>()
+//        val index = mutableListOf<Int>()
+//        val tempIndex = mutableListOf<Int>()
+//        val uv = mutableListOf<Float>()
+//        val meshes = mutableListOf<Mesh>()
+//
+//        // Open a stream to your OBJ resource
+//        val inStream = context.assets.open(path)
+//        BufferedReader(InputStreamReader(inStream)).use {
+//            val parser: IOBJParser = OBJParser()
+//            val model: OBJModel = parser.parse(it)
+//
+//            for (mObj in model.objects) {
+//
+//                for (mesh in mObj.meshes) {
+//                    var intIndex = 0
+//                    vertices.clear()
+//                    index.clear()
+//                    uv.clear()
+//                    for (face in mesh.faces) {
+//                        tempIndex.clear()
+//
+//                        for (reference in face.references) {
+//                            val vertex = model.getVertex(reference)
+//
+//                            vertices.add(vertex.x)
+//                            vertices.add(vertex.y)
+//                            vertices.add(vertex.z)
+//
+//                            if(reference.hasVertexIndex()){
+//                                tempIndex.add(reference.vertexIndex)
+//                            }
+//
+//                            if (reference.hasNormalIndex()) {
+//                                val normal = model.getNormal(reference)
+//                            }
+//
+//                            if (reference.hasTexCoordIndex()) {
+//                                val texcoord = model.getTexCoord(reference)
+//                                uv.add(texcoord.u)
+//                                uv.add(texcoord.v)
+//                            }
+//                        }
+//
+//                        for (i in 1 until  tempIndex.size-1){
+//                            index.add(tempIndex[0])
+//                            index.add(tempIndex[i])
+//                            index.add(tempIndex[i + 1])
+//                        }
+//                    }
+//                    meshes.add(Mesh(vertices.toFloatArray(), index.toIntArray(), uv.toFloatArray()))
+//                }
+//            }
+//        }
+//
+//        return meshes
+//    }
 }

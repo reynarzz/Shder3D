@@ -3,20 +3,24 @@ package com.example.viewer3d.engine
 import android.opengl.GLES20.*
 import android.opengl.Matrix
 
-class Shader(vertexSource: String, fragmentSource: String) {
+class Shader(val vertexSource: String, val fragmentSource: String) {
 
-    private var program = 0
+    var program = 0
+    private set
+
+    private var vertexShader = 0
+    private var fragmentShader = 0
 
     init {
-          val vertexShader: Int = GetCompiledShader(GL_VERTEX_SHADER, vertexSource)
-          val fragmentShader: Int = GetCompiledShader(GL_FRAGMENT_SHADER, fragmentSource)
+           vertexShader = GetCompiledShader(GL_VERTEX_SHADER, vertexSource)
+           fragmentShader = GetCompiledShader(GL_FRAGMENT_SHADER, fragmentSource)
 
-          program = glCreateProgram();
+           program = glCreateProgram();
 
-          glAttachShader(program, vertexShader)
-          glAttachShader(program, fragmentShader)
+           glAttachShader(program, vertexShader)
+           glAttachShader(program, fragmentShader)
 
-          glLinkProgram(program)
+           glLinkProgram(program)
     }
 
     private fun GetCompiledShader(type: Int, shaderCode: String): Int {
@@ -29,7 +33,7 @@ class Shader(vertexSource: String, fragmentSource: String) {
         return shaderID
     }
 
-    public fun Bind(cameraTest: Camera) : Int {
+     fun Bind(cameraTest: Camera) : Int {
         glUseProgram(program)
 
         var mvpLocation = glGetUniformLocation(program, "_VP_")
@@ -50,6 +54,16 @@ class Shader(vertexSource: String, fragmentSource: String) {
     }
 
     lateinit var modelM :FloatArray
+
+    fun replaceFragmentShader(fragment : String) {
+        glDetachShader(program, fragmentShader)
+        glDeleteShader(fragmentShader)
+
+        fragmentShader = GetCompiledShader(GL_FRAGMENT_SHADER, fragment)
+        glAttachShader(program, fragmentShader)
+
+        glLinkProgram(program)
+    }
 
     fun TestRotation(){
         val modelID = glGetUniformLocation(program, "_M_")
