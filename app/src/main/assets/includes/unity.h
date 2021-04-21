@@ -16,6 +16,14 @@ uniform vec4 _LightColor0;
 
 uniform vec4 _Time;
 uniform vec4 unity_DeltaTime;
+
+#define float4 vec4
+#define float3 vec3
+#define float2 vec2
+#define float4x4 mat4
+#define float3x3 mat3
+#define float2x2 mat2
+
 float Luminance (vec4 c)
 {
     return c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722;

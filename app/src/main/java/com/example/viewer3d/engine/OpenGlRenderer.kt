@@ -8,6 +8,7 @@ import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
 import java.io.ByteArrayOutputStream
+import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -62,7 +63,7 @@ var camera = Camera()
 
 
     // Loads a texture into OpenGL
-    private fun loadTexture(path : String): Int {
+    private fun loadTexture(path: String): Int {
 
         var bitmap = doInBackground(path)
 
@@ -128,8 +129,18 @@ var camera = Camera()
         changed = true
     }
 
+    var lStartTime = System.currentTimeMillis().toFloat()
+
+    var prevMil = 0f
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+
+        val lEndTime = System.currentTimeMillis().toFloat()
+
+        val output = (lEndTime - lStartTime).toFloat()
+
+        lStartTime = lEndTime
+        shader.setDeltaTimeTest(lEndTime.toFloat(), output)
 
         if(changed)
         {
@@ -138,6 +149,7 @@ var camera = Camera()
             shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
 
             val program = shader.Bind(camera)
+
             loadedMeshes[0].Bind_Test(program)
 
             val uvAttrib = glGetAttribLocation(program, "_UV_")
