@@ -1,14 +1,10 @@
 package com.example.viewer3d.engine
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
-import android.opengl.GLUtils
 import com.example.viewer3d.MainActivity
-import java.io.ByteArrayOutputStream
+import com.example.viewer3d.engine.components.MeshRenderer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -113,6 +109,9 @@ gl_FragColor = vec4(0.3);
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
+        renderingObjs = mutableListOf()
+        editorObjs = mutableListOf()
+
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
         // glEnable(GL_TEXTURE_2D)
@@ -128,26 +127,40 @@ gl_FragColor = vec4(0.3);
         //SimpleScene
 
         frameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-        shader = Shader(vertexShaderCode, fragmentShaderCode)
+
         quadShader = Shader(screenQuadVertexCode, screenFragTex)
 
-        groundGridShader = Shader(groundGridVertex, groundGridFragment)
-        groundPlane = Utils.getPlane(2000f)
-        screenQuadMesh = Utils.getScreenSizeQuad()
 
+
+        getGirl_Test()
+        getEditorStuff_Test()
+
+        screenQuadMesh = Utils.getScreenSizeQuad()
+    }
+
+    fun getGirl_Test() {
         ObjParser(context, "models/girl.obj").also {
 
             var data = it.getModelData()
 
             val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
+            val mat = Material(Shader(vertexShaderCode, fragmentShaderCode))
 
-
-            loadedMeshes.add(mesh)
+            val renderer = MeshRenderer(mesh, mat)
+            renderingObjs!!.add(renderer)
 
             // Texture
-            val girlTexture = Texture(context,"textures/girltex_small.jpg")
+            val girlTexture = Texture(context, "textures/girltex_small.jpg")
             girlTex = girlTexture.textureID
         }
+    }
+
+    fun getEditorStuff_Test() {
+        val material = Material(Shader(groundGridVertex, groundGridFragment))
+        val meshRenderer = MeshRenderer(Utils.getPlane(2000f),material )
+
+        editorObjs!!.add(meshRenderer)
+
     }
 
     var girlTex = 0
@@ -162,13 +175,9 @@ gl_FragColor = vec4(0.3);
         glDeleteTextures(1, textures, 0)
     }
 
-    var loadedMeshes = mutableListOf<Mesh>()
-    lateinit var shader: Shader
-    lateinit var quadShader: Shader
-
-
     // Commands to do in the render thread.
     fun PushCommand(/*A delegate here to call a command*/) {
+        
     }
 
     fun setShaders(vertexCode: String, fragmentCode: String) {
@@ -178,15 +187,14 @@ gl_FragColor = vec4(0.3);
         changed = true
     }
 
+    private var renderingObjs : MutableList<MeshRenderer>? = null
+    private var editorObjs : MutableList<MeshRenderer>? = null
+
     var lStartTime = System.currentTimeMillis().toFloat()
 
-    var prevMil = 0f
     lateinit var frameBuffer: FrameBuffer
-
-    lateinit var screenQuadMesh: Mesh
-    var groundPlane: Mesh? = null
-
-    var groundGridShader: Shader? = null
+    private var quadShader : Shader? = null
+    var screenQuadMesh : Mesh? = null
 
     override fun onDrawFrame(gl: GL10?) {
         frameBuffer.bind()
@@ -205,35 +213,43 @@ gl_FragColor = vec4(0.3);
         if (changed) {
             changed = false
 
-            shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
+            // i need the renderer ID as well to only update the correct shader.
+            //shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
         }
 
         // glViewport(0,0,MainActivity.width/8,MainActivity.height/8)
 
         glBindTexture(GL_TEXTURE_2D, girlTex)
 
-        for (mesh in loadedMeshes) {
+        //the camera should have as well a 'viewProjectionM'
+        val viewM = scene!!.editorCamera!!.viewM
+        val projM = scene!!.editorCamera!!.projectionM
 
-            mesh.Bind_Test(shader.Bind(scene!!.editorCamera!!))
+        for (renderer in renderingObjs!!) {
 
-            glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
+            renderer.bind(viewM, projM)
+
+            glDrawElements(GL_TRIANGLES, renderer.indicesCount, GL_UNSIGNED_INT, renderer.indexBuffer)
         }
-        shader.TestRotation()
 
-        groundPlane!!.Bind_Test(groundGridShader!!.Bind(scene!!.editorCamera!!))
-        glDrawElements(GL_TRIANGLES, groundPlane!!.indices.size, GL_UNSIGNED_INT, groundPlane!!.indexBuffer)
+        for (obj in editorObjs!!)
+        {
+            obj.bind(viewM, projM)
+
+            glDrawElements(GL_TRIANGLES, obj.indicesCount, GL_UNSIGNED_INT, obj.indexBuffer)
+        }
 
         frameBuffer.unBind()
 
         glDisable(GL_DEPTH_TEST)
         glClear(GL_COLOR_BUFFER_BIT)
 
-        screenQuadMesh.Bind_Test(quadShader.Bind(scene!!.editorCamera!!))
+        screenQuadMesh!!.bind(quadShader!!.bind())
 
         glBindTexture(GL_TEXTURE_2D, frameBuffer.colorTexture)
 
         glViewport(0, 0, MainActivity.width, MainActivity.height)
 
-        glDrawElements(GL_TRIANGLES, screenQuadMesh.indices.size, GL_UNSIGNED_INT, screenQuadMesh.indexBuffer)
+        glDrawElements(GL_TRIANGLES, screenQuadMesh!!.indicesCount, GL_UNSIGNED_INT, screenQuadMesh!!.indexBuffer)
     }
 }

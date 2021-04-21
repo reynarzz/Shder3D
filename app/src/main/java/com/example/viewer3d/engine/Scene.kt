@@ -1,5 +1,8 @@
 package com.example.viewer3d.engine
 
+import android.opengl.GLES20
+import android.opengl.Matrix
+
 class Scene {
 
     enum class CurrentCamera {
@@ -16,5 +19,10 @@ class Scene {
     init {
         editorCamera = Camera()
         previewCamera = Camera()
+    }
+
+    fun bind() {
+
+
     }
 }

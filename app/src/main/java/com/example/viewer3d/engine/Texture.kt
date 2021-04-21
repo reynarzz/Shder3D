@@ -92,4 +92,12 @@ class Texture {
         return stream.toByteArray()
     }
 
+    fun bind(textureIndex: Int) {
+        glActiveTexture(GL_TEXTURE0+textureIndex)
+        glBindTexture(GL_TEXTURE_2D, textureID)
+    }
+
+    fun unbind(){
+        glBindTexture(GL_TEXTURE_2D, 0)
+    }
 }

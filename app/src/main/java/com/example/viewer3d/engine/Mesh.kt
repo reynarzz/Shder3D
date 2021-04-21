@@ -6,7 +6,7 @@ import java.nio.*
 const val FLOAT_BYTES = 4
 const val COORDS_PER_VERTEX = 3
 
-class Mesh(vertices : FloatArray, var indices: IntArray, uv : FloatArray) {
+class Mesh(vertices : FloatArray, indices: IntArray, uv : FloatArray) {
 
       var vertexBuffer: FloatBuffer
           private set
@@ -14,6 +14,8 @@ class Mesh(vertices : FloatArray, var indices: IntArray, uv : FloatArray) {
           private set
        var uvBuffer : FloatBuffer
           private set
+
+     val indicesCount = indices.size
 
      private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
 
@@ -45,7 +47,7 @@ class Mesh(vertices : FloatArray, var indices: IntArray, uv : FloatArray) {
           }
      }
 
-     fun Bind_Test(program: Int){
+     fun bind(program: Int){
 
           glGetAttribLocation(program, "_VERTEX_").also {
 

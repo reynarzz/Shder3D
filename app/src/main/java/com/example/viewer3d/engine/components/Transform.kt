@@ -1,18 +1,14 @@
 package com.example.viewer3d.engine.components
 
 import android.opengl.Matrix
-import glm_.vec3.Vec3;
+import com.example.viewer3d.engine.Vec3
 import kotlin.math.round
 
-class Transform : Component() {
+class Transform  { // : Component()
 
     private var _position = Vec3()
     private var _rotation = Vec3()
     private var _scale = Vec3()
-
-    init {
-        transform = this
-    }
 
     var position = Vec3()
         get() {
@@ -67,10 +63,7 @@ class Transform : Component() {
         private set
 
     private var translationM: FloatArray? = null
-        private set
-
     private var rotationM: FloatArray? = null
-
     private var scaleM: FloatArray? = null
 
     init {
