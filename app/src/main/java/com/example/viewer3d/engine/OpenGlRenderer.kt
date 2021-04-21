@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
+import com.example.viewer3d.MainActivity
 import java.io.ByteArrayOutputStream
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -37,6 +38,20 @@ void main()
    _uv = _UV_;
    gl_Position = vec4( _VERTEX_.x,  _VERTEX_.y, 0, 1);
 }"""
+    var screenFragTex = """
+            
+precision mediump float; 
+varying vec4 pos;
+
+varying vec2 _uv;
+
+uniform sampler2D sTexture;
+
+void main()
+{
+    gl_FragColor = texture2D(sTexture, _uv) ;
+}"""
+
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         glEnable(GL_DEPTH_TEST)
@@ -50,9 +65,9 @@ void main()
         //CoffeeRestaurant
         //SimpleScene
 
-        frameBuffer = FrameBuffer()
+        frameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
         shader = Shader(vertexShaderCode, fragmentShaderCode)
-        quadShader = Shader(screenQuadVertexCode, fragmentShaderCode)
+        quadShader = Shader(screenQuadVertexCode, screenFragTex)
 
 
         ObjParser(context, "models/girl.obj").also {

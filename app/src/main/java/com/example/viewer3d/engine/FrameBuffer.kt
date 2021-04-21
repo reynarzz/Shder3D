@@ -1,14 +1,13 @@
 package com.example.viewer3d.engine
 
 import android.opengl.GLES20.*
-import com.example.viewer3d.MainActivity
 
-class FrameBuffer {
-    private var frameBuffer: IntArray = IntArray(1)
+class FrameBuffer(width : Int, height: Int) {
 
-    val colorTexture: IntArray
+    private var frameBuffer : IntArray = IntArray(1)
 
-    val depthTexture: IntArray
+    val colorTexture : IntArray
+    val depthTexture : IntArray
 
     init {
         // Create a frame buffer
@@ -23,11 +22,11 @@ class FrameBuffer {
 
         // Width and height do not have to be a power of two
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                MainActivity.width, MainActivity.height,
+                width, height,
                 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
-//
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+
+//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -39,7 +38,7 @@ class FrameBuffer {
         glBindTexture(GL_TEXTURE_2D, depthTexture[0]);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                MainActivity.width, MainActivity.height,
+                width, height,
                 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, null);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)

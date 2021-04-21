@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         var width = 0
         var height = 0
 
-        fun setScreenSize(width : Int, height: Int){
+        private fun setScreenSize(width : Int, height: Int){
             this.width = width
             this.height = height
         }
@@ -63,9 +63,14 @@ varying vec4 pos;
 void main() 
 {
    _uv = _UV_;
-   vec4 v = _VERTEX_;
-   v.y += sin(_Time.y*5.)*10.;
-   pos = UnityObjectToClipPos(v);
+   
+   float angle = 50.;
+   mat4 rotY = mat4(vec4(cos(angle), 0., -sin(angle), 0.),
+                    vec4(0., 1., 0., 0.),
+                    vec4(sin(angle), 0., cos(angle), 0.),
+                    vec4(0., 0., 0., 1.));
+   
+   pos = UnityObjectToClipPos(rotY * _VERTEX_);
    
    gl_Position = pos;
 }"""
