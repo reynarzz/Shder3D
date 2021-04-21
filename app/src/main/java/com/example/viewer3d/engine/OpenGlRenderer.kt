@@ -142,39 +142,15 @@ gl_FragColor = vec4(0.3);
             loadedMeshes.add(mesh)
 
             // Texture
-            girlTex = loadTexture("textures/girltex_small.jpg")
+            val girlTexture = Texture(context,"textures/girltex_small.jpg")
+            girlTex = girlTexture.textureID
         }
     }
 
     var girlTex = 0
 
     // Loads a texture into OpenGL
-    private fun loadTexture(path: String): Int {
 
-        var bitmap = doInBackground(path)
-
-        val imageArray = imageToBitmap(bitmap)
-        bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
-
-
-        bitmap = createFlippedBitmap(bitmap, false, true)
-        val textures = IntArray(1)
-        glGenTextures(1, textures, 0)
-
-        glBindTexture(GL_TEXTURE_2D, textures[0])
-        GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-        return textures[0]
-    }
-
-    fun createFlippedBitmap(source: Bitmap, xFlip: Boolean, yFlip: Boolean): Bitmap {
-        val matrix = Matrix()
-        matrix.postScale(if (xFlip) -1f else 1f, if (yFlip) -1f else 1f, source.width / 2f, source.height / 2f)
-        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
-    }
 
     // Unloads a texture from OpenGL
     private fun unloadTexture(textureId: Int) {
@@ -187,23 +163,6 @@ gl_FragColor = vec4(0.3);
     lateinit var shader: Shader
     lateinit var quadShader: Shader
 
-    fun doInBackground(path: String): Bitmap {
-
-        val imageAsset = context.assets.open(path)
-        //val `in` = java.net.URL(imageURL).openStream()
-        val image = BitmapFactory.decodeStream(imageAsset)
-
-        return Bitmap.createBitmap(image)
-    }
-
-    fun imageToBitmap(bitmap: Bitmap): ByteArray {
-
-        val stream = ByteArrayOutputStream()
-
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-
-        return stream.toByteArray()
-    }
 
     // Commands to do in the render thread.
     fun PushCommand(/*A delegate here to call a command*/) {
