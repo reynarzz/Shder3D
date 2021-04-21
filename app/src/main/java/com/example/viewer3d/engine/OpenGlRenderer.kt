@@ -8,7 +8,6 @@ import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
 import java.io.ByteArrayOutputStream
-import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -25,7 +24,19 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 var changed = false
 
 var camera = Camera()
+val screenQuadVertexCode = """
+            
+attribute vec4 _VERTEX_; 
+           
+attribute vec2 _UV_;
+varying vec2 _uv;
+varying vec4 pos;
 
+void main() 
+{
+   _uv = _UV_;
+   gl_Position = _VERTEX_;
+}"""
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         glEnable(GL_DEPTH_TEST)
@@ -39,7 +50,9 @@ var camera = Camera()
         //CoffeeRestaurant
         //SimpleScene
 
+        frameBuffer = FrameBuffer()
         shader = Shader(vertexShaderCode, fragmentShaderCode)
+        quadShader = Shader(screenQuadVertexCode, fragmentShaderCode)
 
 
         ObjParser(context, "models/girl.obj").also {
@@ -47,21 +60,25 @@ var camera = Camera()
             var data = it.getModelData()
 
             val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
-            //val quad = Utils.getScreenSizeQuad()
 
-            //loadedMeshes.add(quad)
 
-            var program = shader.Bind(camera)
-            //quad.Bind_Test(program)
-            mesh.Bind_Test(program)
+
+
+            screenQuadMesh = Utils.getScreenSizeQuad()
+            screenQuadMesh.Bind_Test(quadShader.Bind(camera))
+            quadShader.unBind()
+
+            mesh.Bind_Test(shader.Bind(camera))
+            shader.unBind()
+
             loadedMeshes.add(mesh)
 
             // Texture
-            loadTexture("textures/girltex_small.jpg")
+            girlTex = loadTexture("textures/girltex_small.jpg")
         }
     }
 
-
+    var girlTex = 0
     // Loads a texture into OpenGL
     private fun loadTexture(path: String): Int {
 
@@ -98,6 +115,7 @@ var camera = Camera()
 
      var loadedMeshes = mutableListOf<Mesh>()
     lateinit var shader: Shader
+    lateinit var quadShader: Shader
 
     fun doInBackground(path: String): Bitmap {
 
@@ -132,15 +150,19 @@ var camera = Camera()
     var lStartTime = System.currentTimeMillis().toFloat()
 
     var prevMil = 0f
+    lateinit var frameBuffer :FrameBuffer
+
+    lateinit var screenQuadMesh: Mesh
+
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-
+        glClearColor(0.2f,0.2f,0.2f, 1f)
         val lEndTime = System.currentTimeMillis().toFloat()
 
         val output = (lEndTime - lStartTime).toFloat()
 
         lStartTime = lEndTime
-        shader.setDeltaTimeTest(lEndTime.toFloat(), output)
+        //shader.setDeltaTimeTest(lEndTime.toFloat(), output)
 
         if(changed)
         {
@@ -151,18 +173,24 @@ var camera = Camera()
             val program = shader.Bind(camera)
 
             loadedMeshes[0].Bind_Test(program)
-
-            val uvAttrib = glGetAttribLocation(program, "_UV_")
-
-            glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, loadedMeshes[0].uvBuffer)
-            glEnableVertexAttribArray(uvAttrib)
         }
 
-        shader.TestRotation()
+        glBindTexture(GL_TEXTURE_2D, girlTex)
+
+        val texId = frameBuffer.bind()
 
         for(mesh in loadedMeshes) {
 
+            mesh.Bind_Test(shader.Bind(camera))
             glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
+
         }
+        frameBuffer.unBind()
+
+        screenQuadMesh.Bind_Test(quadShader.Bind(camera))
+
+        glBindTexture(GL_TEXTURE_2D, frameBuffer.colorTexture[0])
+
+        glDrawElements(GL_TRIANGLES, screenQuadMesh.indices.size, GL_UNSIGNED_INT, screenQuadMesh.indexBuffer)
     }
 }

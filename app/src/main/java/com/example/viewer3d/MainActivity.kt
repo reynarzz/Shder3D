@@ -79,7 +79,7 @@ uniform sampler2D sTexture;
 
 void main()
 {
-    gl_FragColor = tex2D(sTexture, gl_FragCoord.xy / _ScreenParams.xy);
+    gl_FragColor = tex2D(sTexture, _uv);
 }"""
 
        // vertexTex = Utils.ShaderUtils.processInclude(baseContext, vertexTex)

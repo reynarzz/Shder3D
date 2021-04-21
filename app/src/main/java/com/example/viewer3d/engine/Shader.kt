@@ -77,7 +77,9 @@ class Shader(vertexSource: String, fragmentSource: String) {
         return program
     }
 
-
+    fun unBind(){
+        glUseProgram(0)
+    }
     fun replaceShaders(vertex: String, fragment: String) {
         glDetachShader(program, fragmentShader)
         glDeleteShader(fragmentShader)
