@@ -227,7 +227,7 @@ gl_FragColor = vec4(0.3);
 
         screenQuadMesh.Bind_Test(quadShader.Bind(camera))
 
-        glBindTexture(GL_TEXTURE_2D, frameBuffer.colorTexture[0])
+        glBindTexture(GL_TEXTURE_2D, frameBuffer.colorTexture)
 
         glViewport(0, 0, MainActivity.width, MainActivity.height)
 
