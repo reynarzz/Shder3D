@@ -4,7 +4,6 @@ import android.opengl.GLES20
 import android.opengl.GLES20.*
 import android.opengl.Matrix
 import com.example.viewer3d.MainActivity
-import glm_.vec4.operators.vec4_operators
 
 class Shader(vertexSource: String, fragmentSource: String) {
 
@@ -37,14 +36,13 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
         if (glIsProgram(program)) {
             glDetachShader(program, fragmentShader)
-            glDeleteShader(fragmentShader)
-
             glDetachShader(program, vertexShader)
-            glDeleteShader(vertexShader)
 
-            createShaders(vertex, fragment)
+            glDeleteShader(vertexShader)
+            glDeleteShader(fragmentShader)
         }
 
+        createShaders(vertex, fragment)
     }
 
     private fun createShaders(vertex: String, fragment: String) {
@@ -86,14 +84,6 @@ class Shader(vertexSource: String, fragmentSource: String) {
         glAttachShader(program, fragmentShader)
 
         glLinkProgram(program)
-    }
-
-    fun setDeltaTimeTest(time: Float, delta: Float) {
-        var _Time = glGetUniformLocation(program, "_Time")
-        var unity_DeltaTime = glGetUniformLocation(program, "unity_DeltaTime")
-
-        glUniform4f(_Time, time / 20f, time, time * 2, time * 3)
-        glUniform4f(unity_DeltaTime, delta, 1f / delta, 0f, 0f) // implement smooth deltatime.
     }
 
     private fun GetCompiledShader(type: Int, shaderCode: String): Pair<Int, Boolean> {

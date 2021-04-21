@@ -4,7 +4,7 @@ import com.example.viewer3d.engine.Material
 import com.example.viewer3d.engine.Mesh
 import com.example.viewer3d.engine.Shader
 
-class MeshRenderer(private val mesh: Mesh, private val material: Material) : Component() {
+class MeshRenderer(private val mesh: Mesh, val material: Material) : Component() {
 
     val indexBuffer = mesh.indexBuffer
     val indicesCount = mesh.indicesCount

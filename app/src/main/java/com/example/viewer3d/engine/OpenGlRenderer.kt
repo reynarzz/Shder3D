@@ -130,8 +130,6 @@ gl_FragColor = vec4(0.3);
 
         quadShader = Shader(screenQuadVertexCode, screenFragTex)
 
-
-
         getGirl_Test()
         getEditorStuff_Test()
 
@@ -145,13 +143,11 @@ gl_FragColor = vec4(0.3);
 
             val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
             val mat = Material(Shader(vertexShaderCode, fragmentShaderCode))
+            mat.addTexture(Texture(context, "textures/girltex_small.jpg"))
 
             val renderer = MeshRenderer(mesh, mat)
             renderingObjs!!.add(renderer)
 
-            // Texture
-            val girlTexture = Texture(context, "textures/girltex_small.jpg")
-            girlTex = girlTexture.textureID
         }
     }
 
@@ -163,21 +159,15 @@ gl_FragColor = vec4(0.3);
 
     }
 
-    var girlTex = 0
-
     // Loads a texture into OpenGL
 
 
     // Unloads a texture from OpenGL
-    private fun unloadTexture(textureId: Int) {
-        val textures = IntArray(1)
-        textures[0] = textureId
-        glDeleteTextures(1, textures, 0)
-    }
+
 
     // Commands to do in the render thread.
     fun PushCommand(/*A delegate here to call a command*/) {
-        
+
     }
 
     fun setShaders(vertexCode: String, fragmentCode: String) {
@@ -195,6 +185,8 @@ gl_FragColor = vec4(0.3);
     lateinit var frameBuffer: FrameBuffer
     private var quadShader : Shader? = null
     var screenQuadMesh : Mesh? = null
+
+    val selectedObjID_Test = 0
 
     override fun onDrawFrame(gl: GL10?) {
         frameBuffer.bind()
@@ -214,12 +206,9 @@ gl_FragColor = vec4(0.3);
             changed = false
 
             // i need the renderer ID as well to only update the correct shader.
-            //shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
+            renderingObjs!![selectedObjID_Test].material.shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
         }
 
-        // glViewport(0,0,MainActivity.width/8,MainActivity.height/8)
-
-        glBindTexture(GL_TEXTURE_2D, girlTex)
 
         //the camera should have as well a 'viewProjectionM'
         val viewM = scene!!.editorCamera!!.viewM
@@ -228,7 +217,6 @@ gl_FragColor = vec4(0.3);
         for (renderer in renderingObjs!!) {
 
             renderer.bind(viewM, projM)
-
             glDrawElements(GL_TRIANGLES, renderer.indicesCount, GL_UNSIGNED_INT, renderer.indexBuffer)
         }
 
@@ -241,6 +229,8 @@ gl_FragColor = vec4(0.3);
 
         frameBuffer.unBind()
 
+
+        // Screen Quad
         glDisable(GL_DEPTH_TEST)
         glClear(GL_COLOR_BUFFER_BIT)
 
