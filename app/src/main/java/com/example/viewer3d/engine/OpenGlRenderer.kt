@@ -16,16 +16,16 @@ import javax.microedition.khronos.opengles.GL10
 class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var vertexShaderCode: String
-    private lateinit  var fragmentShaderCode  :String
+    private lateinit var fragmentShaderCode: String
 
     //texture2D(sTexture, _uv) * vec4(linearize_depth(gl_FragCoord.z, 1.0, 30.0));
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
     }
 
-var changed = false
+    var changed = false
 
-var camera = Camera()
-val screenQuadVertexCode = """
+    var camera = Camera()
+    val screenQuadVertexCode = """
             
 attribute vec4 _VERTEX_; 
            
@@ -52,11 +52,70 @@ void main()
     gl_FragColor = texture2D(sTexture, _uv) ;
 }"""
 
+    val groundGridVertex = """
+     attribute vec4 _VERTEX_;
+attribute vec2 _UV_;
+
+uniform mat4 UNITY_MATRIX_MVP;
+varying vec3 _pixelPos;
+varying vec2 _uv;
+
+void main()
+{
+	_uv = _UV_ - 0.5;
+	_pixelPos = _VERTEX_.xyz;
+	gl_Position = UNITY_MATRIX_MVP * _VERTEX_;
+}
+    """.trimIndent()
+
+    val groundGridFragment = """
+        precision mediump float; 
+        varying vec2 _uv;
+uniform vec3 _diffuse_;
+
+uniform vec3 _cameraWorldPos_;
+varying vec3 _pixelPos;
+
+void main()
+{
+    float maxDist = 100.;
+
+   // float alpha = (maxDist - length(_pixelPos - _cameraWorldPos_));
+
+    float thickness = 0.01;
+    float spacing = 100.;
+
+//    if (fract(_pixelPos.x / spacing) < thickness || fract(_pixelPos.z / spacing) < thickness)
+//    {
+//        if(int(_pixelPos.z) == 0)
+//        {
+//            gl_FragColor = vec4(1.0, 0., 0., 0.7);
+//        }
+//        else if(int(_pixelPos.x) == 0)
+//        {
+//            gl_FragColor = vec4(0., 0.2, 1., 0.9);
+//        }
+//        else
+//        {
+//           // gl_FragColor = vec4(vec3(1.), clamp(alpha, 0.0, 0.2));
+//            gl_FragColor = vec4(vec3(1.),  0.2);
+//        }
+//    }
+//    else
+//    {
+//        discard;
+//        //gl_FragColor = vec4(1.);
+//    }
+
+gl_FragColor = vec4(0.3);
+}
+"""
+
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
-       // glEnable(GL_TEXTURE_2D)
+        // glEnable(GL_TEXTURE_2D)
         //glEnable(GL_BLEND)
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         camera = Camera()
@@ -69,6 +128,9 @@ void main()
         shader = Shader(vertexShaderCode, fragmentShaderCode)
         quadShader = Shader(screenQuadVertexCode, screenFragTex)
 
+        groundGridShader = Shader(groundGridVertex, groundGridFragment)
+        groundPlane = Utils.getPlane(2000f)
+        screenQuadMesh = Utils.getScreenSizeQuad()
 
         ObjParser(context, "models/girl.obj").also {
 
@@ -76,15 +138,6 @@ void main()
 
             val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
 
-
-
-
-            screenQuadMesh = Utils.getScreenSizeQuad()
-            screenQuadMesh.Bind_Test(quadShader.Bind(camera))
-            quadShader.unBind()
-
-            mesh.Bind_Test(shader.Bind(camera))
-            shader.unBind()
 
             loadedMeshes.add(mesh)
 
@@ -94,6 +147,7 @@ void main()
     }
 
     var girlTex = 0
+
     // Loads a texture into OpenGL
     private fun loadTexture(path: String): Int {
 
@@ -103,7 +157,7 @@ void main()
         bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
 
 
-         bitmap = createFlippedBitmap(bitmap, false, true)
+        bitmap = createFlippedBitmap(bitmap, false, true)
         val textures = IntArray(1)
         glGenTextures(1, textures, 0)
 
@@ -121,6 +175,7 @@ void main()
         matrix.postScale(if (xFlip) -1f else 1f, if (yFlip) -1f else 1f, source.width / 2f, source.height / 2f)
         return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
+
     // Unloads a texture from OpenGL
     private fun unloadTexture(textureId: Int) {
         val textures = IntArray(1)
@@ -128,7 +183,7 @@ void main()
         glDeleteTextures(1, textures, 0)
     }
 
-     var loadedMeshes = mutableListOf<Mesh>()
+    var loadedMeshes = mutableListOf<Mesh>()
     lateinit var shader: Shader
     lateinit var quadShader: Shader
 
@@ -138,11 +193,10 @@ void main()
         //val `in` = java.net.URL(imageURL).openStream()
         val image = BitmapFactory.decodeStream(imageAsset)
 
-
         return Bitmap.createBitmap(image)
     }
 
-    fun imageToBitmap(bitmap: Bitmap) : ByteArray {
+    fun imageToBitmap(bitmap: Bitmap): ByteArray {
 
         val stream = ByteArrayOutputStream()
 
@@ -152,10 +206,10 @@ void main()
     }
 
     // Commands to do in the render thread.
-    fun PushCommand(/*A delegate here to call a command*/){
+    fun PushCommand(/*A delegate here to call a command*/) {
     }
 
-    fun setShaders(vertexCode: String, fragmentCode: String){
+    fun setShaders(vertexCode: String, fragmentCode: String) {
         fragmentShaderCode = fragmentCode
         vertexShaderCode = vertexCode
 
@@ -165,15 +219,18 @@ void main()
     var lStartTime = System.currentTimeMillis().toFloat()
 
     var prevMil = 0f
-    lateinit var frameBuffer :FrameBuffer
+    lateinit var frameBuffer: FrameBuffer
 
     lateinit var screenQuadMesh: Mesh
+    var groundPlane: Mesh? = null
+
+    var groundGridShader: Shader? = null
 
     override fun onDrawFrame(gl: GL10?) {
         frameBuffer.bind()
         glEnable(GL_DEPTH_TEST)
 
-        glClearColor(0.2f,0.2f,0.2f, 1f)
+        glClearColor(0.2f, 0.2f, 0.2f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         val lEndTime = System.currentTimeMillis().toFloat()
@@ -183,23 +240,28 @@ void main()
         lStartTime = lEndTime
         //shader.setDeltaTimeTest(lEndTime.toFloat(), output)
 
-        if(changed)
-        {
+        if (changed) {
             changed = false
 
             shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
         }
 
+        // glViewport(0,0,MainActivity.width/8,MainActivity.height/8)
+
         glBindTexture(GL_TEXTURE_2D, girlTex)
 
 
 
-        for(mesh in loadedMeshes)
-        {
+        for (mesh in loadedMeshes) {
 
             mesh.Bind_Test(shader.Bind(camera))
+
             glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
         }
+        shader.TestRotation()
+
+        groundPlane!!.Bind_Test(groundGridShader!!.Bind(camera))
+        glDrawElements(GL_TRIANGLES, groundPlane!!.indices.size, GL_UNSIGNED_INT, groundPlane!!.indexBuffer)
 
         frameBuffer.unBind()
 
@@ -209,6 +271,8 @@ void main()
         screenQuadMesh.Bind_Test(quadShader.Bind(camera))
 
         glBindTexture(GL_TEXTURE_2D, frameBuffer.colorTexture[0])
+
+        glViewport(0, 0, MainActivity.width, MainActivity.height)
 
         glDrawElements(GL_TRIANGLES, screenQuadMesh.indices.size, GL_UNSIGNED_INT, screenQuadMesh.indexBuffer)
     }

@@ -49,10 +49,13 @@ class Shader(vertexSource: String, fragmentSource: String) {
         val MVP = FloatArray(16)
         val MV = FloatArray(16)
 
-        modelM = FloatArray(16)
+        if(modelM == null){ // test delete this
+            modelM = FloatArray(16)
+
+            Matrix.setIdentityM(modelM, 0)
+        }
         val inverseModelM = FloatArray(16)
 
-        Matrix.setIdentityM(modelM, 0)
 
         Matrix.multiplyMM(MVP, 0, cameraTest.projectionM, 0, cameraTest.viewM, 0)
         Matrix.multiplyMM(MVP, 0, MVP, 0, modelM, 0)
@@ -81,13 +84,17 @@ class Shader(vertexSource: String, fragmentSource: String) {
         glUseProgram(0)
     }
     fun replaceShaders(vertex: String, fragment: String) {
-        glDetachShader(program, fragmentShader)
-        glDeleteShader(fragmentShader)
 
-        glDetachShader(program, vertexShader)
-        glDeleteShader(vertexShader)
+        if(glIsProgram(program)){
+            glDetachShader(program, fragmentShader)
+            glDeleteShader(fragmentShader)
 
-        createShaders(vertex, fragment)
+            glDetachShader(program, vertexShader)
+            glDeleteShader(vertexShader)
+
+            createShaders(vertex, fragment)
+        }
+
     }
 
     private fun createShaders(vertex: String, fragment: String){
@@ -157,7 +164,7 @@ class Shader(vertexSource: String, fragmentSource: String) {
         return Pair(shaderID, result[0] == 1)
     }
 
-    lateinit var modelM: FloatArray
+     var modelM: FloatArray? = null
 
     fun TestRotation() {
         val modelID = glGetUniformLocation(program, "unity_ObjectToWorld")

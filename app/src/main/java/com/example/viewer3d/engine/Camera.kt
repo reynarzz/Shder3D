@@ -21,6 +21,7 @@ class Camera {
 
     fun updateView() {
         Matrix.translateM(viewM, 0,0.0f,-33.0f,-225.9f)
+        Matrix.rotateM(viewM, 0, 0f, 1f, 0f,0f)
     }
 
 }
