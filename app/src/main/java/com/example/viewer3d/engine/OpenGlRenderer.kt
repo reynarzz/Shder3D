@@ -250,8 +250,6 @@ gl_FragColor = vec4(0.3);
 
         glBindTexture(GL_TEXTURE_2D, girlTex)
 
-
-
         for (mesh in loadedMeshes) {
 
             mesh.Bind_Test(shader.Bind(camera))
