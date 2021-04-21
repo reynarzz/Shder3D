@@ -17,14 +17,14 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var vertexShaderCode: String
     private lateinit var fragmentShaderCode: String
+    private var scene: Scene? = null
 
-    //texture2D(sTexture, _uv) * vec4(linearize_depth(gl_FragCoord.z, 1.0, 30.0));
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+
     }
 
     var changed = false
 
-    var camera = Camera()
     val screenQuadVertexCode = """
             
 attribute vec4 _VERTEX_; 
@@ -118,9 +118,12 @@ gl_FragColor = vec4(0.3);
         // glEnable(GL_TEXTURE_2D)
         //glEnable(GL_BLEND)
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        camera = Camera()
-        camera.updateProjection(width, height)
-        camera.updateView()
+
+        scene = Scene()
+
+        scene!!.editorCamera!!.updateProjection(width, height)
+        scene!!.editorCamera!!.updateView()
+
         //CoffeeRestaurant
         //SimpleScene
 
@@ -211,13 +214,13 @@ gl_FragColor = vec4(0.3);
 
         for (mesh in loadedMeshes) {
 
-            mesh.Bind_Test(shader.Bind(camera))
+            mesh.Bind_Test(shader.Bind(scene!!.editorCamera!!))
 
             glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
         }
         shader.TestRotation()
 
-        groundPlane!!.Bind_Test(groundGridShader!!.Bind(camera))
+        groundPlane!!.Bind_Test(groundGridShader!!.Bind(scene!!.editorCamera!!))
         glDrawElements(GL_TRIANGLES, groundPlane!!.indices.size, GL_UNSIGNED_INT, groundPlane!!.indexBuffer)
 
         frameBuffer.unBind()
@@ -225,7 +228,7 @@ gl_FragColor = vec4(0.3);
         glDisable(GL_DEPTH_TEST)
         glClear(GL_COLOR_BUFFER_BIT)
 
-        screenQuadMesh.Bind_Test(quadShader.Bind(camera))
+        screenQuadMesh.Bind_Test(quadShader.Bind(scene!!.editorCamera!!))
 
         glBindTexture(GL_TEXTURE_2D, frameBuffer.colorTexture)
 

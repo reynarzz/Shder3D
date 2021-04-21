@@ -13,45 +13,8 @@ class FrameBuffer(width : Int, height: Int) {
         // Create a frame buffer
         glGenFramebuffers(1, frameBuffer, 0);
 
-        val colorTex = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, width, height, GL_NEAREST)
-
-        colorTexture = colorTex.textureID
-
-        //colorTexture = IntArray(1)
-        val depthTex = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT,GL_UNSIGNED_SHORT, width, height, GL_NEAREST)
-        depthTexture = depthTex.textureID
-
-//        // Generate a texture to hold the colour buffer
-//        glGenTextures(1, colorTexture, 0);
-//        glBindTexture(GL_TEXTURE_2D, colorTexture[0]);
-//
-//        // Width and height do not have to be a power of two
-//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-//                width, height,
-//                0, GL_RGBA, GL_UNSIGNED_BYTE, null);
-//
-////      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-////      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        // Probably just paranoia
-        //glBindTexture(GL_TEXTURE_2D, 1);
-
-        // Create a texture to hold the depth buffer
-//        glGenTextures(1, depthTexture, 0);
-//        glBindTexture(GL_TEXTURE_2D, depthTexture[0]);
-//
-//        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-//                width, height,
-//                0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, null);
-//
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//
-//       // glBindTexture(GL_TEXTURE_2D, 1);
+        colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, width, height, GL_NEAREST).textureID
+        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT,GL_UNSIGNED_SHORT, width, height, GL_NEAREST).textureID
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
 
@@ -66,9 +29,9 @@ class FrameBuffer(width : Int, height: Int) {
         val status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
         if (status == GL_FRAMEBUFFER_COMPLETE) {
-
             // Success
         }
+
         unBind()
     }
 
