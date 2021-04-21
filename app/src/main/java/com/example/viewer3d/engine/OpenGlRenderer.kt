@@ -35,13 +35,13 @@ varying vec4 pos;
 void main() 
 {
    _uv = _UV_;
-   gl_Position = _VERTEX_;
+   gl_Position = vec4( _VERTEX_.x,  _VERTEX_.y, 0, 1);
 }"""
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
-        glEnable(GL_TEXTURE_2D)
+       // glEnable(GL_TEXTURE_2D)
         //glEnable(GL_BLEND)
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         camera = Camera()
@@ -155,8 +155,12 @@ void main()
     lateinit var screenQuadMesh: Mesh
 
     override fun onDrawFrame(gl: GL10?) {
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+        frameBuffer.bind()
+        glEnable(GL_DEPTH_TEST)
+
         glClearColor(0.2f,0.2f,0.2f, 1f)
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+
         val lEndTime = System.currentTimeMillis().toFloat()
 
         val output = (lEndTime - lStartTime).toFloat()
@@ -169,23 +173,23 @@ void main()
             changed = false
 
             shader.replaceShaders(vertexShaderCode, fragmentShaderCode)
-
-            val program = shader.Bind(camera)
-
-            loadedMeshes[0].Bind_Test(program)
         }
 
         glBindTexture(GL_TEXTURE_2D, girlTex)
 
-        val texId = frameBuffer.bind()
 
-        for(mesh in loadedMeshes) {
+
+        for(mesh in loadedMeshes)
+        {
 
             mesh.Bind_Test(shader.Bind(camera))
             glDrawElements(GL_TRIANGLES, mesh.indices.size, GL_UNSIGNED_INT, mesh.indexBuffer)
-
         }
+
         frameBuffer.unBind()
+
+        glDisable(GL_DEPTH_TEST)
+        glClear(GL_COLOR_BUFFER_BIT)
 
         screenQuadMesh.Bind_Test(quadShader.Bind(camera))
 

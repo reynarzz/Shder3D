@@ -35,6 +35,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        setScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
+
         openGLView = findViewById(R.id.OpenGLView_activity)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
@@ -45,10 +50,7 @@ class MainActivity : AppCompatActivity() {
         val codeContainer = findViewById<ConstraintLayout>(R.id.codeContainer)
         val viewShader = findViewById<Button>(R.id.btn_switchShaderView)
 
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        setScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
 
         var vertexTex = """#Unity.h 
             
