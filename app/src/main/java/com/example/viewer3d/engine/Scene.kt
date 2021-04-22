@@ -1,7 +1,6 @@
 package com.example.viewer3d.engine
 
-import android.opengl.GLES20
-import android.opengl.Matrix
+import com.example.viewer3d.engine.components.Camera
 
 class Scene {
 

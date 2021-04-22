@@ -14,6 +14,7 @@ class Transform  { // : Component()
         get() {
             return _position
         }
+
         set(value) {
             field = value
             _position = value
@@ -23,7 +24,7 @@ class Transform  { // : Component()
             updateModelMatrix()
         }
 
-    var rotation = Vec3()
+    var eulerAngles = Vec3()
         get() {
             return _rotation
         }

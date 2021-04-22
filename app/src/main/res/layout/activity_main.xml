@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".views.MainActivity">
+
+
 
  <com.example.viewer3d.engine.OpenGLView
      android:id="@+id/OpenGLView_activity"
@@ -82,5 +84,10 @@
 
  </androidx.constraintlayout.widget.ConstraintLayout>
 
+ <fragment
+     android:id="@+id/mainFragment"
+     android:name="com.example.viewer3d.views.SceneViewFragment"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

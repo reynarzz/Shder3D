@@ -1,4 +1,4 @@
-package com.example.viewer3d.engine
+package com.example.viewer3d.engine.components
 
 import android.opengl.Matrix
 import com.example.viewer3d.engine.components.Component

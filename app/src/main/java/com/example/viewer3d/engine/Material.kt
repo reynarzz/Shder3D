@@ -2,9 +2,10 @@ package com.example.viewer3d.engine
 
 import android.opengl.GLES20.*
 import android.opengl.Matrix
-import com.example.viewer3d.MainActivity
+import com.example.viewer3d.views.MainActivity
 
 class Material(val shader: Shader) {
+    //val materialData = MaterialData()
 
     val program = shader.program
 

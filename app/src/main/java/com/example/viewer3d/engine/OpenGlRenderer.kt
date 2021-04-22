@@ -3,7 +3,7 @@ package com.example.viewer3d.engine
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
-import com.example.viewer3d.MainActivity
+import com.example.viewer3d.views.MainActivity
 import com.example.viewer3d.engine.components.MeshRenderer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -60,7 +60,7 @@ void main()
     float depth = LinearizeDepth(texture2D(_CameraDepthTexture, _uv ).r)/(far-900.);
     gl_FragColor = vec4(depth);
     
-    gl_FragColor = texture2D(sTexture, _uv) * vec4(depth);
+    gl_FragColor = texture2D(sTexture, _uv);
 }
 """
 
