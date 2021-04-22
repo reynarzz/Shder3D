@@ -7,7 +7,7 @@ import com.example.viewer3d.MainActivity
 
 class Shader(vertexSource: String, fragmentSource: String) {
 
-    var program = 0
+    var program = -1
         private set
 
     private var vertexShader = 0
@@ -17,14 +17,8 @@ class Shader(vertexSource: String, fragmentSource: String) {
         createShaders(vertexSource, fragmentSource)
     }
 
-    fun bind(model: FloatArray, view: FloatArray, projection: FloatArray): Int {
+    fun bind(): Int {
         glUseProgram(program)
-        return program
-    }
-
-    fun bind() : Int {
-        glUseProgram(program)
-
         return program
     }
 
@@ -40,9 +34,13 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
             glDeleteShader(vertexShader)
             glDeleteShader(fragmentShader)
+
+            //glDeleteProgram(program)
         }
 
         createShaders(vertex, fragment)
+
+        glUseProgram(program)
     }
 
     private fun createShaders(vertex: String, fragment: String) {
@@ -78,7 +76,10 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
         }
 
-        program = glCreateProgram();
+        vertexResult.second
+        fragmentResult.second
+
+        program = glCreateProgram()
 
         glAttachShader(program, vertexShader)
         glAttachShader(program, fragmentShader)
@@ -92,11 +93,10 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
         glShaderSource(shaderID, shaderCode)
         glCompileShader(shaderID)
+
         val result = IntArray(1);
 
         glGetShaderiv(shaderID, GL_COMPILE_STATUS, result, 0)
-
-
 
         return Pair(shaderID, result[0] == 1)
     }

@@ -31,7 +31,6 @@ class FrameBuffer(width : Int, height: Int) {
         if (status == GL_FRAMEBUFFER_COMPLETE) {
             // Success
         }
-
         unBind()
     }
 

@@ -24,20 +24,22 @@ class Material(val shader: Shader) {
         textures = mutableListOf()
     }
 
+    fun bind(model: FloatArray, view: FloatArray, projection: FloatArray) {
+        shader.bind()
+        setUniforms(model, view, projection)
+
+        bindTextures()
+    }
+
+
     // for shadow mapping,
     fun bind(model: FloatArray, view: FloatArray, projection: FloatArray, shader: Shader) {
-        shader.bind(model, view, projection)
+        shader.bind()
         setUniforms(model, view, projection)
 
         bindTextures()
     }
 
-    fun bind(model: FloatArray, view: FloatArray, projection: FloatArray) {
-        shader.bind(model, view, projection)
-        setUniforms(model, view, projection)
-
-        bindTextures()
-    }
 
     private fun bindTextures() {
         for (i in textures!!.indices) {
@@ -67,10 +69,7 @@ class Material(val shader: Shader) {
 //        var _Time = glGetUniformLocation(program, "_Time")
 //        var unity_DeltaTime = glGetUniformLocation(program, "unity_DeltaTime")
 
-        val MVP = FloatArray(16)
-        val MV = FloatArray(16)
 
-        val InvModel = FloatArray(16)
 
         Matrix.multiplyMM(MVP, 0, projection, 0, view, 0)
         Matrix.multiplyMM(MVP, 0, MVP, 0, model, 0)
@@ -87,6 +86,11 @@ class Material(val shader: Shader) {
         set("unity_ObjectToWorld", model);
         set("_ScreenParams", Vec4(MainActivity.width.toFloat(), MainActivity.height.toFloat(), 1f + 1f / MainActivity.width.toFloat(), 1f + 1f / MainActivity.height.toFloat()))
     }
+
+    val MVP = FloatArray(16)
+    val MV = FloatArray(16)
+
+    val InvModel = FloatArray(16)
 
     fun addTexture(texture: Texture) {
         textures!!.add(texture)

@@ -1,8 +1,9 @@
 package com.example.viewer3d.engine
 
 import android.opengl.Matrix
+import com.example.viewer3d.engine.components.Component
 
-class Camera {
+class Camera : Component() {
 
      var projectionM = FloatArray(16)
          private set
