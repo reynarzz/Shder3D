@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="semi_transparent1">#33FFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="mypurple">#FF702bfd</color>
 </resources>
