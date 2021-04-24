@@ -1,10 +1,12 @@
 package com.reynarz.minityeditor.engine
 
 import android.content.Context
+import android.util.Log
+import com.reynarz.minityeditor.files.FileManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class ObjParser(context: Context, file: String) {
+class ObjParser {
 
     private val mFinalVertices = mutableListOf<Float>()
     private val mFinalNormals = mutableListOf<Float>()
@@ -14,9 +16,18 @@ class ObjParser(context: Context, file: String) {
     /**
      * Init - parses the file in assets that matches the file string passed.
      */
-    init {
+    constructor(context: Context, file: String) {
         val inStream = context.assets.open(file)
         val reader = BufferedReader(InputStreamReader(inStream))
+    }
+
+    constructor(fullPath: String) {
+        val reader = FileManager().readFile(fullPath)
+
+        parseObj(reader)
+    }
+
+    fun parseObj(reader: BufferedReader) {
 
         val vertices = ArrayList<Triple<Float, Float, Float>>()
         val normals = ArrayList<Triple<Float, Float, Float>>()
@@ -25,44 +36,41 @@ class ObjParser(context: Context, file: String) {
         val faceMap = HashMap<Triple<Int, Int?, Int?>, Int>()
         var nextIndex: Int = 0
 
-        reader.forEachLine {
+        reader.forEachLine { line ->
 
-            if ( it.startsWith("v " ) ) {
+            if (line.startsWith("v ")) {
 
-                val split = it.split( " " )
+                val split = line.split(" ")
 
                 // split[0] is the prefix
                 val vertex = Triple(split[1].toFloat(), split[2].toFloat(), split[3].toFloat())
                 vertices.add(vertex)
-            }
-            else if ( it.startsWith("vn" ) ) {
+            } else if (line.startsWith("vn")) {
 
-                val split = it.split( " " )
+                val split = line.split(" ")
 
                 // split[0] is the prefix
                 val normal = Triple(split[1].toFloat(), split[2].toFloat(), split[3].toFloat())
                 normals.add(normal)
-            }
-            else if ( it.startsWith( "vt" ) ) {
+            } else if (line.startsWith("vt")) {
 
-                val split = it.split( " " )
+                val split = line.split(" ")
 
                 // split[0] is the prefix
                 val uv = Pair(split[1].toFloat(), split[2].toFloat())
                 uvs.add(uv)
-            }
-            else if ( it.startsWith("f " ) ) {
+            } else if (line.startsWith("f ")) {
 
                 // perform the first split
-                val split = it.split( " " )
+                val split = line.split(" ")
 
                 // get the first vertex, uv and normal
                 val vun1 = split[1].split("/")
                 val point1 = Triple(vun1[0].toInt(), vun1[1].toIntOrNull(), vun1[2].toIntOrNull())
 
-                val pointInFaceMap1 = faceMap.get( point1 )
+                val pointInFaceMap1 = faceMap.get(point1)
 
-                if ( null != pointInFaceMap1 ) {
+                if (null != pointInFaceMap1) {
 
                     mFinalIndices.add(pointInFaceMap1)
 
@@ -77,13 +85,13 @@ class ObjParser(context: Context, file: String) {
                     mFinalVertices.add(vertices[point1.first - 1].third)
 
                     // add uvs if present
-                    if ( null != point1.second ) {
+                    if (null != point1.second) {
                         mFinalUVs.add(uvs[point1.second!! - 1].first)
                         mFinalUVs.add(uvs[point1.second!! - 1].second)
                     }
 
                     // add normals if present
-                    if ( null != point1.third ) {
+                    if (null != point1.third) {
                         mFinalNormals.add(normals[point1.third!! - 1].first)
                         mFinalNormals.add(normals[point1.third!! - 1].second)
                         mFinalNormals.add(normals[point1.third!! - 1].third)
@@ -96,9 +104,9 @@ class ObjParser(context: Context, file: String) {
                 // get the second vertex, uv and normal
                 val vun2 = split[2].split("/")
                 val point2 = Triple(vun2[0].toInt(), vun2[1].toIntOrNull(), vun2[2].toIntOrNull())
-                val pointInFaceMap2 = faceMap.get( point2 )
+                val pointInFaceMap2 = faceMap.get(point2)
 
-                if ( null != pointInFaceMap2 ) {
+                if (null != pointInFaceMap2) {
 
                     mFinalIndices.add(pointInFaceMap2)
 
@@ -113,13 +121,13 @@ class ObjParser(context: Context, file: String) {
                     mFinalVertices.add(vertices[point2.first - 1].third)
 
                     // add uvs if present
-                    if ( null != point2.second ) {
+                    if (null != point2.second) {
                         mFinalUVs.add(uvs[point2.second!! - 1].first)
                         mFinalUVs.add(uvs[point2.second!! - 1].second)
                     }
 
                     // add normals if present
-                    if ( null != point2.third ) {
+                    if (null != point2.third) {
                         mFinalNormals.add(normals[point2.third!! - 1].first)
                         mFinalNormals.add(normals[point2.third!! - 1].second)
                         mFinalNormals.add(normals[point2.third!! - 1].third)
@@ -132,9 +140,9 @@ class ObjParser(context: Context, file: String) {
                 // get the third vertex, uv and normal
                 val vun3 = split[3].split("/")
                 val point3 = Triple(vun3[0].toInt(), vun3[1].toIntOrNull(), vun3[2].toIntOrNull())
-                val pointInFaceMap3 = faceMap.get( point3 )
+                val pointInFaceMap3 = faceMap.get(point3)
 
-                if ( null != pointInFaceMap3 ) {
+                if (null != pointInFaceMap3) {
 
                     mFinalIndices.add(pointInFaceMap3)
 
@@ -149,13 +157,13 @@ class ObjParser(context: Context, file: String) {
                     mFinalVertices.add(vertices[point3.first - 1].third)
 
                     // add uvs if present
-                    if ( null != point3.second ) {
+                    if (null != point3.second) {
                         mFinalUVs.add(uvs[point3.second!! - 1].first)
                         mFinalUVs.add(uvs[point3.second!! - 1].second)
                     }
 
                     // add normals if present
-                    if ( null != point3.third ) {
+                    if (null != point3.third) {
                         mFinalNormals.add(normals[point3.third!! - 1].first)
                         mFinalNormals.add(normals[point3.third!! - 1].second)
                         mFinalNormals.add(normals[point3.third!! - 1].third)
@@ -168,18 +176,17 @@ class ObjParser(context: Context, file: String) {
         }
     }
 
-    /**
-     * returns the Model data which has been parsed
-     */
     fun getModelData(): ModelData {
-        return ModelData(mFinalVertices.toFloatArray(),
-                mFinalNormals.toFloatArray(),
-                mFinalUVs.toFloatArray(),
-                mFinalIndices.toIntArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray())
+        return ModelData(
+            mFinalVertices.toFloatArray(),
+            mFinalNormals.toFloatArray(),
+            mFinalUVs.toFloatArray(),
+            mFinalIndices.toIntArray(),
+            emptyArray<Float>().toFloatArray(),
+            emptyArray<Float>().toFloatArray(),
+            emptyArray<Float>().toFloatArray(),
+            emptyArray<Float>().toFloatArray(),
+            emptyArray<Float>().toFloatArray()
+        )
     }
 }

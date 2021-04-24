@@ -63,9 +63,52 @@ class Utils {
             }"""
             return Pair(vertexTex, fragTex)
         }
+
+        fun getDefaultMaterial() : Material {
+
+            var vertexTex = """ 
+            
+attribute vec4 _VERTEX_; 
+           
+attribute vec2 _UV_;
+varying vec2 _uv;
+varying vec4 pos;
+uniform mat4 UNITY_MATRIX_MVP;
+uniform mat4 UNITY_MATRIX_P;
+uniform mat4 UNITY_MATRIX_V;
+uniform mat4 unity_ObjectToWorld;
+void main() 
+{
+   _uv = _UV_;
+   
+   pos = UNITY_MATRIX_P * UNITY_MATRIX_V * unity_ObjectToWorld * _VERTEX_;
+   
+   gl_Position = pos;
+}"""
+
+            var fragTex = """
+            
+precision mediump float; 
+varying vec4 pos;
+
+varying vec2 _uv;
+
+uniform sampler2D sTexture;
+
+void main()
+{
+    gl_FragColor = vec4(1.);
+}"""
+
+
+            val shader = Shader(vertexTex, fragTex)
+            val mat = Material(shader)
+
+            return mat
+        }
     }
 
-    class ShaderUtils {
+    class ShaderFileUtils {
         companion object {
             fun processInclude(include: String, shaderCode: String): String {
 

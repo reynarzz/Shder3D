@@ -3,6 +3,7 @@ package com.reynarz.minityeditor.engine
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.util.Log
 import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import javax.microedition.khronos.egl.EGLConfig
@@ -13,8 +14,8 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var vertexShaderCode: String
     private lateinit var fragmentShaderCode: String
-    private var scene: Scene? = null
-
+    val scene: Scene = Scene()
+    var xRot = 0f
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
@@ -127,7 +128,6 @@ gl_FragColor = vec4(0.3);
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         if (!initialized) {
-            renderingObjs = mutableListOf()
             editorObjs = mutableListOf()
 
             glEnable(GL_DEPTH_TEST)
@@ -135,42 +135,44 @@ gl_FragColor = vec4(0.3);
             //glEnable(GL_BLEND)
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-            scene = Scene()
-
             scene!!.editorCamera!!.updateProjection(width, height)
             scene!!.editorCamera!!.updateView()
 
             //CoffeeRestaurant
             //SimpleScene
-            frameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
+            mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
 
             quadShader = Shader(screenQuadVertexCode, screenFragTex)
-            getEditorStuff_Test()
-            getGirl_Test()
+
             initialized = true
             screenQuadMesh = Utils.getScreenSizeQuad()
+
+            //
+
         }
     }
 
-    fun getGirl_Test() {
-        ObjParser(context, "models/girl.obj").also {
-
-            var data = it.getModelData()
-
-            val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
-            val mat = Material(Shader(vertexShaderCode, fragmentShaderCode))
-            mat.addTexture(Texture(context, "textures/girltex_small.jpg"))
-
-            val renderer = MeshRenderer(mesh, mat)
-
-            if (!initialized)
-                renderingObjs!!.add(renderer)
-        }
-    }
+//    fun getGirl_Test() {
+//        ObjParser(context, "models/girl.obj").also {
+//
+//            var data = it.getModelData()
+//
+//            val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
+//            val mat = Material(Shader(vertexShaderCode, fragmentShaderCode))
+//            mat.addTexture(Texture(context, "textures/girltex_small.jpg"))
+//
+//            val renderer = MeshRenderer(mesh, mat)
+//
+////            if (!initialized)
+////                renderingObjs!!.add(renderer)
+//        }
+//    }
 
     fun getEditorStuff_Test() {
         val material = Material(Shader(groundGridVertex, groundGridFragment))
-        val meshRenderer = MeshRenderer(Utils.getPlane(2000f), material)
+        val plane = Utils.getPlane(2000f)
+        //plane.bind(material.program)
+        val meshRenderer = MeshRenderer(plane, material)
 
         editorObjs!!.add(meshRenderer)
 
@@ -194,19 +196,42 @@ gl_FragColor = vec4(0.3);
         changed = true
     }
 
-    private var renderingObjs: MutableList<MeshRenderer>? = null
     private var editorObjs: MutableList<MeshRenderer>? = null
 
     var lStartTime = System.currentTimeMillis().toFloat()
 
-    lateinit var frameBuffer: FrameBuffer
+    lateinit var mainFrameBuffer: FrameBuffer
     private var quadShader: Shader? = null
     var screenQuadMesh: Mesh? = null
 
     val selectedObjID_Test = 0
 
+    private var test = false
+
+    private val objsToLoad = mutableListOf<String>()
+
+    fun loadNewObjCommand(filePath: String) {
+        objsToLoad.add(filePath)
+    }
+
+    private fun loadObjInBuffer() {
+        if(objsToLoad.size > 0){
+            for(i in objsToLoad){
+                SceneObjectManager(null, this).testLoadObject(i)
+            }
+            objsToLoad.clear()
+        }
+    }
+
+    private fun onPushedOutsideCommands() {
+        loadObjInBuffer()
+    }
+
     override fun onDrawFrame(gl: GL10?) {
-        frameBuffer.bind()
+
+        onPushedOutsideCommands()
+
+        mainFrameBuffer.bind()
 
         glEnable(GL_DEPTH_TEST)
 
@@ -224,34 +249,43 @@ gl_FragColor = vec4(0.3);
             changed = false
 
             // i need the renderer ID as well to only update the correct shader.
-            renderingObjs!![selectedObjID_Test].material.shader.replaceShaders(
-                vertexShaderCode,
-                fragmentShaderCode
-            )
+//            scene!!.entities[selectedObjID_Test].testMeshRenderer!!.material.shader.replaceShaders(
+//                vertexShaderCode,
+//                fragmentShaderCode
+//            )
         }
 
         //the camera should have as well a 'viewProjectionM'
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
 
-        for (renderer in renderingObjs!!) {
+        for (entity in scene!!.entities) {
+        //--Log.d("Render Entity ", entity.name)
+            Log.d("assadasd", xRot.toString())
 
-            renderer.bind(viewM, projM)
+            entity.testMeshRenderer!!.bind(viewM, projM)
+            entity.testMeshRenderer!!.transform.eulerAngles = Vec3(0f, xRot, 0f)
+
             glDrawElements(
                 GL_TRIANGLES,
-                renderer.indicesCount,
+                entity.testMeshRenderer!!.indicesCount,
                 GL_UNSIGNED_INT,
-                renderer.indexBuffer
+                entity.testMeshRenderer!!.indexBuffer
             )
         }
 
+        if(!test){
+            test = true
+            getEditorStuff_Test()
+        }
         for (obj in editorObjs!!) {
             obj.bind(viewM, projM)
 
+            if( obj.indicesCount > 0)
             glDrawElements(GL_TRIANGLES, obj.indicesCount, GL_UNSIGNED_INT, obj.indexBuffer)
         }
 
-        frameBuffer.unBind()
+        mainFrameBuffer.unBind()
 
 
         // Screen Quad
@@ -263,13 +297,13 @@ gl_FragColor = vec4(0.3);
         screenQuadMesh!!.bind(prog)
 
         glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, frameBuffer.colorTexture)
+        glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.colorTexture)
 
         glActiveTexture(GL_TEXTURE1)
-        glBindTexture(GL_TEXTURE_2D, frameBuffer.depthTexture)
+        glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.depthTexture)
 
 
-        val depthUniform =  glGetUniformLocation(prog, "_CameraDepthTexture")
+        val depthUniform = glGetUniformLocation(prog, "_CameraDepthTexture")
         glUniform1i(depthUniform, 1)
 
         glViewport(0, 0, MainActivity.width, MainActivity.height)

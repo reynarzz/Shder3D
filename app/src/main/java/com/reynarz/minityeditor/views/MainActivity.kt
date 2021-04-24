@@ -1,7 +1,6 @@
 package com.reynarz.minityeditor.views
 
 import android.Manifest
-import android.R.attr
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
@@ -15,15 +14,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
+import com.reynarz.minityeditor.engine.SceneObjectManager
 import com.reynarz.minityeditor.engine.Utils
-import com.reynarz.minityeditor.files.FileManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -31,6 +28,7 @@ import java.io.InputStreamReader
 class MainActivity : AppCompatActivity() {
 
     private lateinit var openGLView: OpenGLView
+    private var sceneObjManager : SceneObjectManager? = null
 
     companion object {
         var width = 0
@@ -66,20 +64,17 @@ class MainActivity : AppCompatActivity() {
 
         requestPermissions()
 
-        val file = FileManager(contentResolver)
-        file.writeTest()
-        file.readTest()
 
-        val recycleView = findViewById<RecyclerView>(R.id.rv_fileManagerView)
-
-        val adapter = GridAdapterView()
-        val gridLayoutManager = GridLayoutManager(this, 4)
-
-        gridLayoutManager.orientation = GridLayoutManager.VERTICAL
-        gridLayoutManager.reverseLayout = false
-
-        recycleView.layoutManager = gridLayoutManager
-        recycleView.adapter = adapter
+//        val recycleView = findViewById<RecyclerView>(R.id.rv_fileManagerView)
+//
+//        val adapter = GridAdapterView()
+//        val gridLayoutManager = GridLayoutManager(this, 4)
+//
+//        gridLayoutManager.orientation = GridLayoutManager.VERTICAL
+//        gridLayoutManager.reverseLayout = false
+//
+//        recycleView.layoutManager = gridLayoutManager
+//        recycleView.adapter = adapter
 
 
         var vertexTex = """#Unity.h 
@@ -124,8 +119,8 @@ void main()
 
         val include1 = getInclude(assets, "includes/unity.h")
         openGLView.renderer.setShaders(
-            Utils.ShaderUtils.processInclude(include1, vertexTex),
-            Utils.ShaderUtils.processInclude(include1, fragTex)
+            Utils.ShaderFileUtils.processInclude(include1, vertexTex),
+            Utils.ShaderFileUtils.processInclude(include1, fragTex)
         )
 
         codeEditTex.setText(fragTex)
@@ -160,29 +155,36 @@ void main()
             }
 
             openGLView.renderer.setShaders(
-                Utils.ShaderUtils.processInclude(include1, vertexTex),
-                Utils.ShaderUtils.processInclude(include1, fragTex)
+                Utils.ShaderFileUtils.processInclude(include1, vertexTex),
+                Utils.ShaderFileUtils.processInclude(include1, fragTex)
             )
             Toast.makeText(this, "Compiled", Toast.LENGTH_SHORT).show()
             openGLView.clearFocus()
         }
 
-        val intent = Intent(this, FilePickerActivity::class.java)
-        intent.putExtra(
-            FilePickerActivity.CONFIGS, Configurations.Builder()
-                .setCheckPermission(true)
+        val addModel = findViewById<Button>(R.id.btn_addModelToScene)
 
-                .setShowFiles(true)
-                .setShowImages(false)
-                .setShowVideos(false)
-                .setShowAudios(false)
-                .setSkipZeroSizeFiles(true)
-                .setSuffixes(".obj")
-                .build()
-        )
+        addModel.setOnClickListener {
 
-        startActivityForResult(intent, 1)
+            val intent = Intent(this, FilePickerActivity::class.java)
+            intent.putExtra(
+                FilePickerActivity.CONFIGS, Configurations.Builder()
+                    .setCheckPermission(true)
 
+                    .setShowFiles(true)
+                    .setShowImages(false)
+                    .setShowVideos(false)
+                    .setShowAudios(false)
+                    .setSkipZeroSizeFiles(true)
+                    .setSuffixes(".obj")
+                    .build()
+            )
+
+            startActivityForResult(intent, 1)
+
+        }
+
+        sceneObjManager = SceneObjectManager(this, openGLView.renderer)
     }
 
 
@@ -245,15 +247,14 @@ void main()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == 1) {
+        // add a new Obj
+        if(requestCode == 1 && data != null) {
             val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
             for(path in files!!) {
-                Log.d("File found", path.path)
+                openGLView.renderer.loadNewObjCommand(path.path)
             }
         }
-
-        //Do something with files
     }
 
     override fun onResume() {

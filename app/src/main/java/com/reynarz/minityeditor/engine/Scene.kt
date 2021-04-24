@@ -1,8 +1,11 @@
 package com.reynarz.minityeditor.engine
 
 import com.reynarz.minityeditor.engine.components.Camera
+import com.reynarz.minityeditor.engine.components.SceneEntity
 
 class Scene {
+
+    val entities : MutableList<SceneEntity> = mutableListOf()
 
     enum class CurrentCamera {
         EDITOR_CAMERA,
@@ -18,10 +21,16 @@ class Scene {
     init {
         editorCamera = Camera()
         previewCamera = Camera()
+        entities
     }
 
-    fun bind() {
-
-
+    fun addSceneEntity(sceneEntity: SceneEntity) {
+        entities.add(sceneEntity)
     }
+
+    fun removeSceneEntity(sceneEntity: SceneEntity) {
+        entities.remove(sceneEntity)
+    }
+
+
 }
