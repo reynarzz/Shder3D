@@ -55,7 +55,7 @@
 
         <fragment
             android:id="@+id/fragment_componentContent"
-            android:name="com.example.viewer3d.views.ComponentFragmentView"
+            android:name="com.reynarz.minityeditor.views.ComponentFragmentView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"

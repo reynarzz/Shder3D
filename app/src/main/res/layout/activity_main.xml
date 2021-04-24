@@ -8,7 +8,7 @@
 
 
 
- <com.example.viewer3d.engine.OpenGLView
+ <com.reynarz.minityeditor.engine.OpenGLView
      android:id="@+id/OpenGLView_activity"
      android:layout_width="match_parent"
      android:layout_height="match_parent"/>
@@ -87,7 +87,7 @@
 
  <fragment
      android:id="@+id/mainFragment"
-     android:name="com.example.viewer3d.views.SceneFragmentView"
+     android:name="com.reynarz.minityeditor.views.SceneFragmentView"
      android:layout_width="match_parent"
      android:layout_height="match_parent"/>
 
