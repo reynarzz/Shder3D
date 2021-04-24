@@ -1,6 +1,7 @@
 package com.reynarz.minityeditor.views
 
 import android.Manifest
+import android.R.attr
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
@@ -16,13 +17,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jaiselrahman.filepicker.activity.FilePickerActivity
+import com.jaiselrahman.filepicker.config.Configurations
+import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.files.FileManager
 import java.io.BufferedReader
-import java.io.File
-import java.io.InputStream
 import java.io.InputStreamReader
 
 
@@ -164,39 +166,26 @@ void main()
             Toast.makeText(this, "Compiled", Toast.LENGTH_SHORT).show()
             openGLView.clearFocus()
         }
-        val intent = Intent()
-            .setAction(Intent.ACTION_OPEN_DOCUMENT)
-            .setType("application/*")
 
-        startActivityForResult(Intent.createChooser(intent, "Select a file"), 123)
+        val intent = Intent(this, FilePickerActivity::class.java)
+        intent.putExtra(
+            FilePickerActivity.CONFIGS, Configurations.Builder()
+                .setCheckPermission(true)
 
+                .setShowFiles(true)
+                .setShowImages(false)
+                .setShowVideos(false)
+                .setShowAudios(false)
+                .setSkipZeroSizeFiles(true)
+                .setSuffixes(".obj")
+                .build()
+        )
+
+        startActivityForResult(intent, 1)
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // The ACTION_OPEN_DOCUMENT intent was sent with the request code OPEN_DIRECTORY_REQUEST_CODE.
-        // If the request code seen here doesn't match, it's the response to some other intent,
-        // and the below code shouldn't run at all.
-        // The ACTION_OPEN_DOCUMENT intent was sent with the request code OPEN_DIRECTORY_REQUEST_CODE.
-        // If the request code seen here doesn't match, it's the response to some other intent,
-        // and the below code shouldn't run at all.
-        if (resultCode === RESULT_OK) {
-            // The document selected by the user won't be returned in the intent.
-            // Instead, a URI to that document will be contained in the return intent
-            // provided to this method as a parameter.  Pull that uri using "resultData.getData()"
-            if (data != null && data!!.getData() != null) {
 
-                val fileInputStream = contentResolver.openInputStream(data.getData()!!)
-                val reader = InputStreamReader(fileInputStream)
-
-            } else {
-                Log.d("File Info", "File uri not found {}")
-            }
-        } else {
-            Log.d("File Info", "User cancelled file browsing {}")
-        }
-    }
 
     private fun getInclude(assets: AssetManager, include: String): String {
         val inStream = assets.open(include)
@@ -251,6 +240,20 @@ void main()
                 }
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == 1) {
+            val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
+
+            for(path in files!!) {
+                Log.d("File found", path.path)
+            }
+        }
+
+        //Do something with files
     }
 
     override fun onResume() {
