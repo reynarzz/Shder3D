@@ -14,7 +14,7 @@ class SceneObjectManager(private val context: Context?, private val openGlRender
         val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs)
 
         val mat = Utils.getDefaultMaterial()
-        //mat.addTexture(Texture(context, "textures/girltex_small.jpg"))
+        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
 
         val renderer = MeshRenderer(mesh, mat)
 

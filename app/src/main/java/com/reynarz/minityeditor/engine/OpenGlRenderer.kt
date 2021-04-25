@@ -3,7 +3,6 @@ package com.reynarz.minityeditor.engine
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
-import android.util.Log
 import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import javax.microedition.khronos.egl.EGLConfig
@@ -15,7 +14,8 @@ class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
     private lateinit var vertexShaderCode: String
     private lateinit var fragmentShaderCode: String
     val scene: Scene = Scene()
-    var xRot = 0f
+    var rot = Vec3(0f,0f,0f)
+    var zoom = 1f
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
@@ -98,29 +98,29 @@ void main()
     float thickness = 0.01;
     float spacing = 100.;
 
-//    if (fract(_pixelPos.x / spacing) < thickness || fract(_pixelPos.z / spacing) < thickness)
-//    {
-//        if(int(_pixelPos.z) == 0)
-//        {
-//            gl_FragColor = vec4(1.0, 0., 0., 0.7);
-//        }
-//        else if(int(_pixelPos.x) == 0)
-//        {
-//            gl_FragColor = vec4(0., 0.2, 1., 0.9);
-//        }
-//        else
-//        {
-//           // gl_FragColor = vec4(vec3(1.), clamp(alpha, 0.0, 0.2));
-//            gl_FragColor = vec4(vec3(1.),  0.2);
-//        }
-//    }
-//    else
-//    {
-//        discard;
-//        //gl_FragColor = vec4(1.);
-//    }
+    if (fract(_pixelPos.x / spacing) < thickness || fract(_pixelPos.z / spacing) < thickness)
+    {
+        if(int(_pixelPos.z) == 0)
+        {
+            gl_FragColor = vec4(1.0, 0., 0., 0.7);
+        }
+        else if(int(_pixelPos.x) == 0)
+        {
+            gl_FragColor = vec4(0., 0.2, 1., 0.9);
+        }
+        else
+        {
+           // gl_FragColor = vec4(vec3(1.), clamp(alpha, 0.0, 0.2));
+            gl_FragColor = vec4(vec3(1.),  0.2);
+        }
+    }
+    else
+    {
+        discard;
+        //gl_FragColor = vec4(1.);
+    }
 
-gl_FragColor = vec4(0.3);
+//gl_FragColor = vec4(0.3);
 }
 """
     var initialized = false
@@ -136,10 +136,7 @@ gl_FragColor = vec4(0.3);
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
             scene!!.editorCamera!!.updateProjection(width, height)
-            scene!!.editorCamera!!.updateView()
 
-            //CoffeeRestaurant
-            //SimpleScene
             mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
 
             quadShader = Shader(screenQuadVertexCode, screenFragTex)
@@ -147,26 +144,8 @@ gl_FragColor = vec4(0.3);
             initialized = true
             screenQuadMesh = Utils.getScreenSizeQuad()
 
-            //
-
         }
     }
-
-//    fun getGirl_Test() {
-//        ObjParser(context, "models/girl.obj").also {
-//
-//            var data = it.getModelData()
-//
-//            val mesh = Mesh(data.mVertices, data.mIndices, data.mUVs)
-//            val mat = Material(Shader(vertexShaderCode, fragmentShaderCode))
-//            mat.addTexture(Texture(context, "textures/girltex_small.jpg"))
-//
-//            val renderer = MeshRenderer(mesh, mat)
-//
-////            if (!initialized)
-////                renderingObjs!!.add(renderer)
-//        }
-//    }
 
     fun getEditorStuff_Test() {
         val material = Material(Shader(groundGridVertex, groundGridFragment))
@@ -175,17 +154,6 @@ gl_FragColor = vec4(0.3);
         val meshRenderer = MeshRenderer(plane, material)
 
         editorObjs!!.add(meshRenderer)
-
-    }
-
-    // Loads a texture into OpenGL
-
-
-    // Unloads a texture from OpenGL
-
-
-    // Commands to do in the render thread.
-    fun PushCommand(/*A delegate here to call a command*/) {
 
     }
 
@@ -217,7 +185,7 @@ gl_FragColor = vec4(0.3);
     private fun loadObjInBuffer() {
         if(objsToLoad.size > 0){
             for(i in objsToLoad){
-                SceneObjectManager(null, this).testLoadObject(i)
+                SceneObjectManager(context, this).testLoadObject(i)
             }
             objsToLoad.clear()
         }
@@ -256,15 +224,19 @@ gl_FragColor = vec4(0.3);
         }
 
         //the camera should have as well a 'viewProjectionM'
+
+        scene!!.editorCamera!!.transform.eulerAngles = Vec3(rot.y, rot.x, rot.z)
+        scene!!.editorCamera!!.transform.position = Vec3(0f, 0f, -100f)
+        scene!!.editorCamera!!.transform.scale = Vec3(zoom,zoom, zoom  )
+
+//        entity.testMeshRenderer!!.transform
+//        entity.testMeshRenderer!!.transform.scale = Vec3(zoom, zoom, zoom)
+//
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
 
         for (entity in scene!!.entities) {
-        //--Log.d("Render Entity ", entity.name)
-            Log.d("assadasd", xRot.toString())
-
             entity.testMeshRenderer!!.bind(viewM, projM)
-            entity.testMeshRenderer!!.transform.eulerAngles = Vec3(0f, xRot, 0f)
 
             glDrawElements(
                 GL_TRIANGLES,

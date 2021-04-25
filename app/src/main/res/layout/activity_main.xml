@@ -6,39 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".views.MainActivity">
 
-
-
  <com.reynarz.minityeditor.engine.OpenGLView
      android:id="@+id/OpenGLView_activity"
      android:layout_width="match_parent"
-     android:layout_height="match_parent"/>
+     android:layout_height="match_parent"
+     app:layout_constraintBottom_toBottomOf="parent"
+     app:layout_constraintEnd_toEndOf="parent"
+     app:layout_constraintStart_toStartOf="parent"
+     app:layout_constraintTop_toTopOf="parent" />
 
  <androidx.constraintlayout.widget.ConstraintLayout
      android:id="@+id/codeContainer"
      android:layout_width="match_parent"
-     android:layout_height="match_parent">
+     android:layout_height="match_parent"
+     app:layout_constraintEnd_toEndOf="parent"
+     app:layout_constraintStart_toStartOf="parent"
+     app:layout_constraintTop_toTopOf="parent">
 
   <ImageView
       android:id="@+id/iv_backgroundImage"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:alpha="0.5"
       android:background="@color/black"
-      android:alpha="0.5"/>
+      app:layout_constraintBottom_toBottomOf="parent" />
 
   <EditText
       android:id="@+id/et_fragmentCode"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:background="#0000"
+      android:fontFamily="@font/consola"
+
+      android:inputType="textMultiLine|textNoSuggestions"
       android:paddingLeft="10dp"
       android:paddingRight="10dp"
-
-      android:background="#0000"
-      android:inputType="textMultiLine|textNoSuggestions"
       android:scrollbars="vertical"
-      android:fontFamily="@font/consola"
       android:text="Code here"
-      android:textSize="13dp"
       android:textColor="@color/white"
+      android:textSize="13dp"
 
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

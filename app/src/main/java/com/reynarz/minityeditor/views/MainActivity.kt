@@ -133,17 +133,19 @@ void main()
                 codeEditTex.setText(fragTex)
             } else {
                 codeEditTex.setText(vertexTex)
-
             }
         }
-
-        showHideButton.setOnClickListener {
+        fun enableDisableShaderEditor(){
             codeContainer.getViewById(R.id.iv_backgroundImage).isEnabled =
                 !codeContainer.getViewById(R.id.iv_backgroundImage).isEnabled
             codeContainer.getViewById(R.id.et_fragmentCode).isEnabled =
                 !codeContainer.getViewById(R.id.et_fragmentCode).isEnabled
             codeContainer.alpha = 1 - codeContainer.alpha
         }
+        showHideButton.setOnClickListener {
+            enableDisableShaderEditor()
+        }
+        enableDisableShaderEditor()
 
 
         button.setOnClickListener {
