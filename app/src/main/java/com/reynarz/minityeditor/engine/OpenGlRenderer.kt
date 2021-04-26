@@ -247,7 +247,15 @@ void main()
             }
 
 
-            if(entity.name != "Bounds"){
+//            glDrawElements(
+//                GL_TRIANGLES,
+//                entity.testMeshRenderer!!.indicesCount,
+//                GL_UNSIGNED_INT,
+//                entity.testMeshRenderer!!.indexBuffer
+//            )
+
+            if(entity.name != "Bounds")
+            {
                 glDrawElements(
                     GL_TRIANGLES,
                     entity.testMeshRenderer!!.indicesCount,
@@ -255,11 +263,19 @@ void main()
                     entity.testMeshRenderer!!.indexBuffer
                 )
             }
-            else{
-                glDrawArrays(
+            else
+            {
+//                glDrawArrays(
+//                    GL_LINES,
+//                    0,
+//                    entity.testMeshRenderer!!.vertexCount
+//                )
+
+                glDrawElements(
                     GL_LINES,
-                    0,
-                    entity.testMeshRenderer!!.vertexCount
+                    entity.testMeshRenderer!!.indicesCount,
+                    GL_UNSIGNED_INT,
+                    entity.testMeshRenderer!!.indexBuffer
                 )
             }
 

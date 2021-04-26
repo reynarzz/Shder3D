@@ -13,6 +13,8 @@ class SceneObjectManager(
 
         val rawObj = ObjParser(objectPath)
 
+
+
         var objData = rawObj.getModelData()
         val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs)
 
@@ -39,7 +41,12 @@ class SceneObjectManager(
 
     fun boundingBoxTest(boundingBox: BoundingBox): MeshRenderer {
 
-        return MeshRenderer(Mesh(boundingBox.verts!!, IntArray(1), FloatArray(1)), Utils.getUnlitMaterial())
+        var cube = ObjParser(context!!, "models/cube.obj").getModelData()
+
+        val mesh  = Mesh(boundingBox.verts!!, boundingBox.indices!!, FloatArray(1))
+        //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
+
+        return MeshRenderer(mesh, Utils.getUnlitMaterial())
     }
 
 }

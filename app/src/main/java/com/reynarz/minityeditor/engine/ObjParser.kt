@@ -5,13 +5,21 @@ import com.reynarz.minityeditor.files.FileManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class BoundingBox(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float) {
+class BoundingBox(
+    val minX: Float,
+    val minY: Float,
+    val minZ: Float,
+    val maxX: Float,
+    val maxY: Float,
+    val maxZ: Float
+) {
 
     var verts: FloatArray? = null
     var indices: IntArray? = null
 
     init {
         val verts = mutableListOf(
+
             minX, minY, maxZ,
             minX, minY, minZ,
             maxX, minY, minZ,
@@ -24,10 +32,20 @@ class BoundingBox(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Floa
         )
 
         val indices = mutableListOf(
-            0, 1, 2,
-            0, 2, 3
+            0, 1,
+            1, 2,
+            2, 3,
+            3, 0,
 
+            4, 5,
+            5, 6,
+            6, 7,
+            7, 4,
 
+            0, 4,
+            1, 5,
+            6, 2,
+            7, 3
         )
 
         this.verts = verts.toFloatArray()
@@ -58,6 +76,8 @@ class ObjParser {
     constructor(context: Context, file: String) {
         val inStream = context.assets.open(file)
         val reader = BufferedReader(InputStreamReader(inStream))
+
+        parseObj(reader)
     }
 
     constructor(fullPath: String) {
