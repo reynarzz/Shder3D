@@ -13,6 +13,7 @@ class Camera : Component() {
 
     init {
         Matrix.setIdentityM(projectionM, 0)
+        Matrix.setIdentityM(projectionMInv, 0)
     }
 
     fun updateProjection(width: Int, height: Int) {

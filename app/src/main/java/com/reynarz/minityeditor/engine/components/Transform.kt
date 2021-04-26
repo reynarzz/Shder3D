@@ -1,10 +1,11 @@
 package com.reynarz.minityeditor.engine.components
 
 import android.opengl.Matrix
+import android.util.Log
 import com.reynarz.minityeditor.engine.vec3
 import kotlin.math.round
 
-class Transform  { // : Component()
+class Transform { // : Component()
 
     private var _position = vec3()
     private var _rotation = vec3()
@@ -14,7 +15,6 @@ class Transform  { // : Component()
         get() {
             return _position
         }
-
         set(value) {
             field = value
             _position = value
@@ -79,6 +79,7 @@ class Transform  { // : Component()
         modelMInv = FloatArray(16)
 
         Matrix.setIdentityM(modelM, 0)
+
         restartTransform()
     }
 
@@ -93,7 +94,6 @@ class Transform  { // : Component()
     private fun updateModelMatrix() {
         Matrix.multiplyMM(modelM, 0, translationM, 0, rotationM, 0)
         Matrix.multiplyMM(modelM, 0, modelM, 0, scaleM, 0)
-
         Matrix.invertM(modelMInv, 0, modelM, 0)
     }
 }

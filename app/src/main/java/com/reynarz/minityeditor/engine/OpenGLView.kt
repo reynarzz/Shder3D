@@ -11,6 +11,15 @@ import kotlin.math.sqrt
 class OpenGLView(context: Context, attributeSet: AttributeSet) :
     GLSurfaceView(context, attributeSet) {
 
+    companion object{
+        var xPixel = 0f
+        var yPixel = 0f
+
+        fun setTouchPixelPos(x : Float, y : Float){
+            xPixel = x
+            yPixel = y
+        }
+    }
     var renderer = OpenGlRenderer(context)
 
     init {
@@ -102,9 +111,8 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
             }
         }
 
-        var ray = renderer.touchPointer.getWorldPosRay(event!!.x, event.y)
+        setTouchPixelPos(event!!.x, event!!.y)
 
-        renderer.pos = ray
         return true
     }
 }

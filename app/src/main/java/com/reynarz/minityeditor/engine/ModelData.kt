@@ -10,6 +10,6 @@ data class ModelData(
     val mSpecularColour: FloatArray,
     val mSpecularExponent: FloatArray,
     val mDissolve: FloatArray,
-    val boundingBox: BoundingBox
+    val bounds: Bounds
 ) {
 }

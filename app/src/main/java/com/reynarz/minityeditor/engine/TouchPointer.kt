@@ -15,17 +15,17 @@ class TouchPointer(val camera: Camera) {
     }
 
     fun getWorldPosRay(xPixel: Float, yPixel: Float): vec3 {
-        val normalized = getNormalizedPos(xPixel, yPixel)
+        val normalized = getNormalizedPos2(xPixel, yPixel)
 
         normalizedVec[0] = normalized.x
         normalizedVec[1] = normalized.y
-        normalizedVec[2] = 1f
-        normalizedVec[3] = -1f
+        normalizedVec[2] = -1f
+        normalizedVec[3] = 1f
 
         Matrix.multiplyMV(clipCoords, 0, camera.projectionMInv, 0, normalizedVec, 0)
         Matrix.multiplyMV(clipCoords, 0, camera.viewMInv, 0, clipCoords, 0)
 
-        val result = vec3(clipCoords!![0], 0f, clipCoords!![2])
+        val result = vec3(clipCoords!![0], clipCoords!![0], clipCoords!![2])
         result.normalize()
 
         Log.d("normalized", "(${normalized.x}, ${normalized.y})")
@@ -38,6 +38,12 @@ class TouchPointer(val camera: Camera) {
         val x = ((xPixel / MainActivity.width.toFloat()) - 0.5f) * 2f
         val y = ((yPixel / MainActivity.height.toFloat()) - 0.5f) * 2f
 
+        return vec2(x, -y)
+    }
+
+    fun getNormalizedPos2(xPixel: Float, yPixel: Float): vec2 {
+        val x =  (2f * xPixel) / MainActivity.width.toFloat() - 1f
+        val y =  (2f * yPixel) / MainActivity.height.toFloat() - 1f
         return vec2(x, -y)
     }
 }

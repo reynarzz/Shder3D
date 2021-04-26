@@ -28,7 +28,7 @@ class SceneObjectManager(
         sceneEntity.testMeshRenderer = renderer
 
 
-        val bounding = boundingBoxTest(objData.boundingBox)
+        val bounding = boundingBoxTest(objData.bounds)
 
         val sceneEntity2 = SceneEntity()
         sceneEntity2.name = "Bounds"
@@ -39,11 +39,11 @@ class SceneObjectManager(
         openGlRenderer.scene.entities.add(sceneEntity2)
     }
 
-    fun boundingBoxTest(boundingBox: BoundingBox): MeshRenderer {
+    fun boundingBoxTest(bounds: Bounds): MeshRenderer {
 
         var cube = ObjParser(context!!, "models/cube.obj").getModelData()
 
-        val mesh  = Mesh(boundingBox.verts!!, boundingBox.indices!!, FloatArray(1))
+        val mesh  = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1))
         //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
 
         return MeshRenderer(mesh, Utils.getUnlitMaterial())

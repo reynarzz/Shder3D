@@ -116,7 +116,7 @@ attribute vec4 _VERTEX_;
 attribute vec2 _UV_;
 varying vec2 _uv;
 varying vec4 pos;
-
+uniform mat4 UNITY_MATRIX_MVP;
 void main() 
 {
    _uv = _UV_;
