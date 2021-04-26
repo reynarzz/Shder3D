@@ -4,16 +4,27 @@ import android.opengl.Matrix
 
 class Camera : Component() {
 
-     var projectionM = FloatArray(16)
-         private set
+    val projectionM = FloatArray(16)
+
+    val projectionMInv = FloatArray(16)
 
     val viewM = transform.modelM!!
+    val viewMInv = transform.modelMInv!!
 
     init {
         Matrix.setIdentityM(projectionM, 0)
     }
 
-    fun updateProjection(width : Int, height: Int) {
-        Matrix.perspectiveM(projectionM,0, 45.0f, width.toFloat() / height.toFloat(), 1.0f, 1000.0f)
+    fun updateProjection(width: Int, height: Int) {
+        Matrix.perspectiveM(
+            projectionM,
+            0,
+            45.0f,
+            width.toFloat() / height.toFloat(),
+            1.0f,
+            1000.0f
+        )
+
+        Matrix.invertM(projectionMInv, 0, projectionM , 0)
     }
 }

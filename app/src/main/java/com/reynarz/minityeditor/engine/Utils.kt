@@ -106,6 +106,45 @@ void main()
 
             return mat
         }
+
+        fun getUnlitMaterial() : Material {
+
+            var vertexTex = """ 
+            
+attribute vec4 _VERTEX_; 
+           
+attribute vec2 _UV_;
+varying vec2 _uv;
+varying vec4 pos;
+
+void main() 
+{
+   _uv = _UV_;
+   
+   pos = UNITY_MATRIX_MVP* _VERTEX_;
+   
+   gl_Position = pos;
+}"""
+
+            var fragTex = """
+            
+precision mediump float; 
+varying vec4 pos;
+
+varying vec2 _uv;
+
+uniform sampler2D sTexture;
+
+void main()
+{
+    gl_FragColor = vec4(1.);
+}"""
+
+            val shader = Shader(vertexTex, fragTex)
+            val mat = Material(shader)
+
+            return mat
+        }
     }
 
     class ShaderFileUtils {

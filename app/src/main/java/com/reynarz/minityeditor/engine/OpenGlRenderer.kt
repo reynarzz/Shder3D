@@ -11,11 +11,15 @@ import javax.microedition.khronos.opengles.GL10
 
 class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
 
+    var pos = vec3(0f)
     private lateinit var vertexShaderCode: String
     private lateinit var fragmentShaderCode: String
+    lateinit var touchPointer : TouchPointer
+
     val scene: Scene = Scene()
-    var rot = Vec3(0f,0f,0f)
+    var rot = vec3(0f,0f,0f)
     var zoom = 1f
+
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
@@ -144,6 +148,7 @@ void main()
             initialized = true
             screenQuadMesh = Utils.getScreenSizeQuad()
 
+            touchPointer = TouchPointer(scene!!.editorCamera!!)
         }
     }
 
@@ -225,9 +230,9 @@ void main()
 
         //the camera should have as well a 'viewProjectionM'
 
-        scene!!.editorCamera!!.transform.eulerAngles = Vec3(rot.y, rot.x, rot.z)
-        scene!!.editorCamera!!.transform.position = Vec3(0f, 0f, -100f)
-        scene!!.editorCamera!!.transform.scale = Vec3(zoom,zoom, zoom  )
+        scene!!.editorCamera!!.transform.eulerAngles = vec3(rot.y, rot.x, rot.z)
+        scene!!.editorCamera!!.transform.position = vec3(0f, 0f, -100f)
+        scene!!.editorCamera!!.transform.scale = vec3(zoom,zoom, zoom  )
 
 //        entity.testMeshRenderer!!.transform
 //        entity.testMeshRenderer!!.transform.scale = Vec3(zoom, zoom, zoom)
@@ -236,14 +241,28 @@ void main()
         val projM = scene!!.editorCamera!!.projectionM
 
         for (entity in scene!!.entities) {
-            entity.testMeshRenderer!!.bind(viewM, projM)
+            if( entity.testMeshRenderer != null){
+                entity.testMeshRenderer!!.bind(viewM, projM)
+                //entity.testMeshRenderer!!.transform.position = pos
+            }
 
-            glDrawElements(
-                GL_TRIANGLES,
-                entity.testMeshRenderer!!.indicesCount,
-                GL_UNSIGNED_INT,
-                entity.testMeshRenderer!!.indexBuffer
-            )
+
+            if(entity.name != "Bounds"){
+                glDrawElements(
+                    GL_TRIANGLES,
+                    entity.testMeshRenderer!!.indicesCount,
+                    GL_UNSIGNED_INT,
+                    entity.testMeshRenderer!!.indexBuffer
+                )
+            }
+            else{
+                glDrawArrays(
+                    GL_LINES,
+                    0,
+                    entity.testMeshRenderer!!.vertexCount
+                )
+            }
+
         }
 
         if(!test){

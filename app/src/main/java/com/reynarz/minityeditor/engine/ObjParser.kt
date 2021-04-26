@@ -1,10 +1,39 @@
 package com.reynarz.minityeditor.engine
 
 import android.content.Context
-import android.util.Log
 import com.reynarz.minityeditor.files.FileManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
+
+class BoundingBox(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float) {
+
+    var verts: FloatArray? = null
+    var indices: IntArray? = null
+
+    init {
+        val verts = mutableListOf(
+            minX, minY, maxZ,
+            minX, minY, minZ,
+            maxX, minY, minZ,
+            maxX, minY, maxZ,
+
+            minX, maxY, maxZ,
+            minX, maxY, minZ,
+            maxX, maxY, minZ,
+            maxX, maxY, maxZ,
+        )
+
+        val indices = mutableListOf(
+            0, 1, 2,
+            0, 2, 3
+
+
+        )
+
+        this.verts = verts.toFloatArray()
+        this.indices = indices.toIntArray()
+    }
+}
 
 class ObjParser {
 
@@ -12,6 +41,16 @@ class ObjParser {
     private val mFinalNormals = mutableListOf<Float>()
     private val mFinalUVs = mutableListOf<Float>()
     private val mFinalIndices = mutableListOf<Int>()
+
+    var minX = 0f
+    var minY = 0f
+    var minZ = 0f
+
+    var maxX = 0f
+    var maxY = 0f
+    var maxZ = 0f
+
+    var boundingBox: BoundingBox? = null
 
     /**
      * Init - parses the file in assets that matches the file string passed.
@@ -27,6 +66,31 @@ class ObjParser {
         parseObj(reader)
     }
 
+    fun calcBoundingBox(x: Float, y: Float, z: Float) {
+        if (x < minX) {
+            minX = x
+        }
+        if (x > maxX) {
+            maxX = x
+        }
+
+
+        if (y < minY) {
+            minY = y
+        }
+        if (y > maxY) {
+            maxY = y
+        }
+
+
+        if (z < minZ) {
+            minZ = z
+        }
+        if (z > maxZ) {
+            maxZ = z
+        }
+    }
+
     fun parseObj(reader: BufferedReader) {
 
         val vertices = ArrayList<Triple<Float, Float, Float>>()
@@ -36,6 +100,8 @@ class ObjParser {
         val faceMap = HashMap<Triple<Int, Int?, Int?>, Int>()
         var nextIndex: Int = 0
 
+
+
         reader.forEachLine { line ->
 
             if (line.startsWith("v ")) {
@@ -44,6 +110,9 @@ class ObjParser {
 
                 // split[0] is the prefix
                 val vertex = Triple(split[1].toFloat(), split[2].toFloat(), split[3].toFloat())
+
+                calcBoundingBox(split[1].toFloat(), split[2].toFloat(), split[3].toFloat())
+
                 vertices.add(vertex)
             } else if (line.startsWith("vn")) {
 
@@ -174,6 +243,8 @@ class ObjParser {
                 }
             }
         }
+
+        boundingBox = BoundingBox(minX, minY, minZ, maxX, maxY, maxZ)
     }
 
     fun getModelData(): ModelData {
@@ -186,7 +257,8 @@ class ObjParser {
             emptyArray<Float>().toFloatArray(),
             emptyArray<Float>().toFloatArray(),
             emptyArray<Float>().toFloatArray(),
-            emptyArray<Float>().toFloatArray()
+            emptyArray<Float>().toFloatArray(),
+            boundingBox!!
         )
     }
 }

@@ -14,6 +14,7 @@ class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray) 
     var uvBuffer: FloatBuffer? = null
 
     val indicesCount = indices.size
+    val vertexCount = vertices.size
 
     private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
 

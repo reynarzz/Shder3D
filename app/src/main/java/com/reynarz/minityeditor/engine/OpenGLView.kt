@@ -24,19 +24,21 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
     private var prevY = 0f
     private var prevZoomDist = 0.0f
 
-    fun dot(a: Vec3, b: Vec3): Float {
+    fun dot(a: vec3, b: vec3): Float {
         return a.x * b.x + a.y * b.y + a.z + b.z
     }
 
-    fun getDistance(a: Vec3, b: Vec3): Float {
-        val diff = Vec3(b.x - a.x, b.y - a.y, b.z - a.z)
+    fun getDistance(a: vec3, b: vec3): Float {
+        val diff = vec3(b.x - a.x, b.y - a.y, b.z - a.z)
 
         return sqrt(dot(diff, diff))
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+
+
         val action = event!!.actionMasked
-        when(action) {
+        when (action) {
             MotionEvent.ACTION_DOWN -> {
                 // prevents weird jumping
                 prevX = event!!.x
@@ -49,13 +51,13 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
 
             MotionEvent.ACTION_POINTER_DOWN -> {
                 event.getPointerId(0)
-                val finger1 = Vec3(
+                val finger1 = vec3(
 
                     (event.getX(0) / MainActivity.width.toFloat() - 0.5f) * 2f,
                     (event.getY(0) / MainActivity.height.toFloat() - 0.5f) * 2f,
                     0f
                 )
-                val finger2 = Vec3(
+                val finger2 = vec3(
                     (event.getX(1) / MainActivity.width.toFloat() - 0.5f) * 2f,
                     (event.getY(1) / MainActivity.height.toFloat() - 0.5f) * 2f,
                     0f
@@ -66,12 +68,15 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                 prevZoomDist = getDistance(finger1, finger2)
             }
 
+
             MotionEvent.ACTION_MOVE -> {
+
+
                 if (event.pointerCount == 1) {
                     val dx = event!!.x - prevX
                     val dy = event!!.y - prevY
 
-                    renderer.rot = Vec3(renderer.rot.x + dx,renderer.rot.y + dy, 0f)
+                    renderer.rot = vec3(renderer.rot.x + dx, renderer.rot.y + dy, 0f)
 
                     prevX = event!!.x
                     prevY = event!!.y
@@ -81,12 +86,12 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
 
                 if (event.pointerCount > 1) {
 
-                    val finger1 = Vec3(
+                    val finger1 = vec3(
                         (event.getX(0) / MainActivity.width.toFloat() - 0.5f) * 2f,
                         (event.getY(0) / MainActivity.height.toFloat() - 0.5f) * 2f,
                         0f
                     )
-                    val finger2 = Vec3(
+                    val finger2 = vec3(
                         (event.getX(1) / MainActivity.width.toFloat() - 0.5f) * 2f,
                         (event.getY(1) / MainActivity.height.toFloat() - 0.5f) * 2f,
                         0f
@@ -97,6 +102,9 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
             }
         }
 
+        var ray = renderer.touchPointer.getWorldPosRay(event!!.x, event.y)
+
+        renderer.pos = ray
         return true
     }
 }

@@ -1,16 +1,16 @@
 package com.reynarz.minityeditor.engine.components
 
 import android.opengl.Matrix
-import com.reynarz.minityeditor.engine.Vec3
+import com.reynarz.minityeditor.engine.vec3
 import kotlin.math.round
 
 class Transform  { // : Component()
 
-    private var _position = Vec3()
-    private var _rotation = Vec3()
-    private var _scale = Vec3()
+    private var _position = vec3()
+    private var _rotation = vec3()
+    private var _scale = vec3()
 
-    var position = Vec3()
+    var position = vec3()
         get() {
             return _position
         }
@@ -24,7 +24,7 @@ class Transform  { // : Component()
             updateModelMatrix()
         }
 
-    var eulerAngles = Vec3()
+    var eulerAngles = vec3()
         get() {
             return _rotation
         }
@@ -46,7 +46,7 @@ class Transform  { // : Component()
             updateModelMatrix()
         }
 
-    var scale = Vec3()
+    var scale = vec3()
         get() {
             return _scale
         }
@@ -63,6 +63,9 @@ class Transform  { // : Component()
     var modelM: FloatArray? = null
         private set
 
+    var modelMInv: FloatArray? = null
+        private set
+
     private var translationM: FloatArray? = null
     private var rotationM: FloatArray? = null
     private var scaleM: FloatArray? = null
@@ -73,9 +76,9 @@ class Transform  { // : Component()
         translationM = FloatArray(16)
         rotationM = FloatArray(16)
         scaleM = FloatArray(16)
+        modelMInv = FloatArray(16)
 
         Matrix.setIdentityM(modelM, 0)
-
         restartTransform()
     }
 
@@ -90,5 +93,7 @@ class Transform  { // : Component()
     private fun updateModelMatrix() {
         Matrix.multiplyMM(modelM, 0, translationM, 0, rotationM, 0)
         Matrix.multiplyMM(modelM, 0, modelM, 0, scaleM, 0)
+
+        Matrix.invertM(modelMInv, 0, modelM, 0)
     }
 }

@@ -82,17 +82,17 @@ class MyObjParser(context: Context, file: String) {
     /**
      * returns the Model data which has been parsed
      */
-    fun getModelData(): ModelData {
-        return ModelData(mFinalVertices.toFloatArray(),
-                mFinalNormals.toFloatArray(),
-                finalUVs.toFloatArray(),
-                finalIndices.toIntArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray(),
-                emptyArray<Float>().toFloatArray())
-    }
+//    fun getModelData(): ModelData {
+//        return ModelData(mFinalVertices.toFloatArray(),
+//                mFinalNormals.toFloatArray(),
+//                finalUVs.toFloatArray(),
+//                finalIndices.toIntArray(),
+//                emptyArray<Float>().toFloatArray(),
+//                emptyArray<Float>().toFloatArray(),
+//                emptyArray<Float>().toFloatArray(),
+//                emptyArray<Float>().toFloatArray(),
+//                emptyArray<Float>().toFloatArray())
+//    }
 
 //    fun getMeshes(path: String) : List<Mesh> {
 //

@@ -85,7 +85,7 @@ class Material(val shader: Shader) {
         set("UNITY_MATRIX_P", projection);
         set("unity_WorldToObject", InvModel);
         set("unity_ObjectToWorld", model);
-        set("_ScreenParams", Vec4(MainActivity.width.toFloat(), MainActivity.height.toFloat(), 1f + 1f / MainActivity.width.toFloat(), 1f + 1f / MainActivity.height.toFloat()))
+        set("_ScreenParams", vec4(MainActivity.width.toFloat(), MainActivity.height.toFloat(), 1f + 1f / MainActivity.width.toFloat(), 1f + 1f / MainActivity.height.toFloat()))
     }
 
     val MVP = FloatArray(16)
@@ -106,12 +106,12 @@ class Material(val shader: Shader) {
         glUniformMatrix4fv(uniformLocation, 1, false, matrix, 0)
     }
 
-    fun set(uniformName: String, vec4: Vec4) {
+    fun set(uniformName: String, vec4: vec4) {
         val uniformLocation = glGetUniformLocation(shader.program, uniformName)
         glUniform4f(uniformLocation, vec4.x, vec4.y, vec4.z, vec4.w)
     }
 
-    fun set(uniformName: String, vec3: Vec3) {
+    fun set(uniformName: String, vec3: vec3) {
         val uniformLocation = glGetUniformLocation(shader.program, uniformName)
         glUniform3f(uniformLocation, vec3.x, vec3.y, vec3.z)
     }

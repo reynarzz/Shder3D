@@ -1,18 +1,18 @@
 package com.reynarz.minityeditor.engine.data
 
-import com.reynarz.minityeditor.engine.Vec3
+import com.reynarz.minityeditor.engine.vec3
 import com.reynarz.minityeditor.engine.components.*
 
 class MaterialData : Entity() {
 
     //Ka
-    var ambientColor = Vec3()
+    var ambientColor = vec3()
 
     //Kd
-    var diffuseColor = Vec3()
+    var diffuseColor = vec3()
 
     //Ks
-    var specularColor = Vec3()
+    var specularColor = vec3()
 
     //Ns
     var specularHighlight = 0f

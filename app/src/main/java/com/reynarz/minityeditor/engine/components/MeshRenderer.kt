@@ -8,6 +8,7 @@ class MeshRenderer(private val mesh: Mesh, val material: Material) : Component()
 
     val indexBuffer = mesh.indexBuffer
     val indicesCount = mesh.indicesCount
+    val vertexCount = mesh.vertexCount
 
     fun bind(view: FloatArray, projection: FloatArray) {
         material.bind(transform!!.modelM!!, view, projection)
