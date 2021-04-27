@@ -1,4 +1,4 @@
-package com.reynarz.minityeditor.engine.data
+package com.reynarz.minityeditor.models
 
 import com.reynarz.minityeditor.engine.vec3
 import com.reynarz.minityeditor.engine.components.*

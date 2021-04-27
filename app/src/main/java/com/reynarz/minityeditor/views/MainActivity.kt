@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
@@ -22,6 +24,9 @@ import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.SceneObjectManager
 import com.reynarz.minityeditor.engine.Utils
+import com.reynarz.minityeditor.models.MeshRendererComponentData
+import com.reynarz.minityeditor.models.TransformComponentData
+import com.reynarz.minityeditor.viewmodels.SceneEntityViewModel
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -197,16 +202,36 @@ void main()
 
             startActivityForResult(intent, 1)
         }
-
+        viewModelSetup()
         editModel()
 
+
         sceneObjManager = SceneObjectManager(this, openGLView.renderer)
+    }
+
+    lateinit var sceneEntityViewModel: SceneEntityViewModel
+
+    private fun viewModelSetup() {
+        sceneEntityViewModel = ViewModelProvider(this).get(SceneEntityViewModel::class.java)
+
+        sceneEntityViewModel.selected.value = true
+
+        sceneEntityViewModel.selected.observe(this, Observer {
+            // the thing you want to notify about the change
+
+        })
     }
 
     private fun editModel() {
         val editModel = findViewById<Button>(R.id.btn_editModelComponents)
 
-        val inspectorFragment = InspectorFragmentView()
+        val viewModel = ViewModelProvider(this).get(SceneEntityViewModel::class.java)
+
+        viewModel.componentsData.value = mutableListOf()
+        viewModel.componentsData.value!!.add(TransformComponentData())
+        viewModel.componentsData.value!!.add(MeshRendererComponentData())
+
+        val inspectorFragment = InspectorFragmentView(viewModel)
 
         editModel.setOnClickListener {
             supportFragmentManager.beginTransaction().apply {

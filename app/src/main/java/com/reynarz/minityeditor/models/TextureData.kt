@@ -1,4 +1,4 @@
-package com.reynarz.minityeditor.engine.data
+package com.reynarz.minityeditor.models
 
 data class TextureData(var name: String) {
     var id = 0
