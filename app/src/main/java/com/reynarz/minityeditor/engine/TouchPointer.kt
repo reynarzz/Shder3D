@@ -4,6 +4,9 @@ import android.opengl.Matrix
 import android.util.Log
 import com.reynarz.minityeditor.engine.components.Camera
 import com.reynarz.minityeditor.views.MainActivity
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class TouchPointer(val camera: Camera) {
 
@@ -15,7 +18,8 @@ class TouchPointer(val camera: Camera) {
     }
 
     fun getWorldPosRay(xPixel: Float, yPixel: Float): vec3 {
-        val normalized = getNormalizedPos2(xPixel, yPixel)
+        val normalized2 = getNormalizedPos2(xPixel, yPixel)
+        val normalized = getNormalizedPos(xPixel, yPixel)
 
         normalizedVec[0] = normalized.x
         normalizedVec[1] = normalized.y
@@ -29,9 +33,28 @@ class TouchPointer(val camera: Camera) {
         result.normalize()
 
         Log.d("normalized", "(${normalized.x}, ${normalized.y})")
-        Log.d("Ray", "${result.x}, ${result.y}, ${result.z}")
+        Log.d("normalized2", "(${normalized2.x}, ${normalized2.y})")
+       // Log.d("Ray", "${result.x}, ${result.y}, ${result.z}")
 
         return result
+    }
+
+    fun intersect(bounds: Bounds, ray: vec3) : Boolean {
+
+        var txMin = (bounds.min.x - camera.transform.position.x) / ray.x
+        var txMax = (bounds.max.x - camera.transform.position.x) / ray.x
+
+        if(txMax < txMin)
+        {
+
+        }
+
+        if(bounds.min.x <= ray.x && bounds.max.x >= ray.x &&
+        bounds.min.y <= ray.y ) {
+
+        }
+
+        return false
     }
 
     fun getNormalizedPos(xPixel: Float, yPixel: Float): vec2 {

@@ -2,12 +2,13 @@ package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20.*
 
-class FrameBuffer(width : Int, height: Int) {
+class FrameBuffer(private val width : Int, private val height: Int) {
 
     private var frameBuffer : IntArray = IntArray(1)
 
     val colorTexture : Int
     val depthTexture : Int
+    var stencilTexture = -1
 
     init {
         // Create a frame buffer
@@ -33,6 +34,19 @@ class FrameBuffer(width : Int, height: Int) {
         }
         unBind()
     }
+
+
+//    fun createPickingBuffer_TEST() {
+//        glGenFramebuffers(1, frameBuffer, 0)
+//        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
+//
+//        stencilTexture = Texture(0, )
+//
+//        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, stencilTexture, 0)
+//        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
+//
+//        unBind()
+//    }
 
     fun bind() {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])

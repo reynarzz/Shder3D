@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.jaiselrahman.filepicker.model.MediaFile
@@ -28,7 +29,7 @@ import java.io.InputStreamReader
 class MainActivity : AppCompatActivity() {
 
     private lateinit var openGLView: OpenGLView
-    private var sceneObjManager : SceneObjectManager? = null
+    private var sceneObjManager: SceneObjectManager? = null
 
     companion object {
         var width = 0
@@ -63,6 +64,13 @@ class MainActivity : AppCompatActivity() {
         val viewShader = findViewById<Button>(R.id.btn_switchShaderView)
 
         requestPermissions()
+
+        val sceneFragment = SceneFragmentView()
+
+//        supportFragmentManager.beginTransaction().apply {
+//            replace(R.id.mainFragment, sceneFragment)
+//            commit()
+//        }
 
 
 //        val recycleView = findViewById<RecyclerView>(R.id.rv_fileManagerView)
@@ -135,7 +143,7 @@ void main()
                 codeEditTex.setText(vertexTex)
             }
         }
-        fun enableDisableShaderEditor(){
+        fun enableDisableShaderEditor() {
             codeContainer.getViewById(R.id.iv_backgroundImage).isEnabled =
                 !codeContainer.getViewById(R.id.iv_backgroundImage).isEnabled
             codeContainer.getViewById(R.id.et_fragmentCode).isEnabled =
@@ -160,6 +168,7 @@ void main()
                 Utils.ShaderFileUtils.processInclude(include1, vertexTex),
                 Utils.ShaderFileUtils.processInclude(include1, fragTex)
             )
+
             Toast.makeText(this, "Compiled", Toast.LENGTH_SHORT).show()
             openGLView.clearFocus()
         }
@@ -183,13 +192,26 @@ void main()
             )
 
             startActivityForResult(intent, 1)
-
         }
+
+        editModel()
 
         sceneObjManager = SceneObjectManager(this, openGLView.renderer)
     }
 
+    private fun editModel() {
+        val editModel = findViewById<Button>(R.id.btn_editModelComponents)
 
+        val inspectorFragment = InspectorFragmentView()
+
+        editModel.setOnClickListener {
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.mainFragment, inspectorFragment)
+                commit()
+                //remove()
+            }
+        }
+    }
 
     private fun getInclude(assets: AssetManager, include: String): String {
         val inStream = assets.open(include)
@@ -250,10 +272,11 @@ void main()
         super.onActivityResult(requestCode, resultCode, data)
 
         // add a new Obj
-        if(requestCode == 1 && data != null) {
-            val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
+        if (requestCode == 1 && data != null) {
+            val files =
+                data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
-            for(path in files!!) {
+            for (path in files!!) {
                 openGLView.renderer.loadNewObjCommand(path.path)
             }
         }

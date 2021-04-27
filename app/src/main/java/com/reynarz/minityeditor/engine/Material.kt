@@ -79,13 +79,14 @@ class Material(val shader: Shader) {
 
         Matrix.invertM(InvModel, 0, model, 0)
 
-        set("UNITY_MATRIX_MVP", MVP);
-        set("UNITY_MATRIX_MV", MV);
-        set("UNITY_MATRIX_V", view);
-        set("UNITY_MATRIX_P", projection);
-        set("unity_WorldToObject", InvModel);
-        set("unity_ObjectToWorld", model);
+        set("UNITY_MATRIX_MVP", MVP)
+        set("UNITY_MATRIX_MV", MV)
+        set("UNITY_MATRIX_V", view)
+        set("UNITY_MATRIX_P", projection)
+        set("unity_WorldToObject", InvModel)
+        set("unity_ObjectToWorld", model)
         set("_ScreenParams", vec4(MainActivity.width.toFloat(), MainActivity.height.toFloat(), 1f + 1f / MainActivity.width.toFloat(), 1f + 1f / MainActivity.height.toFloat()))
+        set("_WorldSpaceCameraPos", vec3(view[3], view[7], view[11]))
     }
 
     val MVP = FloatArray(16)

@@ -1,15 +1,17 @@
 package com.reynarz.minityeditor.engine
 
 class Bounds(
-    val minX: Float,
-    val minY: Float,
-    val minZ: Float,
-    val maxX: Float,
-    val maxY: Float,
-    val maxZ: Float
+     minX: Float,
+     minY: Float,
+     minZ: Float,
+     maxX: Float,
+     maxY: Float,
+     maxZ: Float
 ) {
 
     val min = vec3(minX, minY, minZ)
+    val max = vec3(maxX, maxY, maxZ)
+
     var verts: FloatArray? = null
     var indices: IntArray? = null
 

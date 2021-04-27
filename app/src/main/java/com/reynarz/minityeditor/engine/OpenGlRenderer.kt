@@ -89,17 +89,17 @@ void main()
         varying vec2 _uv;
 uniform vec3 _diffuse_;
 
-uniform vec3 _cameraWorldPos_;
+uniform vec3 _WorldSpaceCameraPos;
 varying vec3 _pixelPos;
 
 void main()
 {
-    float maxDist = 100.;
+    float maxDist = 250.;
 
-   // float alpha = (maxDist - length(_pixelPos - _cameraWorldPos_));
+    //float alpha = (maxDist - length(_pixelPos - _WorldSpaceCameraPos));
 
-    float thickness = 0.01;
-    float spacing = 100.;
+    float thickness = 0.05;
+    float spacing = 10.;
 
     if (fract(_pixelPos.x / spacing) < thickness || fract(_pixelPos.z / spacing) < thickness)
     {
@@ -113,14 +113,15 @@ void main()
         }
         else
         {
-           // gl_FragColor = vec4(vec3(1.), clamp(alpha, 0.0, 0.2));
-            gl_FragColor = vec4(vec3(1.),  0.2);
+        
+        //gl_FragColor = vec4(alpha);
+           // gl_FragColor = vec4(vec3(0.5), smoothstep(alpha, 0.0, 0.2));
+            gl_FragColor = vec4(vec3(0.13),  1.);
         }
     }
     else
     {
         discard;
-        //gl_FragColor = vec4(1.);
     }
 
 //gl_FragColor = vec4(0.3);
@@ -148,6 +149,8 @@ void main()
             screenQuadMesh = Utils.getScreenSizeQuad()
 
             touchPointer = TouchPointer(scene!!.editorCamera!!)
+
+            getEditorStuff_Test()
         }
     }
 
@@ -177,8 +180,6 @@ void main()
     var screenQuadMesh: Mesh? = null
 
     val selectedObjID_Test = 0
-
-    private var test = false
 
     private val objsToLoad = mutableListOf<String>()
 
@@ -243,8 +244,6 @@ void main()
         for (entity in scene!!.entities) {
             if (entity.testMeshRenderer != null) {
                 entity.testMeshRenderer!!.bind(viewM, projM)
-
-                entity.testMeshRenderer!!.transform.position = ray
             }
 
             if (entity.name != "Bounds") {
@@ -262,13 +261,8 @@ void main()
                     entity.testMeshRenderer!!.indexBuffer
                 )
             }
-
         }
 
-        if (!test) {
-            test = true
-            getEditorStuff_Test()
-        }
         for (obj in editorObjs!!) {
             obj.bind(viewM, projM)
 
