@@ -186,12 +186,12 @@
                         android:paddingRight="1dp"
                         android:text="X"
                         android:textColor="@color/white"
-                        app:layout_constraintBottom_toBottomOf="@+id/rotation_editText"
+                        app:layout_constraintBottom_toBottomOf="@+id/et_xRot"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/rotation_editText" />
+                        app:layout_constraintTop_toTopOf="@+id/et_xRot" />
 
                     <EditText
-                        android:id="@+id/rotation_editText"
+                        android:id="@+id/et_xRot"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
                         android:text="0"
@@ -223,6 +223,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
+                        android:id="@+id/et_yRot"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
                         android:text="0"
@@ -254,6 +255,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
+                        android:id="@+id/et_zRot"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
                         android:text="0"
@@ -313,12 +315,12 @@
                         android:paddingRight="1dp"
                         android:text="X"
                         android:textColor="@color/white"
-                        app:layout_constraintBottom_toBottomOf="@+id/scale_editText"
+                        app:layout_constraintBottom_toBottomOf="@+id/et_xScale"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/scale_editText" />
+                        app:layout_constraintTop_toTopOf="@+id/et_xScale" />
 
                     <EditText
-                        android:id="@+id/scale_editText"
+                        android:id="@+id/et_xScale"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
                         android:text="0"
@@ -350,6 +352,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
+                        android:id="@+id/et_yScale"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
                         android:text="0"
@@ -381,6 +384,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
+                        android:id="@+id/et_zScale"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
                         android:text="0"

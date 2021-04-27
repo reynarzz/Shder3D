@@ -26,14 +26,14 @@ class InspectorFragmentView(private val sceneEntityViewModel: SceneEntityViewMod
                     R.layout.transform_fragment_view -> {
                         val transform = i as TransformComponentData
 
-                        Log.d(
-                            "Transform changed",
-                            "(${transform.position.x}, ${transform.position.y}, ${transform.position.z})"
-                        )
+                        Log.d("Position", "(${transform.position.x}, ${transform.position.y}, ${transform.position.z})")
+                        Log.d("Rotation", "(${transform.eulerAngles.x}, ${transform.eulerAngles.y}, ${transform.eulerAngles.z})")
+                        Log.d("Scale", "(${transform.scale.x}, ${transform.scale.y}, ${transform.scale.z})")
                     }
                 }
             }
         })
+
 
         val adapter = InspectorRecycleViewAdapter(sceneEntityViewModel)
         val componentsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_componentsRecycleView)
