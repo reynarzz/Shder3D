@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
 
     <ImageView
         android:layout_width="match_parent"
@@ -64,11 +65,11 @@
                         android:id="@+id/editText"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
                         android:textColor="@color/white"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         app:layout_constraintStart_toEndOf="@+id/textView4"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,11 +96,11 @@
                     <EditText
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
                         android:textColor="@color/white"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView6"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -126,10 +127,10 @@
                     <EditText
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/white"
 
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -192,11 +193,11 @@
                         android:id="@+id/rotation_editText"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
                         android:textColor="@color/white"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         app:layout_constraintStart_toEndOf="@+id/rotation_textView4"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -223,11 +224,11 @@
                     <EditText
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
                         android:textColor="@color/white"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/rotation_textView6"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -254,10 +255,10 @@
                     <EditText
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/white"
 
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -319,11 +320,11 @@
                         android:id="@+id/scale_editText"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
                         android:textColor="@color/white"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         app:layout_constraintStart_toEndOf="@+id/scale_textView4"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -350,11 +351,11 @@
                     <EditText
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
                         android:textColor="@color/white"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/scale_textView6"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -381,10 +382,10 @@
                     <EditText
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:text="120"
+                        android:text="0"
                         android:textSize="16dp"
                         android:inputType="numberDecimal"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/white"
 
                         app:layout_constraintBottom_toBottomOf="parent"

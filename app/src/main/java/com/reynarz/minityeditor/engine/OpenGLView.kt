@@ -11,6 +11,8 @@ import kotlin.math.sqrt
 class OpenGLView(context: Context, attributeSet: AttributeSet) :
     GLSurfaceView(context, attributeSet) {
 
+    val sensibility = 0.75f
+
     companion object{
         var xPixel = 0f
         var yPixel = 0f
@@ -54,8 +56,16 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                 prevY = event!!.y
             }
 
-            MotionEvent.ACTION_UP -> {
+            MotionEvent.ACTION_POINTER_UP -> {
+                prevX = event!!.x
+                prevY = event!!.y
                 Log.d("two fingers", "Up")
+            }
+
+            MotionEvent.ACTION_UP ->
+            {
+                prevX = event!!.x
+                prevY = event!!.y
             }
 
             MotionEvent.ACTION_POINTER_DOWN -> {
@@ -71,6 +81,8 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                     (event.getY(1) / MainActivity.height.toFloat() - 0.5f) * 2f,
                     0f
                 )
+
+
 
                 Log.d("two fingers", "(${finger1.x}), (${finger2.x})")
 

@@ -64,6 +64,10 @@ class MainActivity : AppCompatActivity() {
         val viewShader = findViewById<Button>(R.id.btn_switchShaderView)
 
         requestPermissions()
+//supportFragmentManager.beginTransaction().apply {
+//    replace(R.id.mainFragment, SceneFragmentView())
+//
+//}
 
         val sceneFragment = SceneFragmentView()
 

@@ -239,7 +239,7 @@ void main()
 //
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
-        val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
+       // val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
 
         for (entity in scene!!.entities) {
             if (entity.testMeshRenderer != null) {
