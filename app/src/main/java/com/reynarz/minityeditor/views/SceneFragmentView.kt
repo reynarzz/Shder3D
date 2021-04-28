@@ -13,7 +13,6 @@ import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 
 class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
-    var fileManagerVM: ViewModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,13 +25,12 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
     }
 
     private fun setHierarchyButton() {
+        val hierarchy = HierarchyFragmentView()
 
         view!!.findViewById<Button>(R.id.btn_openHierarchy).setOnClickListener {
             activity!!.supportFragmentManager.beginTransaction().apply {
 
-                val hierarchyfragment = HierarchyFragmentView()
-
-                replace(R.id.mainFragment, hierarchyfragment)
+                replace(R.id.mainFragment, hierarchy)
                 commit()
             }
         }
@@ -63,6 +61,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
     }
 
     private fun setEditModelButton() {
+
         val editModel = view!!.findViewById<Button>(R.id.btn_editModelComponents)
 
         val inspectorFragment = InspectorFragmentView()
@@ -76,8 +75,6 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
             viewModel.componentsData.value = mutableListOf()
             viewModel.componentsData.value!!.add(sceneEntityData.transformData)
             viewModel.componentsData.value!!.add(sceneEntityData.meshRendererData)
-
-
         }
 
         editModel.setOnClickListener {
@@ -89,7 +86,5 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
                 //remove()
             }
         }
-
-
     }
 }

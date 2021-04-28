@@ -1,6 +1,5 @@
 package com.reynarz.minityeditor.models
 
-import android.util.Log
 import java.util.*
 
 

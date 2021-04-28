@@ -38,13 +38,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/imageView8"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="#99222222"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6"
-        android:background="#99222222"/>
+        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
-    <androidx.recyclerview.widget.RecyclerView
+
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_hierarcy"
         android:layout_width="match_parent"
         android:layout_height="0dp"
