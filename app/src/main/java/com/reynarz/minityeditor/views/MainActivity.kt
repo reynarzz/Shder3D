@@ -1,4 +1,5 @@
 package com.reynarz.minityeditor.views
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -18,7 +19,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var width = 0
+            private set
         var height = 0
+            private set
 
         private fun setScreenSize(width: Int, height: Int) {
             Companion.width = width
@@ -37,8 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         setScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
 
-        window.setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
 
         val viewModelFactory = ViewModelFactory(this)

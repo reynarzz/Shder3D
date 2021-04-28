@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
-import com.reynarz.minityeditor.engine.OpenGlRenderer
 import com.reynarz.minityeditor.engine.SceneObjectManager
 import com.reynarz.minityeditor.engine.Utils
 import java.io.BufferedReader

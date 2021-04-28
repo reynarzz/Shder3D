@@ -1,10 +1,13 @@
 package com.reynarz.minityeditor.views
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.WindowManager
 import androidx.core.app.ActivityCompat
 import com.reynarz.minityeditor.R
 
@@ -13,6 +16,8 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
+        window.setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        supportActionBar?.hide()
         requestPermissions()
     }
 
@@ -37,12 +42,19 @@ class SplashScreenActivity : AppCompatActivity() {
         if (permissionRequest.isNotEmpty()) {
             ActivityCompat.requestPermissions(this, permissionRequest.toTypedArray(), 0)
         }
+
+        if (hasWriteExternalPermission() && hasReadExternalPermission()) {
+            openMainActivity()
+        }
     }
+
+    private var allGranted = false
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == 0 && grantResults.isNotEmpty()) {
+
             for (i in grantResults.indices) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
 
@@ -51,6 +63,18 @@ class SplashScreenActivity : AppCompatActivity() {
                     ActivityCompat.requestPermissions(this, mutableListOf(permissions[i]).toTypedArray(), 0)
                 }
             }
+
+            if (allGranted) {
+                openMainActivity()
+            }
         }
+    }
+
+    private fun openMainActivity() {
+        Handler().postDelayed({
+            val intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 700)
     }
 }
