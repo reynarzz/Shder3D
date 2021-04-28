@@ -20,8 +20,9 @@ class ViewModelFactory(private val activity: AppCompatActivity) {
         return viewModel
     }
 
-     fun getHierarchyViewModel(sceneEntities: MutableList<SceneEntityData>): HierarchyViewModel {
+     fun getHierarchyViewModel(sceneEntities: MutableList<SceneEntityViewModel>): HierarchyViewModel {
         val hierarchyViewModel = ViewModelProvider(activity).get(HierarchyViewModel::class.java)
+
         hierarchyViewModel.entitiesInScene.value = sceneEntities
 
         return hierarchyViewModel

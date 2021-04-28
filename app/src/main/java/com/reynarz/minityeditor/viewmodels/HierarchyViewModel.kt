@@ -6,7 +6,11 @@ import com.reynarz.minityeditor.models.SceneEntityData
 
 class HierarchyViewModel : ViewModel() {
 
-    val entitiesInScene: MutableLiveData<MutableList<SceneEntityData>> by lazy {
-        MutableLiveData<MutableList<SceneEntityData>>()
+    val selectedEntityIndex : MutableLiveData<Int> by lazy{
+        MutableLiveData<Int>()
+    }
+
+    val entitiesInScene: MutableLiveData<MutableList<SceneEntityViewModel>> by lazy {
+        MutableLiveData<MutableList<SceneEntityViewModel>>()
     }
 }

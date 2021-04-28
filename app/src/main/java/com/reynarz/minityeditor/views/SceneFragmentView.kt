@@ -19,14 +19,13 @@ import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
 import com.reynarz.minityeditor.viewmodels.SceneEntityViewModel
 
-class SceneFragmentView() : Fragment(R.layout.scene_view_fragment) {
+class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
     var inspectorVM: ViewModel? = null
     var fileManagerVM: ViewModel? = null
     var hierarchyVM: HierarchyViewModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         view.findViewById<Button>(R.id.btn_openHierarchy).setOnClickListener {
             activity!!.supportFragmentManager.beginTransaction().apply {
@@ -36,24 +35,14 @@ class SceneFragmentView() : Fragment(R.layout.scene_view_fragment) {
                 }
                 val hierarchyfragment = HierarchyFragmentView()
 
-                hierarchyfragment.viewModel = hierarchyVM!!
-
                 replace(R.id.mainFragment, hierarchyfragment)
                 commit()
             }
         }
 
         setAddModelButton()
-        val testViewModel = ViewModelProvider(this).get(SceneEntityViewModel::class.java)
 
-        testViewModel.selected.value = false
-        testViewModel.visible.value = true
-        testViewModel.entityName.value = "RandomName"
-        testViewModel.componentsData.value = mutableListOf()
-        testViewModel.componentsData.value!!.add(TransformComponentData())
-        testViewModel.componentsData.value!!.add(MeshRendererComponentData())
-
-        setEditModelButton(testViewModel)
+        setEditModelButton()
     }
 
     private fun setAddModelButton() {
@@ -80,13 +69,13 @@ class SceneFragmentView() : Fragment(R.layout.scene_view_fragment) {
         }
     }
 
-    private fun setEditModelButton(sceneEntityViewModel: SceneEntityViewModel) {
+    private fun setEditModelButton() {
         val editModel = view!!.findViewById<Button>(R.id.btn_editModelComponents)
 
         val inspectorFragment = InspectorFragmentView()
 
         editModel.setOnClickListener {
-            inspectorFragment.sceneEntityViewModel = sceneEntityViewModel
+            inspectorFragment.sceneEntityViewModel = (activity as MainActivity).selectedSceneEntity
 
             activity!!.supportFragmentManager.beginTransaction().apply {
                 replace(R.id.mainFragment, inspectorFragment)
@@ -94,10 +83,5 @@ class SceneFragmentView() : Fragment(R.layout.scene_view_fragment) {
                 //remove()
             }
         }
-    }
-
-    fun setViewModels(inspectorVM: ViewModel, fileManagerVM: ViewModel) {
-        this.inspectorVM = inspectorVM
-
     }
 }

@@ -63,7 +63,6 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
             }
         })
 
-
         val adapter = InspectorRecycleViewAdapter(sceneEntityViewModel!!)
         val componentsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_componentsRecycleView)
 
@@ -71,10 +70,7 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
         componentsRecyclerView.layoutManager = LinearLayoutManager(context)
 
         view.findViewById<Button>(R.id.btn_closeInspector).setOnClickListener {
-            val transaction = activity!!.supportFragmentManager.beginTransaction()
-            transaction.remove(this)
-            transaction.commit()
-
+            (activity as MainActivity).showSceneFragment()
         }
     }
 }
