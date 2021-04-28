@@ -10,7 +10,7 @@ class HierarchyViewModel : ViewModel() {
         MutableLiveData<Int>()
     }
 
-    val entitiesInScene: MutableLiveData<MutableList<SceneEntityViewModel>> by lazy {
-        MutableLiveData<MutableList<SceneEntityViewModel>>()
+    val entitiesInScene: MutableLiveData<MutableList<SceneEntityData>> by lazy {
+        MutableLiveData<MutableList<SceneEntityData>>()
     }
 }

@@ -6,21 +6,12 @@ import com.reynarz.minityeditor.models.SceneEntityData
 
 class ViewModelFactory(private val activity: AppCompatActivity) {
 
-     fun getSceneEntityViewModel(sceneEntityData: SceneEntityData) : SceneEntityViewModel {
-        val viewModel = ViewModelProvider(activity).get(SceneEntityViewModel::class.java)
+     fun getInspectorEntityViewModel() : InspectorViewModel {
 
-        viewModel.entityName.value = sceneEntityData.name
-        viewModel.visible.value = sceneEntityData.visible
-        viewModel.selected.value = sceneEntityData.selected
-
-        viewModel.componentsData.value = mutableListOf()
-        viewModel.componentsData.value!!.add(sceneEntityData.transformData)
-        viewModel.componentsData.value!!.add(sceneEntityData.meshRendererData)
-
-        return viewModel
+         return ViewModelProvider(activity).get(InspectorViewModel::class.java)
     }
 
-     fun getHierarchyViewModel(sceneEntities: MutableList<SceneEntityViewModel>): HierarchyViewModel {
+     fun getHierarchyViewModel(sceneEntities: MutableList<SceneEntityData>): HierarchyViewModel {
         val hierarchyViewModel = ViewModelProvider(activity).get(HierarchyViewModel::class.java)
 
         hierarchyViewModel.entitiesInScene.value = sceneEntities

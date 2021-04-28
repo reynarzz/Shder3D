@@ -6,7 +6,7 @@ import com.reynarz.minityeditor.models.ComponentData
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.TransformComponentData
 
-class SceneEntityViewModel : ViewModel() {
+class InspectorViewModel : ViewModel() {
 
     val entityName : MutableLiveData<String> by lazy{
         MutableLiveData<String>()

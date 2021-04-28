@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.ComponentData
 import com.reynarz.minityeditor.models.TransformComponentData
-import com.reynarz.minityeditor.viewmodels.SceneEntityViewModel
+import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 
-class InspectorRecycleViewAdapter(private val viewModel: SceneEntityViewModel) :
+class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
     RecyclerView.Adapter<InspectorRecycleViewAdapter.InspectorViwHolder>() {
 
     class InspectorViwHolder(view: View) : RecyclerView.ViewHolder(view)

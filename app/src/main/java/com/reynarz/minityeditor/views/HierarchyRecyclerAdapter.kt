@@ -18,22 +18,23 @@ class HierarchyRecyclerAdapter(private val viewModel: HierarchyViewModel) : Recy
 
     override fun onBindViewHolder(holder: HierarchyViewHolder, position: Int) {
         val entityToggles = viewModel.entitiesInScene.value!!
+
         var index = position
 
         holder.itemView.apply {
 
             val toggle = findViewById<ToggleButton>(R.id.t_btn_entityHierarchyToggle)
-            toggle.isChecked = entityToggles[position].selected.value!!
+            toggle.isChecked = entityToggles[position].selected
 
-            toggle.text = entityToggles[position].entityName.value!!
+            toggle.text = entityToggles[position].name
             toggle.textOff = toggle.text
             toggle.textOn = toggle.text
 
             toggle.setOnCheckedChangeListener { _, isSelected ->
-                entityToggles[position].selected.value = isSelected
-
-                if(!isSelected)
-                    index = -1
+                entityToggles[position].selected = isSelected
+//
+//                if (!isSelected)
+//                    index = -1
 
                 viewModel.selectedEntityIndex.value = index
                 viewModel.entitiesInScene.value = entityToggles

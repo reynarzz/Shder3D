@@ -2,47 +2,40 @@ package com.reynarz.minityeditor.views
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.reynarz.minityeditor.R
-import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.SceneEntityData
-import com.reynarz.minityeditor.models.TransformComponentData
-import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
-import com.reynarz.minityeditor.viewmodels.SceneEntityViewModel
+import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 
 class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
-    var inspectorVM: ViewModel? = null
     var fileManagerVM: ViewModel? = null
-    var hierarchyVM: HierarchyViewModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.btn_openHierarchy).setOnClickListener {
+        setHierarchyButton()
+
+        setAddModelButton()
+
+        setEditModelButton()
+    }
+
+    private fun setHierarchyButton() {
+
+        view!!.findViewById<Button>(R.id.btn_openHierarchy).setOnClickListener {
             activity!!.supportFragmentManager.beginTransaction().apply {
 
-                if (hierarchyVM === null) {
-                    Log.d("is null", "true")
-                }
                 val hierarchyfragment = HierarchyFragmentView()
 
                 replace(R.id.mainFragment, hierarchyfragment)
                 commit()
             }
         }
-
-        setAddModelButton()
-
-        setEditModelButton()
     }
 
     private fun setAddModelButton() {
@@ -74,8 +67,21 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         val inspectorFragment = InspectorFragmentView()
 
+        fun populateSceneEntityViewModel(viewModel: InspectorViewModel, sceneEntityData: SceneEntityData) {
+
+            viewModel.entityName.value = sceneEntityData.name
+            viewModel.visible.value = sceneEntityData.visible
+            viewModel.selected.value = sceneEntityData.selected
+
+            viewModel.componentsData.value = mutableListOf()
+            viewModel.componentsData.value!!.add(sceneEntityData.transformData)
+            viewModel.componentsData.value!!.add(sceneEntityData.meshRendererData)
+
+
+        }
+
         editModel.setOnClickListener {
-            inspectorFragment.sceneEntityViewModel = (activity as MainActivity).selectedSceneEntity
+            populateSceneEntityViewModel(MainActivity.inspectorViewModel, (activity as MainActivity).selectedSceneEntity!!)
 
             activity!!.supportFragmentManager.beginTransaction().apply {
                 replace(R.id.mainFragment, inspectorFragment)
@@ -83,5 +89,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
                 //remove()
             }
         }
+
+
     }
 }
