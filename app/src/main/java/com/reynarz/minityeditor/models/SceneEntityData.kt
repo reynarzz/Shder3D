@@ -5,11 +5,11 @@ import java.util.*
 
 
 data class SceneEntityData(var name: String) {
-    var visible = true
+    var active = true
     var selected = false
 
-    val transformData = TransformComponentData()
-    val meshRendererData = MeshRendererComponentData()
+    var transformData = TransformComponentData()
+    var meshRendererData = MeshRendererComponentData()
 
     var UUid = ""
         private set

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.TransformComponentData
-import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 
 
 class InspectorFragmentView : Fragment(R.layout.inspector_view) {
@@ -26,12 +25,15 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
         val entityName = view.findViewById<EditText>(R.id.et_entityName)
 
         // this should not be static
+        val selectedSceneData = (activity as MainActivity).selectedSceneEntity
+
         val inspectorViewModel = MainActivity.inspectorViewModel
 
         checkBox.isChecked = inspectorViewModel!!.visible.value!!
 
         checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
             inspectorViewModel!!.visible.value = isChecked
+            selectedSceneData!!.active = isChecked
         }
 
         entityName.setText(inspectorViewModel!!.entityName.value!!)
@@ -46,12 +48,20 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        inspectorViewModel!!.entityName.observe(this, {
+            selectedSceneData!!.name = it
+
+        })
+
         inspectorViewModel!!.componentsData.observe(this, {
 
             for (i in it) {
                 when (i.componentID) {
                     R.layout.transform_fragment_view -> {
                         val transform = i as TransformComponentData
+
+                        selectedSceneData!!.transformData = transform
+
 
                         Log.d("Position", "(${transform.position.x}, ${transform.position.y}, ${transform.position.z})")
                         Log.d("Rotation", "(${transform.eulerAngles.x}, ${transform.eulerAngles.y}, ${transform.eulerAngles.z})")

@@ -70,7 +70,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
         fun populateSceneEntityViewModel(viewModel: InspectorViewModel, sceneEntityData: SceneEntityData) {
 
             viewModel.entityName.value = sceneEntityData.name
-            viewModel.visible.value = sceneEntityData.visible
+            viewModel.visible.value = sceneEntityData.active
             viewModel.selected.value = sceneEntityData.selected
 
             viewModel.componentsData.value = mutableListOf()
