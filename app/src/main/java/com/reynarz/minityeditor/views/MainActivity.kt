@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.mainFragment, sceneFragment)
             commit()
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

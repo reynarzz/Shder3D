@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.reynarz.minityeditor.R
+import com.reynarz.minityeditor.engine.OpenGLView
+import com.reynarz.minityeditor.engine.OpenGlRenderer
 import com.reynarz.minityeditor.engine.SceneObjectManager
 import com.reynarz.minityeditor.engine.Utils
 import java.io.BufferedReader
@@ -18,6 +20,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
     private var sceneObjManager: SceneObjectManager? = null
 
+    lateinit var openGLView: OpenGLView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,8 +73,6 @@ void main()
 }"""
 
 
-
-
         val include1 = getInclude(activity!!.assets, "includes/unity.h")
         openGLView.renderer.setShaders(
             Utils.ShaderFileUtils.processInclude(include1, vertexTex),
@@ -102,8 +103,8 @@ void main()
         showHideButton.setOnClickListener {
             enableDisableShaderEditor()
         }
-        enableDisableShaderEditor()
 
+        enableDisableShaderEditor()
 
         button.setOnClickListener {
 
@@ -118,11 +119,11 @@ void main()
                 Utils.ShaderFileUtils.processInclude(include1, fragTex)
             )
 
-            Toast.makeText(this, "Compiled", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Compiled", Toast.LENGTH_SHORT).show()
             openGLView.clearFocus()
         }
 
-        sceneObjManager = SceneObjectManager(this, openGLView.renderer)
+        sceneObjManager = SceneObjectManager(activity, openGLView.renderer)
     }
 
     private fun getInclude(assets: AssetManager, include: String): String {
@@ -130,5 +131,4 @@ void main()
         val reader = BufferedReader(InputStreamReader(inStream))
         return reader.readText()
     }
-
 }

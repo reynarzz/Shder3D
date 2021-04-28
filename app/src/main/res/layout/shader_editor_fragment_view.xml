@@ -1,7 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/codeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_backgroundImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:background="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <EditText
+            android:id="@+id/et_fragmentCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#0000"
+            android:fontFamily="@font/consola"
+
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scrollbars="vertical"
+            android:text="Code here"
+            android:textColor="@color/white"
+            android:textSize="13dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0">
+
+        <Button
+            android:id="@+id/buttonCompile"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Compile"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:layout_marginLeft="20dp"
+            android:id="@+id/btn_showHide"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Show/Hide"
+            android:backgroundTint="@color/white"
+            app:layout_constraintStart_toEndOf="@+id/buttonCompile"
+            android:textColor="@color/black"/>
+
+        <Button
+            android:id="@+id/btn_switchShaderView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Vertex/Fragment"
+            android:backgroundTint="@color/design_default_color_error"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
