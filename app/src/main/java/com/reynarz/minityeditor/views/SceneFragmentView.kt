@@ -44,7 +44,7 @@ class SceneFragmentView() : Fragment(R.layout.scene_view_fragment) {
         }
 
         setAddModelButton()
-       val testViewModel =  ViewModelProvider(this).get(SceneEntityViewModel::class.java)
+        val testViewModel = ViewModelProvider(this).get(SceneEntityViewModel::class.java)
 
         testViewModel.selected.value = false
         testViewModel.visible.value = true
@@ -76,7 +76,7 @@ class SceneFragmentView() : Fragment(R.layout.scene_view_fragment) {
                     .build()
             )
 
-           activity!!.startActivityForResult(intent, 1)
+            activity!!.startActivityForResult(intent, 1)
         }
     }
 
