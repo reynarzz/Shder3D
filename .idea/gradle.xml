@@ -13,9 +13,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/glm" />
-            <option value="$PROJECT_DIR$/glm-all" />
-            <option value="$PROJECT_DIR$/lwjgl-stb" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

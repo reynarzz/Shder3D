@@ -8,12 +8,13 @@
     <ToggleButton
         android:id="@+id/t_btn_entityHierarchyToggle"
         android:layout_width="match_parent"
-        android:layout_marginRight="100dp"
-        android:layout_marginLeft="10dp"
         android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:background="@drawable/toggle"
         android:checked="false"
         android:paddingLeft="20dp"
+        android:text="Entity name"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -21,7 +22,6 @@
         android:textOn="Entity Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </ToggleButton>
+        app:layout_constraintTop_toTopOf="parent"></ToggleButton>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,3 @@
-include ':glm-all'
-include ':glm'
-include ':lwjgl-stb'
 include ':app'
+enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "Viewer3D"

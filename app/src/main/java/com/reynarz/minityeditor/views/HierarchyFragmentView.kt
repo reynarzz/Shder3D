@@ -8,13 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
+import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
 
-class HierarchyFragmentView : Fragment(R.layout.hierarchy_fragment_view) {
+class HierarchyFragmentView() : Fragment(R.layout.hierarchy_fragment_view) {
+
+     var viewModel: HierarchyViewModel? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<RecyclerView>(R.id.rv_hierarcy).apply {
-            adapter = HierarchyRecyclerAdapter()
+            adapter = HierarchyRecyclerAdapter(viewModel!!)
             layoutManager = LinearLayoutManager(context)
         }
 

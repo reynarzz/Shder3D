@@ -47,7 +47,6 @@ repositories {
 }
 def lifecycle_version = "2.2.0"
 
-
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -66,4 +65,5 @@ dependencies {
     implementation 'com.github.gazman-sdk:signals:1.5'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
 }

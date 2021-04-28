@@ -2,20 +2,17 @@ package com.reynarz.minityeditor.views
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.ComponentData
 import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.SceneEntityViewModel
-import java.time.LocalDate
 
 class InspectorRecycleViewAdapter(private val viewModel: SceneEntityViewModel) :
     RecyclerView.Adapter<InspectorRecycleViewAdapter.InspectorViwHolder>() {

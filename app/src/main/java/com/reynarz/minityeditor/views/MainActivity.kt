@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.jaiselrahman.filepicker.model.MediaFile
@@ -25,8 +25,11 @@ import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.SceneObjectManager
 import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.models.MeshRendererComponentData
+import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.models.TransformComponentData
+import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
 import com.reynarz.minityeditor.viewmodels.SceneEntityViewModel
+import com.reynarz.minityeditor.viewmodels.ViewModelFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -68,18 +71,26 @@ class MainActivity : AppCompatActivity() {
         val codeContainer = findViewById<ConstraintLayout>(R.id.codeContainer)
         val viewShader = findViewById<Button>(R.id.btn_switchShaderView)
 
+
         requestPermissions()
+        val viewModelFactory = ViewModelFactory(this)
+
+
 //supportFragmentManager.beginTransaction().apply {
 //    replace(R.id.mainFragment, SceneFragmentView())
 //
 //}
 
-        val sceneFragment = SceneFragmentView()
+        val hierarhyViewModel = viewModelFactory.getHierarchyViewModel(mutableListOf(SceneEntityData("First entity")))
 
-//        supportFragmentManager.beginTransaction().apply {
-//            replace(R.id.mainFragment, sceneFragment)
-//            commit()
-//        }
+        val sceneFragment = SceneFragmentView()
+        sceneFragment.hierarchyVM = hierarhyViewModel
+
+       // editModel(viewModelFactory.getSceneEntityViewModel(SceneEntityData("Yeah")))
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.mainFragment, sceneFragment)
+            commit()
+        }
 
 
 //        val recycleView = findViewById<RecyclerView>(R.id.rv_fileManagerView)
@@ -152,6 +163,7 @@ void main()
                 codeEditTex.setText(vertexTex)
             }
         }
+
         fun enableDisableShaderEditor() {
             codeContainer.getViewById(R.id.iv_backgroundImage).isEnabled =
                 !codeContainer.getViewById(R.id.iv_backgroundImage).isEnabled
@@ -159,6 +171,7 @@ void main()
                 !codeContainer.getViewById(R.id.et_fragmentCode).isEnabled
             codeContainer.alpha = 1 - codeContainer.alpha
         }
+
         showHideButton.setOnClickListener {
             enableDisableShaderEditor()
         }
@@ -182,65 +195,12 @@ void main()
             openGLView.clearFocus()
         }
 
-        val addModel = findViewById<Button>(R.id.btn_addModelToScene)
-
-        addModel.setOnClickListener {
-
-            val intent = Intent(this, FilePickerActivity::class.java)
-            intent.putExtra(
-                FilePickerActivity.CONFIGS, Configurations.Builder()
-                    .setCheckPermission(true)
-
-                    .setShowFiles(true)
-                    .setShowImages(false)
-                    .setShowVideos(false)
-                    .setShowAudios(false)
-                    .setSkipZeroSizeFiles(true)
-                    .setSuffixes(".obj")
-                    .build()
-            )
-
-            startActivityForResult(intent, 1)
-        }
-        viewModelSetup()
-        editModel()
-
-
         sceneObjManager = SceneObjectManager(this, openGLView.renderer)
     }
 
-    lateinit var sceneEntityViewModel: SceneEntityViewModel
 
-    private fun viewModelSetup() {
-        sceneEntityViewModel = ViewModelProvider(this).get(SceneEntityViewModel::class.java)
 
-        sceneEntityViewModel.selected.value = true
 
-        sceneEntityViewModel.selected.observe(this, Observer {
-            // the thing you want to notify about the change
-
-        })
-    }
-
-    private fun editModel() {
-        val editModel = findViewById<Button>(R.id.btn_editModelComponents)
-
-        val viewModel = ViewModelProvider(this).get(SceneEntityViewModel::class.java)
-
-        viewModel.componentsData.value = mutableListOf()
-        viewModel.componentsData.value!!.add(TransformComponentData())
-        viewModel.componentsData.value!!.add(MeshRendererComponentData())
-
-        val inspectorFragment = InspectorFragmentView(viewModel)
-
-        editModel.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.mainFragment, inspectorFragment)
-                commit()
-                //remove()
-            }
-        }
-    }
 
     private fun getInclude(assets: AssetManager, include: String): String {
         val inStream = assets.open(include)

@@ -8,6 +8,10 @@ import com.reynarz.minityeditor.models.TransformComponentData
 
 class SceneEntityViewModel : ViewModel() {
 
+    val entityName : MutableLiveData<String> by lazy{
+        MutableLiveData<String>()
+    }
+
     val selected: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
@@ -16,7 +20,7 @@ class SceneEntityViewModel : ViewModel() {
         MutableLiveData<Boolean>()
     }
 
-    val componentsData : MutableLiveData<MutableList<ComponentData>> by lazy {
+    val componentsData: MutableLiveData<MutableList<ComponentData>> by lazy {
         MutableLiveData<MutableList<ComponentData>>()
     }
 }

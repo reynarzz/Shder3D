@@ -87,9 +87,8 @@
 
  </androidx.constraintlayout.widget.ConstraintLayout>
 
- <fragment
+ <FrameLayout
      android:id="@+id/mainFragment"
-     android:name="com.reynarz.minityeditor.views.SceneFragmentView"
      android:layout_width="match_parent"
      android:layout_height="match_parent"/>
 

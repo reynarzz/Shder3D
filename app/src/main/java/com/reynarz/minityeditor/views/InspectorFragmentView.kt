@@ -1,9 +1,14 @@
 package com.reynarz.minityeditor.views
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,13 +18,37 @@ import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.SceneEntityViewModel
 
 
-class InspectorFragmentView(private val sceneEntityViewModel: SceneEntityViewModel) :
-    Fragment(R.layout.inspector_view) {
+class InspectorFragmentView : Fragment(R.layout.inspector_view) {
+
+    var sceneEntityViewModel: SceneEntityViewModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sceneEntityViewModel.componentsData.observe(this, {
+        val checkBox = view.findViewById<AppCompatCheckBox>(R.id.cb_activeEntity)
+        val entityName = view.findViewById<EditText>(R.id.et_entityName)
+
+        checkBox.isChecked = sceneEntityViewModel!!.visible.value!!
+
+        checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            sceneEntityViewModel!!.visible.value = isChecked
+        }
+
+        entityName.setText(sceneEntityViewModel!!.entityName.value!!)
+
+
+        entityName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                sceneEntityViewModel!!.entityName.value = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+
+        })
+
+        sceneEntityViewModel!!.componentsData.observe(this, {
 
             for (i in it) {
                 when (i.componentID) {
@@ -35,7 +64,7 @@ class InspectorFragmentView(private val sceneEntityViewModel: SceneEntityViewMod
         })
 
 
-        val adapter = InspectorRecycleViewAdapter(sceneEntityViewModel)
+        val adapter = InspectorRecycleViewAdapter(sceneEntityViewModel!!)
         val componentsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_componentsRecycleView)
 
         componentsRecyclerView.adapter = adapter
