@@ -10,6 +10,7 @@ import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
+import com.reynarz.minityeditor.engine.SceneObjectManager
 import com.reynarz.minityeditor.engine.data.DataFactory
 import com.reynarz.minityeditor.engine.data.ShaderDataBase
 import com.reynarz.minityeditor.files.FileManager
@@ -95,10 +96,18 @@ class MainActivity : AppCompatActivity() {
                 data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
             for (path in files!!) {
-                openGLView.renderer.loadNewObjCommand(path.path)
+                openGLView.renderer.addRenderCommand {
+
+                    val entity1 = SceneEntityData("Entity1")
+                    entity1.entityID = path.path
+                    sceneEntitiesDataInScene.add(entity1)
+
+                    SceneObjectManager(baseContext, openGLView.renderer).testLoadObject(entity1)
+                }
             }
         }
     }
+
 
     fun openSceneWindow() {
         changeMainFragment(sceneFragment)

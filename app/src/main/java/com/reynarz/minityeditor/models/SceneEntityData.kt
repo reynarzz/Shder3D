@@ -10,10 +10,11 @@ data class SceneEntityData(var name: String) {
     var transformData = TransformComponentData()
     var meshRendererData = MeshRendererComponentData()
 
+    // this could be the path of the resource in the phone or a UUID
     var entityID = ""
-        private set
+
 
     init {
-        entityID = UUID.randomUUID().toString()
+        //entityID = UUID.randomUUID().toString()
     }
 }

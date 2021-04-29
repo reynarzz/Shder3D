@@ -19,6 +19,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var rot = vec3(0f, 0f, 0f)
     var zoom = 1f
 
+    private val rendererCommands = mutableListOf<() -> Unit>()
+
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
@@ -188,21 +190,17 @@ void main()
     }
 
     fun addRenderCommand(command : () -> Unit){
-
+        rendererCommands.add(command)
     }
-    
-    private fun loadObjInBuffer() {
-        if (objsToLoad.size > 0) {
-            for (i in objsToLoad) {
-                SceneObjectManager(context, this).testLoadObject()
-            }
 
-            objsToLoad.clear()
-        }
-    }
+
 
     private fun onPushedOutsideCommands() {
-        loadObjInBuffer()
+        for (command in rendererCommands)
+        {
+            command()
+            rendererCommands.remove(command)
+        }
     }
 
     override fun onDrawFrame(gl: GL10?) {
