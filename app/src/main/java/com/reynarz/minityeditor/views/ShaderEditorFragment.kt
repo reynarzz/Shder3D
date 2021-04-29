@@ -73,10 +73,10 @@ void main()
 
 
         val include1 = getInclude(activity!!.assets, "includes/unity.h")
-        openGLView.renderer.setShaders(
-            Utils.ShaderFileUtils.processInclude(include1, vertexTex),
-            Utils.ShaderFileUtils.processInclude(include1, fragTex)
-        )
+//        openGLView.renderer.setShaders(
+//            Utils.ShaderFileUtils.processInclude(include1, vertexTex),
+//            Utils.ShaderFileUtils.processInclude(include1, fragTex)
+//        )
 
         codeEditTex.setText(fragTex)
 
@@ -113,16 +113,16 @@ void main()
                 vertexTex = codeEditTex.editableText.toString()
             }
 
-            openGLView.renderer.setShaders(
-                Utils.ShaderFileUtils.processInclude(include1, vertexTex),
-                Utils.ShaderFileUtils.processInclude(include1, fragTex)
-            )
+//            openGLView.renderer.setShaders(
+//                Utils.ShaderFileUtils.processInclude(include1, vertexTex),
+//                Utils.ShaderFileUtils.processInclude(include1, fragTex)
+//            )
 
             Toast.makeText(activity, "Compiled", Toast.LENGTH_SHORT).show()
-            openGLView.clearFocus()
+           // openGLView.clearFocus()
         }
 
-        sceneObjManager = SceneObjectManager(activity, openGLView.renderer)
+        //sceneObjManager = SceneObjectManager(activity, openGLView.renderer)
     }
 
     private fun getInclude(assets: AssetManager, include: String): String {

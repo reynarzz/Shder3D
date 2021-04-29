@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         val entity1 = SceneEntityData("FirstEntity")
         val entity2 = SceneEntityData("AnotherSceneEntity")
-        val entity3 = SceneEntityData("ThirdEntityhere")
+        val entity3 = SceneEntityData("ThirdEntityHere")
 
         return mutableListOf(entity1, entity2, entity3)
     }

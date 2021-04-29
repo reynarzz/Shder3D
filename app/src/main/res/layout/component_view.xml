@@ -52,7 +52,7 @@
             android:id="@+id/btn_addToComponentList"
             android:layout_width="35dp"
             android:layout_height="0dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:background="@color/transparent"
             android:foreground="@drawable/add"
             android:textSize="20dp"
@@ -60,8 +60,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:scaleX="0.6"
-            android:scaleY="0.6"/>
+            android:scaleX="0.7"
+            android:scaleY="0.7"/>
         <FrameLayout
             android:id="@+id/fragment_componentContent"
             android:layout_width="match_parent"

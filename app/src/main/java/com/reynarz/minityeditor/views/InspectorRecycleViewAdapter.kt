@@ -51,17 +51,24 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
                 }
                 R.layout.mesh_renderer_fragment_view -> {
 
-                    findViewById<Button>(R.id.btn_addToComponentList).visibility = View.VISIBLE
-
-                    val rvMaterials = findViewById<RecyclerView>(R.id.rv_meshRendererMaterials)
-
                     val meshData = componentData as MeshRendererComponentData
                     meshData.materialsData.add(MaterialData())
                     meshData.materialsData.add(MaterialData())
                     meshData.materialsData.add(MaterialData())
                     meshData.materialsData.add(MaterialData())
 
-                    rvMaterials.adapter = MeshRendererMaterialsAdapter(meshData)
+                    val adapter = MeshRendererMaterialsAdapter(meshData)
+
+                    val addMaterialButton = findViewById<Button>(R.id.btn_addToComponentList)
+                    addMaterialButton.visibility = View.VISIBLE
+                    addMaterialButton.setOnClickListener {
+
+                        adapter.addNewMaterial()
+                    }
+
+                    val rvMaterials = findViewById<RecyclerView>(R.id.rv_meshRendererMaterials)
+
+                    rvMaterials.adapter = adapter
                     rvMaterials.layoutManager = CustomLinearLayoutManager(holder.itemView.context)
                 }
             }
