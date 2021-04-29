@@ -78,7 +78,7 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
         componentsRecyclerView.layoutManager = LinearLayoutManager(context)
 
         view.findViewById<Button>(R.id.btn_closeInspector).setOnClickListener {
-            (activity as MainActivity).showSceneFragment()
+            (activity as MainActivity).openSceneWindow()
         }
     }
 }

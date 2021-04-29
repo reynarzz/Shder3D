@@ -5,6 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/iv_backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/codeContainer"
         android:layout_width="match_parent"
@@ -14,13 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_backgroundImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.5"
-            android:background="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent" />
+
 
         <EditText
             android:id="@+id/et_fragmentCode"
@@ -42,11 +44,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black" />
     <!--Buttons-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
@@ -68,7 +65,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout3"
+                android:id="@+id/cl_compileShaderContainer"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
@@ -97,6 +94,7 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_switchShaderContainer"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
@@ -139,7 +137,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/transparent"
-                    android:checked="true"
+                    android:checked="false"
                     android:foreground="@drawable/eye_toggle"
                     android:foregroundTint="@color/white"
                     android:scaleX="0.6"
@@ -153,7 +151,7 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout4"
+            android:id="@+id/cl_closeShaderWindowContainer"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginRight="20dp"

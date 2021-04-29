@@ -64,7 +64,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         val editModel = view!!.findViewById<Button>(R.id.btn_editModelComponents)
 
-        val inspectorFragment = InspectorFragmentView()
+
 
         fun populateSceneEntityViewModel(viewModel: InspectorViewModel, sceneEntityData: SceneEntityData) {
 
@@ -79,12 +79,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         editModel.setOnClickListener {
             populateSceneEntityViewModel(MainActivity.inspectorViewModel, (activity as MainActivity).selectedSceneEntity!!)
-
-            activity!!.supportFragmentManager.beginTransaction().apply {
-                replace(R.id.mainFragment, inspectorFragment)
-                commit()
-                //remove()
-            }
+            MainActivity.instance.openInspectorWindow()
         }
     }
 }

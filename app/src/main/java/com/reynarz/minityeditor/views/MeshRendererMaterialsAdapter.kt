@@ -31,6 +31,7 @@ class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRe
             val removeMatButton = findViewById<Button>(R.id.btn_removeMaterial)
 
             editMatButton.setOnClickListener {
+                MainActivity.instance!!.openShaderWindow(meshRendererData)
 
                 Log.d("Edit mat", position.toString())
                 //meshRendererData.shaderId
@@ -46,10 +47,16 @@ class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRe
 
     fun addNewMaterial() {
         val mat = MaterialData()
-        mat.name ="Material " + meshRendererComponentData.materialsData.size.toString()
+        mat.name = "Material " + meshRendererComponentData.materialsData.size.toString()
         meshRendererComponentData.materialsData.add(mat)
         notifyDataSetChanged()
     }
+
+    fun setOnEditShaderCallback(callback: (MaterialData) -> Unit) {
+        onEditShaderCalback = callback
+    }
+
+    var onEditShaderCalback: (MaterialData) -> Unit = { }
 
     override fun getItemCount(): Int {
         return meshRendererComponentData.materialsData.size

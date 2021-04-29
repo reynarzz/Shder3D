@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
+import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
@@ -19,10 +21,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var openGLView: OpenGLView
     private val sceneFragment = SceneFragmentView()
+    private val shaderFragment = ShaderEditorFragment()
+    private val inspectorFragment = InspectorFragmentView()
+
     var selectedSceneEntity: SceneEntityData? = null
         private set
 
     companion object {
+        lateinit var instance: MainActivity
+            private set
         var width = 0
             private set
         var height = 0
@@ -39,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        instance = this
         openGLView = findViewById(R.id.OpenGLView_activity)
 
         val displayMetrics = DisplayMetrics()
@@ -50,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         setViewModels()
-        showSceneFragment()
+        openSceneWindow()
     }
 
     private fun setViewModels() {
@@ -83,9 +91,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showSceneFragment() {
+    fun openSceneWindow() {
+        changeMainFragment(sceneFragment)
+    }
+
+    fun openShaderWindow(materialData: MaterialData) {
+        shaderFragment.openGLView = openGLView
+        shaderFragment.materialData = materialData
+        changeMainFragment(shaderFragment)
+    }
+
+    fun openInspectorWindow() {
+        changeMainFragment(inspectorFragment)
+    }
+
+    private fun changeMainFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.mainFragment, sceneFragment)
+            replace(R.id.mainFragment, fragment)
             commit()
         }
     }
