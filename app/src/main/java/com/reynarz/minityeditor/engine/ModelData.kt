@@ -1,15 +1,14 @@
 package com.reynarz.minityeditor.engine
 
 data class ModelData(
-    val mVertices: FloatArray,
-    val mNormals: FloatArray,
-    val mUVs: FloatArray,
-    val mIndices: IntArray,
-    val mAmbientColour: FloatArray,
-    val mDiffuseColour: FloatArray,
-    val mSpecularColour: FloatArray,
-    val mSpecularExponent: FloatArray,
-    val mDissolve: FloatArray,
-    val bounds: Bounds
-) {
-}
+    var mVertices: FloatArray,
+    var mNormals: FloatArray,
+    var mUVs: FloatArray,
+    var mIndices: IntArray,
+    var mAmbientColour: FloatArray,
+    var mDiffuseColour: FloatArray,
+    var mSpecularColour: FloatArray,
+    var mSpecularExponent: FloatArray,
+    var mDissolve: FloatArray,
+    var bounds: Bounds
+)

@@ -51,20 +51,11 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
                 }
                 R.layout.mesh_renderer_fragment_view -> {
 
-                    val meshData = componentData as MeshRendererComponentData
-                    meshData.materialsData.add(MaterialData())
-                    meshData.materialsData.add(MaterialData())
-                    meshData.materialsData.add(MaterialData())
-                    meshData.materialsData.add(MaterialData())
-
-                    val adapter = MeshRendererMaterialsAdapter(meshData)
-
-                    adapter.setOnEditShaderCallback {
-
-                    }
+                    val adapter = MeshRendererMaterialsAdapter(componentData as MeshRendererComponentData)
 
                     val addMaterialButton = findViewById<Button>(R.id.btn_addToComponentList)
                     addMaterialButton.visibility = View.VISIBLE
+
                     addMaterialButton.setOnClickListener {
 
                         adapter.addNewMaterial()

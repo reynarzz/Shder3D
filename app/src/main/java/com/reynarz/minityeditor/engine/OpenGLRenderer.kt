@@ -9,7 +9,7 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 
-class OpenGlRenderer(val context: Context) : GLSurfaceView.Renderer {
+class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var vertexShaderCode: String
     private lateinit var fragmentShaderCode: String
@@ -187,11 +187,16 @@ void main()
         objsToLoad.add(filePath)
     }
 
+    fun addRenderCommand(command : () -> Unit){
+
+    }
+    
     private fun loadObjInBuffer() {
         if (objsToLoad.size > 0) {
             for (i in objsToLoad) {
-                SceneObjectManager(context, this).testLoadObject(i)
+                SceneObjectManager(context, this).testLoadObject()
             }
+
             objsToLoad.clear()
         }
     }

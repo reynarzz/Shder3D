@@ -63,9 +63,9 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
                         selectedSceneData!!.transformData = transform
 
 
-                        Log.d("Position", "(${transform.position.x}, ${transform.position.y}, ${transform.position.z})")
-                        Log.d("Rotation", "(${transform.eulerAngles.x}, ${transform.eulerAngles.y}, ${transform.eulerAngles.z})")
-                        Log.d("Scale", "(${transform.scale.x}, ${transform.scale.y}, ${transform.scale.z})")
+//                        Log.d("Position", "(${transform.position.x}, ${transform.position.y}, ${transform.position.z})")
+//                        Log.d("Rotation", "(${transform.eulerAngles.x}, ${transform.eulerAngles.y}, ${transform.eulerAngles.z})")
+//                        Log.d("Scale", "(${transform.scale.x}, ${transform.scale.y}, ${transform.scale.z})")
                     }
                 }
             }

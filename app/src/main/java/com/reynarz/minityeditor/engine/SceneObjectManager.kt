@@ -3,19 +3,22 @@ package com.reynarz.minityeditor.engine
 import android.content.Context
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
+import com.reynarz.minityeditor.engine.data.ModelsDataBase
+import com.reynarz.minityeditor.models.SceneEntityData
 
 class SceneObjectManager(
     private val context: Context?,
-    private val openGlRenderer: OpenGlRenderer
+    private val openGLRenderer: OpenGLRenderer
 ) {
 
-    fun testLoadObject(objectPath: String) {
+    fun testLoadObject(sceneEntityData: SceneEntityData) {
 
-        val rawObj = ObjParser(objectPath)
+        val dataBase = ModelsDataBase()
 
+        val modelData = dataBase.getModel(sceneEntityData.entityID)
+       // val rawObj = ObjParser(objectPath)
 
-
-        var objData = rawObj.getModelData()
+        var objData = modelData//rawObj.getModelData()
         val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs)
 
         val mat = Utils.getDefaultMaterial()
@@ -35,8 +38,8 @@ class SceneObjectManager(
         sceneEntity2.testMeshRenderer = bounding
 
 
-        openGlRenderer.scene.entities.add(sceneEntity)
-        openGlRenderer.scene.entities.add(sceneEntity2)
+        openGLRenderer.scene.entities.add(sceneEntity)
+        openGLRenderer.scene.entities.add(sceneEntity2)
     }
 
     fun boundingBoxTest(bounds: Bounds): MeshRenderer {

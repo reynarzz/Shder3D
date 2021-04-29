@@ -22,7 +22,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
             yPixel = y
         }
     }
-    var renderer = OpenGlRenderer(context)
+    var renderer = OpenGLRenderer(context)
 
     init {
         setEGLContextClientVersion(2)

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.MeshRendererComponentData
+import java.util.*
 
 class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRendererComponentData) : RecyclerView.Adapter<MeshRendererMaterialsAdapter.MaterialsViewHolder>() {
     class MaterialsViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -46,17 +47,11 @@ class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRe
     }
 
     fun addNewMaterial() {
-        val mat = MaterialData()
-        mat.name = "Material " + meshRendererComponentData.materialsData.size.toString()
+        val mat = MainActivity.instance.dataFactory.getNewMaterialData("Material (${UUID.randomUUID()})")
+
         meshRendererComponentData.materialsData.add(mat)
         notifyDataSetChanged()
     }
-
-    fun setOnEditShaderCallback(callback: (MaterialData) -> Unit) {
-        onEditShaderCalback = callback
-    }
-
-    var onEditShaderCalback: (MaterialData) -> Unit = { }
 
     override fun getItemCount(): Int {
         return meshRendererComponentData.materialsData.size

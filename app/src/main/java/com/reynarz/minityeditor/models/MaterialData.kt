@@ -3,7 +3,7 @@ package com.reynarz.minityeditor.models
 import com.reynarz.minityeditor.engine.vec3
 import com.reynarz.minityeditor.engine.components.*
 
-class MaterialData : Entity() {
+class MaterialData(val materialDataId: String) : Entity() {
 
     //Ka
     var ambientColor = vec3()

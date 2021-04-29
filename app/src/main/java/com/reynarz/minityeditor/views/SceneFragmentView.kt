@@ -64,8 +64,6 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         val editModel = view!!.findViewById<Button>(R.id.btn_editModelComponents)
 
-
-
         fun populateSceneEntityViewModel(viewModel: InspectorViewModel, sceneEntityData: SceneEntityData) {
 
             viewModel.entityName.value = sceneEntityData.name

@@ -10,6 +10,9 @@ import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
+import com.reynarz.minityeditor.engine.data.DataFactory
+import com.reynarz.minityeditor.engine.data.ShaderDataBase
+import com.reynarz.minityeditor.files.FileManager
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
@@ -23,6 +26,13 @@ class MainActivity : AppCompatActivity() {
     private val sceneFragment = SceneFragmentView()
     private val shaderFragment = ShaderEditorFragment()
     private val inspectorFragment = InspectorFragmentView()
+    private val fileManager = FileManager()
+
+    private val sceneEntitiesDataInScene = mutableListOf<SceneEntityData>()
+
+    lateinit var shaderDataBase: ShaderDataBase
+
+    var dataFactory = DataFactory()
 
     var selectedSceneEntity: SceneEntityData? = null
         private set
@@ -46,6 +56,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        initAllData()
+
         instance = this
         openGLView = findViewById(R.id.OpenGLView_activity)
 
@@ -61,26 +73,23 @@ class MainActivity : AppCompatActivity() {
         openSceneWindow()
     }
 
+    private fun initAllData() {
+
+        // set the shaderData.
+        shaderDataBase = fileManager.loadShaderDatabase()
+    }
+
     private fun setViewModels() {
         val viewModelFactory = ViewModelFactory(this)
 
-        hierarchyViewModel = viewModelFactory.getHierarchyViewModel(getSceneEntitiesData())
+        hierarchyViewModel = viewModelFactory.getHierarchyViewModel(sceneEntitiesDataInScene)
         inspectorViewModel = viewModelFactory.getInspectorEntityViewModel()
-    }
-
-    private fun getSceneEntitiesData(): MutableList<SceneEntityData> {
-
-        val entity1 = SceneEntityData("FirstEntity")
-        val entity2 = SceneEntityData("AnotherSceneEntity")
-        val entity3 = SceneEntityData("ThirdEntityHere")
-
-        return mutableListOf(entity1, entity2, entity3)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // add a new Obj
+        // add new obj to dabase, and add it to the hierarchy immeadiatelly.
         if (requestCode == 1 && data != null) {
             val files =
                 data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
@@ -98,6 +107,7 @@ class MainActivity : AppCompatActivity() {
     fun openShaderWindow(materialData: MaterialData) {
         shaderFragment.openGLView = openGLView
         shaderFragment.materialData = materialData
+
         changeMainFragment(shaderFragment)
     }
 

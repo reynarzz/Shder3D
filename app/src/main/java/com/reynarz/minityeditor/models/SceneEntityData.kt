@@ -10,10 +10,10 @@ data class SceneEntityData(var name: String) {
     var transformData = TransformComponentData()
     var meshRendererData = MeshRendererComponentData()
 
-    var UUid = ""
+    var entityID = ""
         private set
 
     init {
-        UUid = UUID.randomUUID().toString()
+        entityID = UUID.randomUUID().toString()
     }
 }
