@@ -30,7 +30,6 @@ class SceneObjectManager(
         sceneEntity.name = "Girl object"
         sceneEntity.testMeshRenderer = renderer
 
-
         val bounding = boundingBoxTest(objData.bounds)
 
         val sceneEntity2 = SceneEntity()

@@ -51,12 +51,14 @@
             android:elevation="2dp"
             android:fontFamily="@font/roboto_bold"
             android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:text="The material name"
             android:textAlignment="textStart"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/backgroundImage"
             app:layout_constraintStart_toEndOf="@+id/iv_mr_materialImage"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,7 +104,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="@+id/btn_removeMaterial" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

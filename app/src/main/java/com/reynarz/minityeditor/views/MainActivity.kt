@@ -90,24 +90,26 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // add new obj to dabase, and add it to the hierarchy immeadiatelly.
+        // Add new obj to database, and add it to the hierarchy immediately.
         if (requestCode == 1 && data != null) {
-            val files =
-                data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
+            val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
             for (path in files!!) {
                 openGLView.renderer.addRenderCommand {
 
+                    // create the data
                     val entity1 = SceneEntityData("Entity1")
                     entity1.entityID = path.path
+
+                    // add the data to the list
                     sceneEntitiesDataInScene.add(entity1)
 
+                    // load the object
                     SceneObjectManager(baseContext, openGLView.renderer).testLoadObject(entity1)
                 }
             }
         }
     }
-
 
     fun openSceneWindow() {
         changeMainFragment(sceneFragment)
