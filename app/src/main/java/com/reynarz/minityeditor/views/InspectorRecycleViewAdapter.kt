@@ -5,12 +5,15 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.ComponentData
+import com.reynarz.minityeditor.models.MaterialData
+import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 
@@ -38,16 +41,28 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
             val frame = holder.itemView.findViewById<FrameLayout>(R.id.fragment_componentContent)
 
             val view = LayoutInflater.from(holder.itemView.context)
-                .inflate(componentData.componentID, null, false)
+                .inflate(componentData.componentViewID, null, false)
 
             frame.addView(view)
 
-            when (componentData.componentID) {
+            when (componentData.componentViewID) {
                 R.layout.transform_fragment_view -> {
                     setTransformListeners(this, componentData as TransformComponentData, value)
                 }
                 R.layout.mesh_renderer_fragment_view -> {
 
+                    findViewById<Button>(R.id.btn_addToComponentList).visibility = View.VISIBLE
+
+                    val rvMaterials = findViewById<RecyclerView>(R.id.rv_meshRendererMaterials)
+
+                    val meshData = componentData as MeshRendererComponentData
+                    meshData.materialsData.add(MaterialData())
+                    meshData.materialsData.add(MaterialData())
+                    meshData.materialsData.add(MaterialData())
+                    meshData.materialsData.add(MaterialData())
+
+                    rvMaterials.adapter = MeshRendererMaterialsAdapter(meshData)
+                    rvMaterials.layoutManager = CustomLinearLayoutManager(holder.itemView.context)
                 }
             }
         }
@@ -130,6 +145,7 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
             }
         }
     }
+
 
     private fun setEditTextTransformListeners(editText: EditText, block: (Float) -> Unit) {
         editText.addTextChangedListener(object : TextWatcher {

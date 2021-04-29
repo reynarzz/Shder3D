@@ -56,7 +56,7 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
         inspectorViewModel!!.componentsData.observe(this, {
 
             for (i in it) {
-                when (i.componentID) {
+                when (i.componentViewID) {
                     R.layout.transform_fragment_view -> {
                         val transform = i as TransformComponentData
 

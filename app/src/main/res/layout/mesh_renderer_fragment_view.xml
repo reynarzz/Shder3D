@@ -1,109 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
+    android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_meshRendererMaterials"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="50dp"
+        android:minHeight="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <!--        <Button-->
-        <!--            android:id="@+id/btn_editMaterial"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="60dp"-->
-        <!--            android:layout_marginRight="2dp"-->
-        <!--            android:background="@color/transparent"-->
-        <!--            app:layout_constraintEnd_toStartOf="@+id/btn_removeMaterial"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent"-->
-        <!--            app:tint="@color/black" />-->
-
-        <ImageView
-            android:id="@+id/backgroundImage"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="2dp"
-            android:src="@drawable/round_left"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_removeMaterial"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tint="@color/black" />
-
-        <ImageView
-            android:id="@+id/iv_mr_materialImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:src="@drawable/material_file"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:elevation="2dp"
-            android:fontFamily="@font/roboto_bold"
-            android:paddingLeft="15dp"
-            android:text="The material name"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_mr_materialImage"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btn_editMaterialShaderFromInspector"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/transparent"
-            app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
-            app:layout_constraintEnd_toEndOf="@+id/backgroundImage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/backgroundImage"/>
-
-        <Button
-            android:id="@+id/btn_removeMaterial"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:background="@color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/round_right"
-            app:tint="@color/purple_200" />
-
-        <ImageView
-
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:elevation="2dp"
-            android:scaleX="0.35"
-            android:scaleY="0.35"
-            android:src="@drawable/delete"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_removeMaterial"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/backgroundImage"
-            app:layout_constraintTop_toTopOf="@+id/btn_removeMaterial" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

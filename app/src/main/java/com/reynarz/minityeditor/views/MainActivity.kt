@@ -60,8 +60,6 @@ class MainActivity : AppCompatActivity() {
         inspectorViewModel = viewModelFactory.getInspectorEntityViewModel()
     }
 
-
-
     private fun getSceneEntitiesData(): MutableList<SceneEntityData> {
 
         val entity1 = SceneEntityData("FirstEntity")

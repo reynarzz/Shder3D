@@ -23,6 +23,6 @@ class MaterialData : Entity() {
     //d (alpha)
     var disolve = 0f
 
-    var shaderId = Int
+    var shaderId = String()
     var texturesDataID = mutableListOf<Int>()
 }
