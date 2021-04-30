@@ -20,7 +20,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var zoom = 1f
 
     private val rendererCommands = mutableListOf<() -> Unit>()
-
+    private lateinit var errorMaterial : Material
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
@@ -136,6 +136,8 @@ void main()
         if (!initialized) {
             editorObjs = mutableListOf()
 
+            errorMaterial = Utils.getErrorMaterial()
+
             glEnable(GL_DEPTH_TEST)
             glDepthFunc(GL_LEQUAL)
             //glEnable(GL_BLEND)
@@ -181,31 +183,19 @@ void main()
     private var quadShader: Shader? = null
     var screenQuadMesh: Mesh? = null
 
-    val selectedObjID_Test = 0
-
-    private val objsToLoad = mutableListOf<String>()
-
-    fun loadNewObjCommand(filePath: String) {
-        objsToLoad.add(filePath)
-    }
-
-    fun addRenderCommand(command : () -> Unit){
+    fun addRenderCommand(command: () -> Unit) {
         rendererCommands.add(command)
     }
 
-
-
-    private fun onPushedOutsideCommands() {
-        for (command in rendererCommands)
-        {
+    private fun runCommands() {
+        for (command in rendererCommands) {
             command()
             rendererCommands.remove(command)
         }
     }
 
     override fun onDrawFrame(gl: GL10?) {
-
-        onPushedOutsideCommands()
+        runCommands()
 
         mainFrameBuffer.bind()
 
@@ -242,11 +232,11 @@ void main()
 //
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
-       // val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
+        // val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
 
         for (entity in scene!!.entities) {
             if (entity.testMeshRenderer != null) {
-                entity.testMeshRenderer!!.bind(viewM, projM)
+                entity.testMeshRenderer!!.bind(viewM, projM, errorMaterial)
             }
 
             if (entity.name != "Bounds") {
@@ -258,16 +248,13 @@ void main()
                 )
             } else {
                 glDrawElements(
-                    GL_LINES,
-                    entity.testMeshRenderer!!.indicesCount,
-                    GL_UNSIGNED_INT,
-                    entity.testMeshRenderer!!.indexBuffer
+                    GL_LINES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer
                 )
             }
         }
 
         for (obj in editorObjs!!) {
-            obj.bind(viewM, projM)
+            obj.bind(viewM, projM, errorMaterial)
 
             if (obj.indicesCount > 0)
                 glDrawElements(GL_TRIANGLES, obj.indicesCount, GL_UNSIGNED_INT, obj.indexBuffer)

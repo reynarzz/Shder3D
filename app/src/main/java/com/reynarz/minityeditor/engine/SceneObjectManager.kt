@@ -16,39 +16,36 @@ class SceneObjectManager(
         val dataBase = ModelsDataBase()
 
         val modelData = dataBase.getModel(sceneEntityData.entityID)
-       // val rawObj = ObjParser(objectPath)
 
-        var objData = modelData//rawObj.getModelData()
+        var objData = modelData
         val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs)
 
-        val mat = Utils.getDefaultMaterial()
-        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
+//        val mat = Utils.getDefaultMaterial()
+//        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
 
-        val renderer = MeshRenderer(mesh, mat)
+        val renderer = MeshRenderer(mesh, null)
 
         val sceneEntity = SceneEntity()
-        sceneEntity.name = "Girl object"
+        sceneEntity.name = sceneEntityData.name
         sceneEntity.testMeshRenderer = renderer
 
-        val bounding = boundingBoxTest(objData.bounds)
-
-        val sceneEntity2 = SceneEntity()
-        sceneEntity2.name = "Bounds"
-        sceneEntity2.testMeshRenderer = bounding
-
+//        val bounding = boundingBoxTest(objData.bounds)
+//
+//        val boundingBox = SceneEntity()
+//        boundingBox.name = "Bounds"
+//        boundingBox.testMeshRenderer = bounding
+//        openGLRenderer.scene.entities.add(boundingBox)
 
         openGLRenderer.scene.entities.add(sceneEntity)
-        openGLRenderer.scene.entities.add(sceneEntity2)
     }
 
     fun boundingBoxTest(bounds: Bounds): MeshRenderer {
 
         var cube = ObjParser(context!!, "models/cube.obj").getModelData()
 
-        val mesh  = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1))
+        val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1))
         //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
 
         return MeshRenderer(mesh, Utils.getUnlitMaterial())
     }
-
 }

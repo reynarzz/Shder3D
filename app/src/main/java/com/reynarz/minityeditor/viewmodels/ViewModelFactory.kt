@@ -7,7 +7,6 @@ import com.reynarz.minityeditor.models.SceneEntityData
 class ViewModelFactory(private val activity: AppCompatActivity) {
 
      fun getInspectorEntityViewModel() : InspectorViewModel {
-
          return ViewModelProvider(activity).get(InspectorViewModel::class.java)
     }
 

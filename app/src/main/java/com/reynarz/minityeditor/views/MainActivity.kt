@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
             for (path in files!!) {
+
                 openGLView.renderer.addRenderCommand {
 
                     // create the data

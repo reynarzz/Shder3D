@@ -3,13 +3,17 @@ package com.reynarz.minityeditor.engine
 class Utils {
     companion object {
         fun getScreenSizeQuad(): Mesh {
-            var screenQuadVerts: FloatArray = listOf(-1f, -1f, 0f,
-                    -1f, 1f, 0f,
-                    1f, 1f, 0f,
-                    1f, -1f, 0f).toFloatArray()
+            var screenQuadVerts: FloatArray = listOf(
+                -1f, -1f, 0f,
+                -1f, 1f, 0f,
+                1f, 1f, 0f,
+                1f, -1f, 0f
+            ).toFloatArray()
 
-            var screenQuadIndex = listOf(0, 1, 2,
-                    0, 2, 3).toIntArray()
+            var screenQuadIndex = listOf(
+                0, 1, 2,
+                0, 2, 3
+            ).toIntArray()
 
             val screenQuadUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
 
@@ -17,13 +21,17 @@ class Utils {
         }
 
         fun getQuad(size: Float): Mesh {
-            var screenQuadVerts: FloatArray = listOf(-size, -size, 0f,
-                    -size, size, 0f,
-                    size, size, 0f,
-                    size, -size, 0f).toFloatArray()
+            var screenQuadVerts: FloatArray = listOf(
+                -size, -size, 0f,
+                -size, size, 0f,
+                size, size, 0f,
+                size, -size, 0f
+            ).toFloatArray()
 
-            var screenQuadIndex = listOf(0, 1, 2,
-                    0, 2, 3).toIntArray()
+            var screenQuadIndex = listOf(
+                0, 1, 2,
+                0, 2, 3
+            ).toIntArray()
 
             val screenQuadUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
 
@@ -31,13 +39,17 @@ class Utils {
         }
 
         fun getPlane(size: Float): Mesh {
-            var screenPlaneVerts: FloatArray = listOf(-size, 0f, -size,
-                    -size, 0f, size,
-                    size, 0f, size,
-                    size, 0f, -size).toFloatArray()
+            var screenPlaneVerts: FloatArray = listOf(
+                -size, 0f, -size,
+                -size, 0f, size,
+                size, 0f, size,
+                size, 0f, -size
+            ).toFloatArray()
 
-            var screenPlaneIndex = listOf(0, 1, 2,
-                    0, 2, 3).toIntArray()
+            var screenPlaneIndex = listOf(
+                0, 1, 2,
+                0, 2, 3
+            ).toIntArray()
 
             val screenPlaneUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
 
@@ -64,7 +76,13 @@ class Utils {
             return Pair(vertexTex, fragTex)
         }
 
-        fun getDefaultMaterial() : Material {
+        fun getErrorMaterial(): Material {
+            val shader = getErrorShaderCode()
+
+            return Material(Shader(shader.first, shader.second))
+        }
+
+        fun getDefaultMaterial(): Material {
 
             var vertexTex = """ 
             
@@ -107,7 +125,7 @@ void main()
             return mat
         }
 
-        fun getUnlitMaterial() : Material {
+        fun getUnlitMaterial(): Material {
 
             var vertexTex = """ 
             
