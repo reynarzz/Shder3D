@@ -35,7 +35,6 @@ class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRe
                 MainActivity.instance!!.openShaderWindow(meshRendererData)
 
                 Log.d("Edit mat", position.toString())
-                //meshRendererData.shaderId
             }
 
             removeMatButton.setOnClickListener {

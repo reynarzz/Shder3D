@@ -24,8 +24,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     }
 
-    var changed = false
-
     val screenQuadVertexCode = """
             
 attribute vec4 _VERTEX_; 
@@ -164,7 +162,6 @@ void main()
         val meshRenderer = MeshRenderer(plane, material)
 
         editorObjs!!.add(meshRenderer)
-
     }
 
     fun setReplaceShadersCommand(vertexCode: String, fragmentCode: String) {
@@ -172,7 +169,7 @@ void main()
         addRenderCommand {
             val entity = scene!!.getEntityById(selectedEntityID)
             val material = entity.testMeshRenderer!!.material
-            Log.d("is null",( material == null).toString())
+            Log.d("is null", (material == null).toString())
 
             material!!.shader.replaceShaders(vertexCode, fragmentCode)
         }
@@ -219,12 +216,6 @@ void main()
         lStartTime = lEndTime
         //shader.setDeltaTimeTest(lEndTime.toFloat(), output)
 
-        if (changed) {
-            changed = false
-
-            // i need the renderer ID as well to only update the correct shader.
-
-        }
 
         //the camera should have as well a 'viewProjectionM'
 

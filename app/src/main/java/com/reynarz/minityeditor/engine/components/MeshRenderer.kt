@@ -11,7 +11,7 @@ class MeshRenderer(private val mesh: Mesh, var material: Material?) : Component(
 
     fun bind(view: FloatArray, projection: FloatArray, default: Material) {
 
-        val mat = if (material != null) material else default
+        val mat = if (material != null && material!!.shader.compiledCorrectly) material else default
 
         mat!!.bind(transform!!.modelM!!, view, projection)
         mesh.bind(mat!!.program)

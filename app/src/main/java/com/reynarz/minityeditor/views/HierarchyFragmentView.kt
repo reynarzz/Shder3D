@@ -19,7 +19,7 @@ class HierarchyFragmentView : Fragment(R.layout.hierarchy_fragment_view) {
         MainActivity.hierarchyViewModel.selectedEntityIndex.observe(this, {
             val entity = MainActivity.hierarchyViewModel.entitiesInScene.value!!.getOrNull(it)
 
-                Log.d("Entity is null", (entity === null).toString())
+            Log.d("Entity is null", (entity === null).toString())
 
             mainActivity.setSelectedEntity(entity)
         })

@@ -1,6 +1,7 @@
 package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20.*
+import android.util.Log
 
 class Shader(vertexSource: String, fragmentSource: String) {
 
@@ -9,6 +10,9 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
     private var vertexShader = 0
     private var fragmentShader = 0
+
+    var compiledCorrectly = false
+        private set
 
     init {
         createShaders(vertexSource, fragmentSource)
@@ -53,35 +57,31 @@ class Shader(vertexSource: String, fragmentSource: String) {
         val anErrorhappened = !couldVertexShaderCompile || !couldFragmentShaderCompile
 
         if (anErrorhappened) {
+            compiledCorrectly = false
 
             if (!couldVertexShaderCompile) {
                 val log = glGetShaderInfoLog(vertexShader)
+                Log.d("Vertex Shader Error", log)
             }
 
             if (!couldFragmentShaderCompile) {
                 val log = glGetShaderInfoLog(fragmentShader)
+                Log.d("Fragment Shader Error", log)
             }
 
-            val errorShader = Utils.getErrorShaderCode()
-
-            vertexResult = GetCompiledShader(GL_VERTEX_SHADER, errorShader.first);
-            fragmentResult = GetCompiledShader(GL_FRAGMENT_SHADER, errorShader.second);
-
-            vertexShader = vertexResult.first
-            fragmentShader = fragmentResult.first
         } else {
+            compiledCorrectly = true
 
+            vertexResult.second
+            fragmentResult.second
+
+            program = glCreateProgram()
+
+            glAttachShader(program, vertexShader)
+            glAttachShader(program, fragmentShader)
+
+            glLinkProgram(program)
         }
-
-        vertexResult.second
-        fragmentResult.second
-
-        program = glCreateProgram()
-
-        glAttachShader(program, vertexShader)
-        glAttachShader(program, fragmentShader)
-
-        glLinkProgram(program)
     }
 
     private fun GetCompiledShader(type: Int, shaderCode: String): Pair<Int, Boolean> {
