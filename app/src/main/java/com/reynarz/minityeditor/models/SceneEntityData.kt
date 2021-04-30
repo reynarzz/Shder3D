@@ -1,6 +1,7 @@
 package com.reynarz.minityeditor.models
 
 import kotlinx.serialization.*
+import java.util.*
 
 @Serializable
 data class SceneEntityData(var name: String) {
@@ -10,11 +11,10 @@ data class SceneEntityData(var name: String) {
     var transformData = TransformComponentData()
     var meshRendererData: MeshRendererComponentData = MeshRendererComponentData()
 
-    // this could be the path of the resource in the phone or a UUID
+    var entityModelPath = ""
     var entityID = ""
 
-
     init {
-        //entityID = UUID.randomUUID().toString()
+        entityID = UUID.randomUUID().toString()
     }
 }

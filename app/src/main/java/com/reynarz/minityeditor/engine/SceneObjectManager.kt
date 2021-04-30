@@ -14,7 +14,7 @@ class SceneObjectManager(
     fun testLoadObject(sceneEntityData: SceneEntityData) {
 
         val dataBase = ModelsDataBase()
-        val modelData = dataBase.getModel(sceneEntityData.entityID)
+        val modelData = dataBase.getModel(sceneEntityData.entityModelPath)
 
         var objData = modelData
         val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs)
@@ -25,6 +25,7 @@ class SceneObjectManager(
         val renderer = MeshRenderer(mesh, null)
 
         val sceneEntity = SceneEntity()
+        sceneEntity.entityID = sceneEntityData.entityID
         sceneEntity.name = sceneEntityData.name
         sceneEntity.testMeshRenderer = renderer
 

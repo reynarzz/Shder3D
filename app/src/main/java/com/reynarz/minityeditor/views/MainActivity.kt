@@ -76,7 +76,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAllData() {
-
         // set the shaderData.
         shaderDataBase = fileManager.loadShaderDatabase()
 
@@ -99,9 +98,8 @@ class MainActivity : AppCompatActivity() {
 
             for (path in files!!) {
                 val entity = SceneEntityData("Entity1")
-                entity.entityID = path.path
+                entity.entityModelPath = path.path
                 loadEntity(entity)
-
             }
         }
     }
@@ -142,6 +140,7 @@ class MainActivity : AppCompatActivity() {
 
     fun setSelectedEntity(sceneEntityData: SceneEntityData?) {
         selectedSceneEntity = sceneEntityData
+        openGLView.renderer.selectedEntityID = sceneEntityData!!.entityID
     }
 
     override fun onResume() {

@@ -11,8 +11,6 @@ import javax.microedition.khronos.opengles.GL10
 
 class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
-    private lateinit var vertexShaderCode: String
-    private lateinit var fragmentShaderCode: String
     lateinit var touchPointer: TouchPointer
 
     val scene: Scene = Scene()
@@ -168,11 +166,11 @@ void main()
 
     }
 
-    fun setShaders(vertexCode: String, fragmentCode: String) {
-        fragmentShaderCode = fragmentCode
-        vertexShaderCode = vertexCode
+    fun setReplaceShadersCommand(vertexCode: String, fragmentCode: String) {
 
-        changed = true
+        addRenderCommand {
+            scene!!.getEntityById(selectedEntityID).testMeshRenderer!!.material!!.shader.replaceShaders(vertexCode, fragmentCode)
+        }
     }
 
     private var editorObjs: MutableList<MeshRenderer>? = null
@@ -197,6 +195,8 @@ void main()
         }
     }
 
+    var selectedEntityID = ""
+
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
@@ -218,10 +218,7 @@ void main()
             changed = false
 
             // i need the renderer ID as well to only update the correct shader.
-//            scene!!.entities[selectedObjID_Test].testMeshRenderer!!.material.shader.replaceShaders(
-//                vertexShaderCode,
-//                fragmentShaderCode
-//            )
+
         }
 
         //the camera should have as well a 'viewProjectionM'

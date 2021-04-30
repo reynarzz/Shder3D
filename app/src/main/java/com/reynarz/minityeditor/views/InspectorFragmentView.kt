@@ -81,7 +81,6 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
 
                         selectedSceneData.meshRendererData = meshRendererData
 
-                        Log.d("Mat", "Changed")
                     }
                 }
             }

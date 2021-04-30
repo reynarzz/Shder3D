@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
-import com.reynarz.minityeditor.engine.SceneObjectManager
 import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.models.MaterialData
 import java.io.BufferedReader
@@ -26,7 +25,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val shaderData = MainActivity.instance.shaderDataBase.getShaderData(materialData!!.shaderId)!!
+        val shaderData = materialData!!.shaderData
 
         var vertexShader = shaderData.vertexShader
         var fragmentShader = shaderData.fragmentShader
@@ -70,7 +69,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
                 vertexShader = codeEditTex.editableText.toString()
             }
 
-            openGLView.renderer.setShaders(
+            openGLView.renderer.setReplaceShadersCommand(
                 Utils.ShaderFileUtils.processInclude(include1, vertexShader),
                 Utils.ShaderFileUtils.processInclude(include1, fragmentShader)
             )

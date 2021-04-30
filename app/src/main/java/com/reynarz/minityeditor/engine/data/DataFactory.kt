@@ -24,9 +24,9 @@ class DataFactory {
     }
 
     fun getNewMaterialData(materialName: String): MaterialData {
-        val materialData = MaterialData(UUID.randomUUID().toString())
+        val materialData = MaterialData(UUID.randomUUID().toString(), getNewShaderData("shader"))
         materialData.name = materialName
-        materialData.shaderId =
+
         return materialData
     }
 }

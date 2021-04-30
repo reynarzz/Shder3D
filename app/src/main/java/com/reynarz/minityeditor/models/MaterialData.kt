@@ -1,12 +1,10 @@
 package com.reynarz.minityeditor.models
 
 import com.reynarz.minityeditor.engine.vec3
-import com.reynarz.minityeditor.engine.components.*
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MaterialData(var materialDataId: String) : Entity() {
-
+class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
     //Ka
     var ambientColor = vec3()
 
@@ -24,7 +22,6 @@ class MaterialData(var materialDataId: String) : Entity() {
 
     //d (alpha)
     var disolve = 0f
-
-    var shaderId = String()
+    var name = ""
     var texturesDataID = mutableListOf<String>()
 }
