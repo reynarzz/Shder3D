@@ -3,6 +3,7 @@ package com.reynarz.minityeditor.engine
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.util.Log
 import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import javax.microedition.khronos.egl.EGLConfig
@@ -169,7 +170,11 @@ void main()
     fun setReplaceShadersCommand(vertexCode: String, fragmentCode: String) {
 
         addRenderCommand {
-            scene!!.getEntityById(selectedEntityID).testMeshRenderer!!.material!!.shader.replaceShaders(vertexCode, fragmentCode)
+            val entity = scene!!.getEntityById(selectedEntityID)
+            val material = entity.testMeshRenderer!!.material
+            Log.d("is null",( material == null).toString())
+
+            material!!.shader.replaceShaders(vertexCode, fragmentCode)
         }
     }
 

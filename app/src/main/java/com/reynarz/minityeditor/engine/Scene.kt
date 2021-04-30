@@ -36,7 +36,7 @@ class Scene {
     fun getEntityById(id: String): SceneEntity {
 
         for (i in entities){
-            if(i.entityID === id){
+            if(i.entityID == id){
                 return  i
             }
         }

@@ -25,6 +25,7 @@ class SceneObjectManager(
         val renderer = MeshRenderer(mesh, null)
 
         val sceneEntity = SceneEntity()
+
         sceneEntity.entityID = sceneEntityData.entityID
         sceneEntity.name = sceneEntityData.name
         sceneEntity.testMeshRenderer = renderer
@@ -47,5 +48,17 @@ class SceneObjectManager(
         //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
 
         return MeshRenderer(mesh, Utils.getUnlitMaterial())
+    }
+
+    fun addMaterial(sceneEntityData: SceneEntityData) {
+
+        val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
+        val materialData = sceneEntityData.meshRendererData.materialsData.getOrNull(0)
+
+        if (materialData != null) {
+            val shaderData = materialData.shaderData
+
+            entity.testMeshRenderer!!.material = Material(Shader(shaderData.vertexShader, shaderData.fragmentShader))
+        }
     }
 }

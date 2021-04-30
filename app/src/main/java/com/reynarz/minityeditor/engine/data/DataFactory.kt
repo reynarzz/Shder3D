@@ -15,7 +15,7 @@ class DataFactory {
     fun getNewShaderData(shaderName: String): ShaderData {
         val shader = ShaderData(shaderName, UUID.randomUUID().toString())
 
-        val unlit = Utils.getUnlitShader()
+        val unlit = Utils.getUnlitShader(1.0f)
 
         shader.vertexShader = unlit.first
         shader.fragmentShader = unlit.second

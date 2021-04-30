@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private val shaderFragment = ShaderEditorFragment()
     private val inspectorFragment = InspectorFragmentView()
     private val fileManager = FileManager()
+    private lateinit var sceneObjectManager: SceneObjectManager
 
     private val sceneEntitiesDataInScene = mutableListOf<SceneEntityData>()
 
@@ -60,6 +61,9 @@ class MainActivity : AppCompatActivity() {
 
         instance = this
         openGLView = findViewById(R.id.OpenGLView_activity)
+
+        sceneObjectManager = SceneObjectManager(baseContext, openGLView.renderer)
+        shaderFragment.renderer = openGLView.renderer
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -105,14 +109,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadEntity(entity: SceneEntityData) {
+
+        // add the data to the list
         sceneEntitiesDataInScene.add(entity)
 
         openGLView.renderer.addRenderCommand {
 
-            // add the data to the list
-
             // load the object
-            SceneObjectManager(baseContext, openGLView.renderer).testLoadObject(entity)
+            sceneObjectManager.testLoadObject(entity)
         }
     }
 
@@ -121,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openShaderWindow(materialData: MaterialData) {
-        shaderFragment.openGLView = openGLView
+        shaderFragment.renderer = openGLView.renderer
         shaderFragment.materialData = materialData
 
         changeMainFragment(shaderFragment)
@@ -162,12 +166,21 @@ class MainActivity : AppCompatActivity() {
 
         for (entity in entities) {
 
-            if(entity.isSelected){
-                selectedSceneEntity = entity
+            if (entity.isSelected) {
+                setSelectedEntity(entity)
+
             }
 
-            Log.d("amount", entity.meshRendererData.materialsData.size.toString())
+          //  Log.d("amount", entity.meshRendererData.materialsData.size.toString())
             loadEntity(entity)
+            updateMaterials(entity)
+
+        }
+    }
+
+    fun updateMaterials(sceneEntityData: SceneEntityData?) {
+        openGLView.renderer.addRenderCommand {
+            sceneObjectManager.addMaterial(sceneEntityData!!)
         }
     }
 }

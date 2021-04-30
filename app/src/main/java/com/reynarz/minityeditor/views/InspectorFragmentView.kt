@@ -3,7 +3,6 @@ package com.reynarz.minityeditor.views
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -16,7 +15,6 @@ import com.reynarz.minityeditor.models.ComponentData
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.models.TransformComponentData
-import java.util.*
 
 
 class InspectorFragmentView : Fragment(R.layout.inspector_view) {
@@ -81,6 +79,7 @@ class InspectorFragmentView : Fragment(R.layout.inspector_view) {
 
                         selectedSceneData.meshRendererData = meshRendererData
 
+                        MainActivity.instance.updateMaterials(selectedSceneData)
                     }
                 }
             }

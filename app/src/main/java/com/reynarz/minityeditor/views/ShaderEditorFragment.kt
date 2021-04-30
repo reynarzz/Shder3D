@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.reynarz.minityeditor.R
+import com.reynarz.minityeditor.engine.OpenGLRenderer
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.models.MaterialData
@@ -20,7 +21,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
     var materialData: MaterialData? = null
 
-    lateinit var openGLView: OpenGLView
+    lateinit var renderer: OpenGLRenderer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,7 +70,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
                 vertexShader = codeEditTex.editableText.toString()
             }
 
-            openGLView.renderer.setReplaceShadersCommand(
+            renderer.setReplaceShadersCommand(
                 Utils.ShaderFileUtils.processInclude(include1, vertexShader),
                 Utils.ShaderFileUtils.processInclude(include1, fragmentShader)
             )

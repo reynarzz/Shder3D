@@ -84,7 +84,7 @@ class Utils {
             return Material(Shader(shader.first, shader.second))
         }
 
-        fun getUnlitShader(): Pair<String, String> {
+        fun getUnlitShader(unlitAmount : Float): Pair<String, String> {
             var vertexTex = """ 
             
 attribute vec4 _VERTEX_; 
@@ -93,6 +93,7 @@ attribute vec2 _UV_;
 varying vec2 _uv;
 varying vec4 pos;
 uniform mat4 UNITY_MATRIX_MVP;
+
 void main() 
 {
    _uv = _UV_;
@@ -113,7 +114,7 @@ uniform sampler2D sTexture;
 
 void main()
 {
-    gl_FragColor = vec4(0.75);
+    gl_FragColor = vec4(${unlitAmount});
 }"""
             return Pair(vertexTex, fragTex)
         }
@@ -168,7 +169,7 @@ void main()
 
         fun getUnlitMaterial(): Material {
 
-            val unlitShader = getUnlitShader()
+            val unlitShader = getUnlitShader(0.75f)
 
             val shader = Shader(unlitShader.first, unlitShader.second)
             val mat = Material(shader)
