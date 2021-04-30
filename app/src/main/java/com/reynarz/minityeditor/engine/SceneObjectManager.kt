@@ -47,7 +47,7 @@ class SceneObjectManager(
         val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1))
         //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
 
-        return MeshRenderer(mesh, Utils.getUnlitMaterial())
+        return MeshRenderer(mesh, Utils.getUnlitMaterial(0.75f))
     }
 
     fun addMaterial(sceneEntityData: SceneEntityData) {

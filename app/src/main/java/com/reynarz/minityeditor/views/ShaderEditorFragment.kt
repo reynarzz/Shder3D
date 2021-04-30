@@ -28,9 +28,6 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
         val shaderData = materialData!!.shaderData
 
-        var vertexShader = shaderData.vertexShader
-        var fragmentShader = shaderData.fragmentShader
-
         val compileButton = view.findViewById<Button>(R.id.buttonCompile)
         val closeShaderWindow = view.findViewById<Button>(R.id.btn_closeShaderWindow)
         val codeEditTex = view.findViewById<EditText>(R.id.et_fragmentCode)
@@ -44,7 +41,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
         val include1 = getInclude(activity!!.assets, "includes/unity.h")
 
-        codeEditTex.setText(fragmentShader)
+        codeEditTex.setText(shaderData.fragmentShader)
 
         var fragShaderFocused = true
 
@@ -52,9 +49,9 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             fragShaderFocused = !fragShaderFocused
 
             if (fragShaderFocused) {
-                codeEditTex.setText(fragmentShader)
+                codeEditTex.setText(shaderData.fragmentShader)
             } else {
-                codeEditTex.setText(vertexShader)
+                codeEditTex.setText(shaderData.vertexShader)
             }
         }
 
@@ -65,14 +62,15 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         compileButton.setOnClickListener {
 
             if (fragShaderFocused) {
-                fragmentShader = codeEditTex.editableText.toString()
+                shaderData.fragmentShader = codeEditTex.editableText.toString()
             } else {
-                vertexShader = codeEditTex.editableText.toString()
+                shaderData.vertexShader = codeEditTex.editableText.toString()
             }
 
+
             renderer.setReplaceShadersCommand(
-                Utils.ShaderFileUtils.processInclude(include1, vertexShader),
-                Utils.ShaderFileUtils.processInclude(include1, fragmentShader)
+                Utils.ShaderFileUtils.processInclude(include1, shaderData.vertexShader),
+                Utils.ShaderFileUtils.processInclude(include1, shaderData.fragmentShader)
             )
 
             var compilationMessageCallback = { message: String ->

@@ -1,7 +1,5 @@
 package com.reynarz.minityeditor.engine
 
-import com.reynarz.minityeditor.models.ShaderData
-
 class Utils {
     companion object {
         fun getScreenSizeQuad(): Mesh {
@@ -98,7 +96,7 @@ void main()
 {
    _uv = _UV_;
    
-   pos = UNITY_MATRIX_MVP* _VERTEX_;
+   pos = UNITY_MATRIX_MVP * _VERTEX_;
    
    gl_Position = pos;
 }"""
@@ -114,7 +112,7 @@ uniform sampler2D sTexture;
 
 void main()
 {
-    gl_FragColor = vec4(${unlitAmount});
+    gl_FragColor = vec4(${unlitAmount}, ${unlitAmount}, ${unlitAmount}, 1.);
 }"""
             return Pair(vertexTex, fragTex)
         }
@@ -131,6 +129,7 @@ uniform mat4 UNITY_MATRIX_MVP;
 uniform mat4 UNITY_MATRIX_P;
 uniform mat4 UNITY_MATRIX_V;
 uniform mat4 unity_ObjectToWorld;
+
 void main() 
 {
    _uv = _UV_;
@@ -162,19 +161,17 @@ void main()
             val texturized = getTexturizedShader()
 
             val shader = Shader(texturized.first, texturized.second)
-            val mat = Material(shader)
 
-            return mat
+            return Material(shader)
         }
 
-        fun getUnlitMaterial(): Material {
+        fun getUnlitMaterial(unlitAmount: Float): Material {
 
-            val unlitShader = getUnlitShader(0.75f)
+            val unlitShader = getUnlitShader(unlitAmount)
 
             val shader = Shader(unlitShader.first, unlitShader.second)
-            val mat = Material(shader)
 
-            return mat
+            return Material(shader)
         }
     }
 

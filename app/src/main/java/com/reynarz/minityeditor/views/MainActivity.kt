@@ -110,10 +110,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadEntity(entity: SceneEntityData) {
 
-        // add the data to the list
-        sceneEntitiesDataInScene.add(entity)
 
         openGLView.renderer.addRenderCommand {
+
+            // add the data to the list, why inside here works? (if i put it outside the command doesn't work)
+            sceneEntitiesDataInScene.add(entity)
 
             // load the object
             sceneObjectManager.testLoadObject(entity)
@@ -144,7 +145,13 @@ class MainActivity : AppCompatActivity() {
 
     fun setSelectedEntity(sceneEntityData: SceneEntityData?) {
         selectedSceneEntity = sceneEntityData
-        openGLView.renderer.selectedEntityID = sceneEntityData!!.entityID
+
+        if (selectedSceneEntity != null) {
+
+            openGLView.renderer.selectedEntityID = selectedSceneEntity!!.entityID
+        } else {
+            openGLView.renderer.selectedEntityID = "-1"
+        }
     }
 
     override fun onResume() {
@@ -171,7 +178,6 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-          //  Log.d("amount", entity.meshRendererData.materialsData.size.toString())
             loadEntity(entity)
             updateMaterials(entity)
 

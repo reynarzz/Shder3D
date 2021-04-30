@@ -1,6 +1,7 @@
 package com.reynarz.minityeditor.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
@@ -16,7 +17,11 @@ class HierarchyFragmentView : Fragment(R.layout.hierarchy_fragment_view) {
         val mainActivity = (activity as MainActivity)
 
         MainActivity.hierarchyViewModel.selectedEntityIndex.observe(this, {
-            mainActivity.setSelectedEntity(MainActivity.hierarchyViewModel.entitiesInScene.value!!.getOrNull(it))
+            val entity = MainActivity.hierarchyViewModel.entitiesInScene.value!!.getOrNull(it)
+
+                Log.d("Entity is null", (entity === null).toString())
+
+            mainActivity.setSelectedEntity(entity)
         })
 
         view.findViewById<RecyclerView>(R.id.rv_hierarcy).apply {
