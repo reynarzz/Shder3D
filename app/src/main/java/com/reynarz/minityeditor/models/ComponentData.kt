@@ -1,4 +1,7 @@
 package com.reynarz.minityeditor.models
 
-open class ComponentData(val name: String, val componentViewID: Int) {
+import kotlinx.serialization.Serializable
+
+@Serializable
+open class ComponentData(var name: String, var componentViewID: Int) {
 }

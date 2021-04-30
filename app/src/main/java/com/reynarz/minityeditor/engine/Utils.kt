@@ -1,5 +1,7 @@
 package com.reynarz.minityeditor.engine
 
+import com.reynarz.minityeditor.models.ShaderData
+
 class Utils {
     companion object {
         fun getScreenSizeQuad(): Mesh {
@@ -82,8 +84,41 @@ class Utils {
             return Material(Shader(shader.first, shader.second))
         }
 
-        fun getDefaultMaterial(): Material {
+        fun getUnlitShader(): Pair<String, String> {
+            var vertexTex = """ 
+            
+attribute vec4 _VERTEX_; 
+           
+attribute vec2 _UV_;
+varying vec2 _uv;
+varying vec4 pos;
+uniform mat4 UNITY_MATRIX_MVP;
+void main() 
+{
+   _uv = _UV_;
+   
+   pos = UNITY_MATRIX_MVP* _VERTEX_;
+   
+   gl_Position = pos;
+}"""
 
+            var fragTex = """
+            
+precision mediump float; 
+varying vec4 pos;
+
+varying vec2 _uv;
+
+uniform sampler2D sTexture;
+
+void main()
+{
+    gl_FragColor = vec4(0.75);
+}"""
+            return Pair(vertexTex, fragTex)
+        }
+
+        fun getTexturizedShader(): Pair<String, String> {
             var vertexTex = """ 
             
 attribute vec4 _VERTEX_; 
@@ -118,8 +153,14 @@ void main()
     gl_FragColor = texture2D(sTexture, _uv);
 }"""
 
+            return Pair(vertexTex, fragTex)
+        }
 
-            val shader = Shader(vertexTex, fragTex)
+        fun getDefaultMaterial(): Material {
+
+            val texturized = getTexturizedShader()
+
+            val shader = Shader(texturized.first, texturized.second)
             val mat = Material(shader)
 
             return mat
@@ -127,38 +168,9 @@ void main()
 
         fun getUnlitMaterial(): Material {
 
-            var vertexTex = """ 
-            
-attribute vec4 _VERTEX_; 
-           
-attribute vec2 _UV_;
-varying vec2 _uv;
-varying vec4 pos;
-uniform mat4 UNITY_MATRIX_MVP;
-void main() 
-{
-   _uv = _UV_;
-   
-   pos = UNITY_MATRIX_MVP* _VERTEX_;
-   
-   gl_Position = pos;
-}"""
+            val unlitShader = getUnlitShader()
 
-            var fragTex = """
-            
-precision mediump float; 
-varying vec4 pos;
-
-varying vec2 _uv;
-
-uniform sampler2D sTexture;
-
-void main()
-{
-    gl_FragColor = vec4(0.75);
-}"""
-
-            val shader = Shader(vertexTex, fragTex)
+            val shader = Shader(unlitShader.first, unlitShader.second)
             val mat = Material(shader)
 
             return mat

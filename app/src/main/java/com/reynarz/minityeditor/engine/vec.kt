@@ -1,7 +1,9 @@
 package com.reynarz.minityeditor.engine
 
+import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
 
+@Serializable
 class vec4 {
     var x: Float = 0f
     var y: Float = 0f
@@ -20,7 +22,7 @@ class vec4 {
     }
 }
 
-
+@Serializable
 class vec3 {
 
     var x: Float = 0f
@@ -61,6 +63,7 @@ class vec3 {
 
 }
 
+@Serializable
 class vec2 {
 
     var x: Float = 0f

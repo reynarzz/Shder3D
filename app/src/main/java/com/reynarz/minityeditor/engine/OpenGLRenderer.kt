@@ -20,7 +20,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var zoom = 1f
 
     private val rendererCommands = mutableListOf<() -> Unit>()
-    private lateinit var errorMaterial : Material
+    private lateinit var errorMaterial: Material
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
     }
@@ -190,7 +190,10 @@ void main()
     private fun runCommands() {
         for (command in rendererCommands) {
             command()
-            rendererCommands.remove(command)
+        }
+
+        if (rendererCommands.size > 0) {
+            rendererCommands.clear()
         }
     }
 

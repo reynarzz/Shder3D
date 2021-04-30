@@ -1,13 +1,11 @@
 package com.reynarz.minityeditor.engine.data
 
+import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.ShaderData
 import java.util.*
 
 class DataFactory {
-    object Singleton {
-
-    }
 
     companion object {
         lateinit var instance: DataFactory
@@ -15,13 +13,20 @@ class DataFactory {
     }
 
     fun getNewShaderData(shaderName: String): ShaderData {
-        return ShaderData(shaderName, UUID.randomUUID().toString())
+        val shader = ShaderData(shaderName, UUID.randomUUID().toString())
+
+        val unlit = Utils.getUnlitShader()
+
+        shader.vertexShader = unlit.first
+        shader.fragmentShader = unlit.second
+
+        return shader
     }
 
     fun getNewMaterialData(materialName: String): MaterialData {
         val materialData = MaterialData(UUID.randomUUID().toString())
         materialData.name = materialName
-
+        materialData.shaderId =
         return materialData
     }
 }

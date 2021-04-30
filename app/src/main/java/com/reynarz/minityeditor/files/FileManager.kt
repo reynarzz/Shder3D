@@ -1,20 +1,21 @@
 package com.reynarz.minityeditor.files
 
-import android.content.ContentResolver
 import android.os.Environment
 import android.util.Log
-import com.google.gson.Gson
 import com.reynarz.minityeditor.engine.data.ShaderDataBase
-import com.reynarz.minityeditor.models.ShaderData
+import com.reynarz.minityeditor.models.SceneEntityData
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 
 class FileManager {
 
     val minityRootFolder = ".MinityEditor"
     val minityShadersFolderName = "Shaders"
+    val minityEntitiesFolderName = "Entities"
 
     val minityShadersFolderFullPath = "${minityRootFolder}${File.separator}Shaders"
     val minityMaterialsFolder = "${minityRootFolder}${File.separator}Shaders"
@@ -64,23 +65,48 @@ class FileManager {
     }
 
     fun loadShaderDatabase(): ShaderDataBase {
-        val file = getFile(minityShadersFolderName, "ShaderDatabase.data")
-
-        return if (file.exists()) {
-            Gson().fromJson(file.toString(), ShaderDataBase::class.java)
-        } else {
-            ShaderDataBase()
-        }
+//        val file = getFile(minityShadersFolderName, "ShaderDatabase.data")
+//
+//        return if (file.exists()) {
+//            Gson().fromJson(file.toString(), ShaderDataBase::class.java)
+//        } else {
+//
+//        }
+//
+        return  ShaderDataBase()
     }
 
     private fun getFile(directoy: String, file: String): File {
         return File(Environment.getExternalStorageDirectory().absolutePath + File.separator + minityRootFolder + File.separator + directoy, file)
     }
 
-//    fun <T> deserializeData(data: String): T{
-//        val gson = Gson()
-//        return gson.fromJson<T>(data, T)
-//    }
+    fun saveEntities(sceneEntitiesDataInScene: MutableList<SceneEntityData>) {
+        val directory = getFile("", "$minityEntitiesFolderName")
+        val file = File(directory, "$minityEntitiesFolderName.txt")
 
-    //fun readObj(fullPath: String) = File(fullPath).readLines()
+        if (!directory.exists()) {
+            directory.mkdir()
+
+            file.createNewFile()
+        }
+
+        file.writeText(Json.encodeToString((sceneEntitiesDataInScene)))
+    }
+
+    fun loadEntities(): EntitiesContainer {
+        val directory = getFile("", "$minityEntitiesFolderName")
+        val file = File(directory, "$minityEntitiesFolderName.txt")
+
+        return if (file.exists()) {
+            val obj = Json.decodeFromString<MutableList<SceneEntityData>>(file.readText())
+
+             Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
+            EntitiesContainer(obj)
+        } else {
+            EntitiesContainer(mutableListOf())
+        }
+    }
+
+    @Serializable
+    data class EntitiesContainer(var sceneEntitiesDataInScene: MutableList<SceneEntityData>) {}
 }

@@ -9,13 +9,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.ComponentData
-import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
+import java.util.*
 
 class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
     RecyclerView.Adapter<InspectorRecycleViewAdapter.InspectorViwHolder>() {
@@ -58,13 +59,22 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
 
                     addMaterialButton.setOnClickListener {
 
-                        adapter.addNewMaterial()
+                        val mat = MainActivity.instance.dataFactory.getNewMaterialData("Material (${UUID.randomUUID()})")
+
+                        // add to the view model data
+                        (value!![position] as MeshRendererComponentData).materialsData.add(mat)
+
+                        //apply the data to view model first to notify.
+                        viewModel.componentsData.value = value
+
+                        //update the adapter list.
+                        adapter.notifyDataSetChanged()
                     }
 
                     val rvMaterials = findViewById<RecyclerView>(R.id.rv_meshRendererMaterials)
 
                     rvMaterials.adapter = adapter
-                    rvMaterials.layoutManager = CustomLinearLayoutManager(holder.itemView.context)
+                    rvMaterials.layoutManager = LinearLayoutManager(holder.itemView.context)
                 }
             }
         }

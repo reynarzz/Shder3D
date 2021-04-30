@@ -14,7 +14,6 @@ class SceneObjectManager(
     fun testLoadObject(sceneEntityData: SceneEntityData) {
 
         val dataBase = ModelsDataBase()
-
         val modelData = dataBase.getModel(sceneEntityData.entityID)
 
         var objData = modelData

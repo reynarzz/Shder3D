@@ -46,13 +46,6 @@ class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRe
         }
     }
 
-    fun addNewMaterial() {
-        val mat = MainActivity.instance.dataFactory.getNewMaterialData("Material (${UUID.randomUUID()})")
-
-        meshRendererComponentData.materialsData.add(mat)
-        notifyDataSetChanged()
-    }
-
     override fun getItemCount(): Int {
         return meshRendererComponentData.materialsData.size
     }

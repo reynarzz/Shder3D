@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.reynarz.minityeditor.R
@@ -20,7 +19,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
         setHierarchyButton()
 
         setAddModelButton()
-
+        setSaveButton()
         setEditModelButton()
     }
 
@@ -33,6 +32,14 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
                 replace(R.id.mainFragment, hierarchy)
                 commit()
             }
+        }
+    }
+
+    private fun setSaveButton() {
+        val saveButton = view!!.findViewById<Button>(R.id.btn_saveProject)
+        saveButton.setOnClickListener {
+           MainActivity.instance.saveAllData()
+
         }
     }
 
@@ -68,7 +75,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
             viewModel.entityName.value = sceneEntityData.name
             viewModel.visible.value = sceneEntityData.active
-            viewModel.selected.value = sceneEntityData.selected
+            viewModel.selected.value = sceneEntityData.isSelected
 
             viewModel.componentsData.value = mutableListOf()
             viewModel.componentsData.value!!.add(sceneEntityData.transformData)

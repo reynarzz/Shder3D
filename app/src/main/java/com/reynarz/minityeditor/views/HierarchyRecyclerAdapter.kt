@@ -1,15 +1,12 @@
 package com.reynarz.minityeditor.views
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
-import java.time.LocalDate
 
 class HierarchyRecyclerAdapter(private val viewModel: HierarchyViewModel) : RecyclerView.Adapter<HierarchyRecyclerAdapter.HierarchyViewHolder>() {
     class HierarchyViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -30,7 +27,7 @@ class HierarchyRecyclerAdapter(private val viewModel: HierarchyViewModel) : Recy
             val toggle = findViewById<ToggleButton>(R.id.t_btn_entityHierarchyToggle)
             toggles.add(toggle)
 
-            toggle.isChecked = entityToggles[position].selected
+            toggle.isChecked = entityToggles[position].isSelected
 
             if (toggle.isChecked) {
                 lastEnabledToggle = position
@@ -41,7 +38,7 @@ class HierarchyRecyclerAdapter(private val viewModel: HierarchyViewModel) : Recy
             toggle.textOn = toggle.text
 
             toggle.setOnCheckedChangeListener { _, isSelected ->
-                entityToggles[position].selected = isSelected
+                entityToggles[position].isSelected = isSelected
 
                 if (position != lastEnabledToggle) {
                     if (lastEnabledToggle != -1)

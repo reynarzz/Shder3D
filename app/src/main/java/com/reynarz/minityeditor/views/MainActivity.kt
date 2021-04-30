@@ -3,6 +3,7 @@ package com.reynarz.minityeditor.views
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -57,8 +58,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initAllData()
-
         instance = this
         openGLView = findViewById(R.id.OpenGLView_activity)
 
@@ -70,6 +69,8 @@ class MainActivity : AppCompatActivity() {
 
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        initAllData()
+
         setViewModels()
         openSceneWindow()
     }
@@ -78,6 +79,8 @@ class MainActivity : AppCompatActivity() {
 
         // set the shaderData.
         shaderDataBase = fileManager.loadShaderDatabase()
+
+        loadAllData()
     }
 
     private fun setViewModels() {
@@ -95,20 +98,23 @@ class MainActivity : AppCompatActivity() {
             val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
             for (path in files!!) {
+                val entity = SceneEntityData("Entity1")
+                entity.entityID = path.path
+                loadEntity(entity)
 
-                openGLView.renderer.addRenderCommand {
-
-                    // create the data
-                    val entity1 = SceneEntityData("Entity1")
-                    entity1.entityID = path.path
-
-                    // add the data to the list
-                    sceneEntitiesDataInScene.add(entity1)
-
-                    // load the object
-                    SceneObjectManager(baseContext, openGLView.renderer).testLoadObject(entity1)
-                }
             }
+        }
+    }
+
+    private fun loadEntity(entity: SceneEntityData) {
+        sceneEntitiesDataInScene.add(entity)
+
+        openGLView.renderer.addRenderCommand {
+
+            // add the data to the list
+
+            // load the object
+            SceneObjectManager(baseContext, openGLView.renderer).testLoadObject(entity)
         }
     }
 
@@ -146,5 +152,23 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         openGLView.onPause()
+    }
+
+    fun saveAllData() {
+        fileManager.saveEntities(sceneEntitiesDataInScene)
+    }
+
+    private fun loadAllData() {
+        val entities = fileManager.loadEntities().sceneEntitiesDataInScene
+
+        for (entity in entities) {
+
+            if(entity.isSelected){
+                selectedSceneEntity = entity
+            }
+
+            Log.d("amount", entity.meshRendererData.materialsData.size.toString())
+            loadEntity(entity)
+        }
     }
 }

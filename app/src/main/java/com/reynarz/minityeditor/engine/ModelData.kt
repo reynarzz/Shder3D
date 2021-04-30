@@ -11,4 +11,6 @@ data class ModelData(
     var mSpecularExponent: FloatArray,
     var mDissolve: FloatArray,
     var bounds: Bounds
-)
+){
+    var modelName = ""
+}

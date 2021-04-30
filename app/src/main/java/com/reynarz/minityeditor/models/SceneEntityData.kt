@@ -1,14 +1,14 @@
 package com.reynarz.minityeditor.models
 
-import java.util.*
+import kotlinx.serialization.*
 
-
+@Serializable
 data class SceneEntityData(var name: String) {
     var active = true
-    var selected = false
+    var isSelected = false
 
     var transformData = TransformComponentData()
-    var meshRendererData = MeshRendererComponentData()
+    var meshRendererData: MeshRendererComponentData = MeshRendererComponentData()
 
     // this could be the path of the resource in the phone or a UUID
     var entityID = ""
