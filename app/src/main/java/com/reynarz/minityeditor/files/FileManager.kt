@@ -58,10 +58,14 @@ class FileManager {
     }
 
     fun readFile(fullPath: String): BufferedReader {
-        val file = File(fullPath)
+        //val file = File(fullPath)
 
         //Log.d("obj log", file.readText())
         return BufferedReader(InputStreamReader(FileInputStream(fullPath)))
+    }
+
+    fun readFileText(fullpath :String) : String{
+       return File(fullpath).readText()
     }
 
     fun loadShaderDatabase(): ShaderDataBase {

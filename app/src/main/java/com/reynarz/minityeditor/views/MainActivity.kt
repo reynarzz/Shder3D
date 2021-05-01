@@ -3,7 +3,6 @@ package com.reynarz.minityeditor.views
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -20,7 +19,6 @@ import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 import com.reynarz.minityeditor.viewmodels.ViewModelFactory
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -110,7 +108,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadEntity(entity: SceneEntityData) {
 
-
         openGLView.renderer.addRenderCommand {
 
             // add the data to the list, why inside here works? (if i put it outside the command doesn't work)
@@ -118,6 +115,7 @@ class MainActivity : AppCompatActivity() {
 
             // load the object
             sceneObjectManager.testLoadObject(entity)
+            sceneObjectManager.addMaterial(entity)
         }
     }
 
@@ -154,15 +152,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        openGLView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        openGLView.onPause()
-    }
 
     fun saveAllData() {
         fileManager.saveEntities(sceneEntitiesDataInScene)
@@ -175,12 +164,9 @@ class MainActivity : AppCompatActivity() {
 
             if (entity.isSelected) {
                 setSelectedEntity(entity)
-
             }
 
             loadEntity(entity)
-            updateMaterials(entity)
-
         }
     }
 
@@ -189,4 +175,15 @@ class MainActivity : AppCompatActivity() {
             sceneObjectManager.addMaterial(sceneEntityData!!)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        openGLView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        openGLView.onPause()
+    }
+
 }

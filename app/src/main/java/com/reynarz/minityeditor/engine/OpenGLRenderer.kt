@@ -169,7 +169,7 @@ void main()
         addRenderCommand {
             val entity = scene!!.getEntityById(selectedEntityID)
             val material = entity.testMeshRenderer!!.material
-            Log.d("is null", (material == null).toString())
+            Log.d("replace shader", (material != null).toString())
 
             material!!.shader.replaceShaders(vertexCode, fragmentCode)
         }
@@ -188,11 +188,13 @@ void main()
     }
 
     private fun runCommands() {
+
         for (command in rendererCommands) {
             command()
         }
 
         if (rendererCommands.size > 0) {
+
             rendererCommands.clear()
         }
     }
@@ -231,6 +233,7 @@ void main()
         // val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
 
         for (entity in scene!!.entities) {
+
             if (entity.testMeshRenderer != null) {
                 entity.testMeshRenderer!!.bind(viewM, projM, errorMaterial)
             }

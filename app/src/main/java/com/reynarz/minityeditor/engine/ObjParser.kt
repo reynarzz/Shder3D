@@ -227,11 +227,6 @@ class ObjParser {
             mFinalNormals.toFloatArray(),
             mFinalUVs.toFloatArray(),
             mFinalIndices.toIntArray(),
-            emptyArray<Float>().toFloatArray(),
-            emptyArray<Float>().toFloatArray(),
-            emptyArray<Float>().toFloatArray(),
-            emptyArray<Float>().toFloatArray(),
-            emptyArray<Float>().toFloatArray(),
             bounds!!
         )
     }

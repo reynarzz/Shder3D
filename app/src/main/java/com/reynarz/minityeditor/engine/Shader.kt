@@ -29,19 +29,15 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
     fun replaceShaders(vertex: String, fragment: String) {
 
-        if (glIsProgram(program)) {
-            glDetachShader(program, fragmentShader)
-            glDetachShader(program, vertexShader)
+        glDetachShader(program, fragmentShader)
+        glDetachShader(program, vertexShader)
 
-            glDeleteShader(vertexShader)
-            glDeleteShader(fragmentShader)
+        glDeleteShader(vertexShader)
+        glDeleteShader(fragmentShader)
 
-            //glDeleteProgram(program)
-        }
+        glDeleteProgram(program)
 
         createShaders(vertex, fragment)
-
-        glUseProgram(program)
     }
 
     private fun createShaders(vertex: String, fragment: String) {
@@ -61,12 +57,12 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
             if (!couldVertexShaderCompile) {
                 val log = glGetShaderInfoLog(vertexShader)
-                Log.d("Vertex Shader Error", log)
+                Log.d("Vertex Shader", log)
             }
 
             if (!couldFragmentShaderCompile) {
                 val log = glGetShaderInfoLog(fragmentShader)
-                Log.d("Fragment Shader Error", log)
+                Log.d("Fragment Shader", log)
             }
 
         } else {

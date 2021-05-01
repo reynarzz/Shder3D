@@ -19,8 +19,8 @@ class SceneObjectManager(
         var objData = modelData
         val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs)
 
-//        val mat = Utils.getDefaultMaterial()
-//        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
+        val mat = Utils.getDefaultMaterial()
+        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
 
         val renderer = MeshRenderer(mesh, null)
 
@@ -29,6 +29,8 @@ class SceneObjectManager(
         sceneEntity.entityID = sceneEntityData.entityID
         sceneEntity.name = sceneEntityData.name
         sceneEntity.testMeshRenderer = renderer
+        //test
+        sceneEntity.testMeshRenderer!!.material = mat
 
 //        val bounding = boundingBoxTest(objData.bounds)
 //
