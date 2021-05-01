@@ -1,10 +1,13 @@
 package com.reynarz.minityeditor.engine.components
 
+import android.os.Build
+import com.reynarz.minityeditor.engine.Mesh
+
+
 class SceneEntity : Entity() {
+
     private var components: MutableList<Component>? = null
     private var _transform: Transform? = null
-
-    var testMeshRenderer : MeshRenderer? = null
 
     var isActive = true
         private set
@@ -21,20 +24,23 @@ class SceneEntity : Entity() {
         //components.add(_transform!!)
     }
 
-//    fun <T : Component> getComponent(): T {
-//
-//        for(component in components!!){
-//            if(component is checkType<T>())
-//        }
-//
-//        return components!![0] as T
-//    }
+    fun <T> getComponent(classType: Class<T>): T where T : Component? {
+        for (i in components!!) {
 
-    fun <T : Component> addComponent(): T? {
-        // how to create an instance of a generic.
-//        components.add( T())
+            if (classType.isInstance(i)) {
+                return i as T
+            }
+        }
 
-        return null
+        return null as T
+    }
+
+    fun <T> addComponent(type: Class<T>): T where T : Component? {
+        val component = type.newInstance() as Component
+
+        components!!.add(component)
+
+        return component as T
     }
 
     fun setActive(active: Boolean) {

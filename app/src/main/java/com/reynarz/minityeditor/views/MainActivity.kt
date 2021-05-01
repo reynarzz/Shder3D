@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val shaderFragment = ShaderEditorFragment()
     private val inspectorFragment = InspectorFragmentView()
     private val fileManager = FileManager()
+
     private lateinit var sceneObjectManager: SceneObjectManager
 
     private val sceneEntitiesDataInScene = mutableListOf<SceneEntityData>()
@@ -70,12 +71,12 @@ class MainActivity : AppCompatActivity() {
 
         width = displayMetrics.widthPixels
         height = displayMetrics.heightPixels
-
+        //Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         initAllData()
 //
-//        setViewModels()
+        setViewModels()
         openSceneWindow()
     }
 

@@ -3,11 +3,19 @@ package com.reynarz.minityeditor.engine.components
 import com.reynarz.minityeditor.engine.Material
 import com.reynarz.minityeditor.engine.Mesh
 
-class MeshRenderer(private val mesh: Mesh, var material: Material?) : Component() {
+class MeshRenderer() : Component() {
 
-    val indexBuffer = mesh.indexBuffer
-    val indicesCount = mesh.indicesCount
-    val vertexCount = mesh.vertexCount
+    lateinit var mesh: Mesh //Mesh(FloatArray(1), IntArray(1), FloatArray(1))
+    var material: Material? = null
+
+//    val indexBuffer = mesh?.indexBuffer
+//    val indicesCount = mesh?.indicesCount
+//    val vertexCount = mesh?.vertexCount
+
+    constructor(mesh: Mesh, material: Material?) : this() {
+        this.mesh = mesh
+        this.material = material
+    }
 
     fun bind(view: FloatArray, projection: FloatArray, default: Material) {
 

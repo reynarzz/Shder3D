@@ -31,7 +31,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var screenQuadMesh: Mesh? = null
 
     private var selectedEntity: SceneEntity? = null
-    private lateinit var unlitMat :Material
+    private lateinit var unlitMat: Material
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
     }
@@ -83,7 +83,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         addRenderCommand {
 
-            val material = selectedEntity!!.testMeshRenderer!!.material
+            val material = selectedEntity!!.getComponent(MeshRenderer::class.java)!!.material
             Log.d("replace shader", (material != null).toString())
 
             material!!.shader.replaceShaders(vertexCode, fragmentCode)
@@ -153,24 +153,32 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (entity in scene!!.entities) {
 
-            if (entity.testMeshRenderer != null) {
-                entity.testMeshRenderer!!.bind(viewM, projM, errorMaterial)
+
+//            if (entity.testMeshRenderer != null) {
+//                entity.testMeshRenderer!!.bind(viewM, projM, errorMaterial)
+//            }
+
+            val renderer = entity.getComponent(MeshRenderer::class.java)
+
+            if (renderer != null) {
+                Log.d("Bind", "Binded")
+                renderer.bind(viewM, projM, errorMaterial)
             }
 
             if (selectedEntity != null && entity === selectedEntity) {
-                glDisable(GL_DEPTH_TEST)
+                // glDisable(GL_DEPTH_TEST)
                 glEnable(GL_STENCIL_TEST)
                 glStencilFunc(GL_ALWAYS, 1, 0xff)
                 glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
                 glStencilMask(0xff)
             }
 
-            glDrawElements(GL_TRIANGLES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer)
+            glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
 
             if (entity.name != "Bounds") {
                 //glDrawElements(GL_TRIANGLES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer)
 
-                glDisable(GL_DEPTH_TEST)
+                // glDisable(GL_DEPTH_TEST)
                 if (selectedEntity != null && entity === selectedEntity) {
                     glEnable(GL_STENCIL_TEST)
                     //glDisable(GL_DEPTH_TEST)
@@ -179,15 +187,15 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                     glStencilMask(0x00)
 
+                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
+                    val scale = renderer!!. transform . scale
 
-                    val scale = selectedEntity!!.testMeshRenderer!!.transform.scale
+                    renderer!!.transform.scale = vec3(scale.x + 0.05f, scale.y + 0.05f, scale.z + 0.05f)
+                    renderer!!.bindWithMaterial(viewM, projM, unlitMat)
 
-                    selectedEntity!!.testMeshRenderer!!.transform.scale = vec3(scale.x + 0.05f, scale.y + 0.05f, scale.z + 0.05f)
-                    selectedEntity!!.testMeshRenderer!!.bindWithMaterial(viewM, projM, unlitMat)
+                    glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer.mesh.indexBuffer)
 
-                    glDrawElements(GL_TRIANGLES, selectedEntity!!.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, selectedEntity!!.testMeshRenderer!!.indexBuffer)
-
-                    selectedEntity!!.testMeshRenderer!!.transform.scale = vec3(1f, 1f, 1f)
+                    renderer.transform.scale = vec3(1f, 1f, 1f)
 
                     glDisable(GL_STENCIL_TEST)
                     glEnable(GL_DEPTH_TEST)
@@ -204,8 +212,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         for (obj in editorObjs!!) {
             obj.bind(viewM, projM, errorMaterial)
 
-            if (obj.indicesCount > 0)
-                glDrawElements(GL_TRIANGLES, obj.indicesCount, GL_UNSIGNED_INT, obj.indexBuffer)
+            if (obj.mesh.indicesCount > 0)
+                glDrawElements(GL_TRIANGLES, obj.mesh.indicesCount, GL_UNSIGNED_INT, obj.mesh.indexBuffer)
         }
 
         mainFrameBuffer.unBind()
