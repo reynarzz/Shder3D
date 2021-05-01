@@ -82,7 +82,7 @@ class Utils {
             return Material(Shader(shader.first, shader.second))
         }
 
-        fun getUnlitShader(unlitAmount : Float): Pair<String, String> {
+        fun getUnlitShader(unlitAmount: Float): Pair<String, String> {
             var vertexTex = """ 
             
 attribute vec4 _VERTEX_; 
@@ -172,6 +172,117 @@ void main()
             val shader = Shader(unlitShader.first, unlitShader.second)
 
             return Material(shader)
+        }
+
+        fun getGroundShadersCode(): Pair<String, String> {
+
+            val groundGridVertex = """
+     attribute vec4 _VERTEX_;
+attribute vec2 _UV_;
+
+uniform mat4 UNITY_MATRIX_MVP;
+varying vec3 _pixelPos;
+varying vec2 _uv;
+
+void main()
+{
+	_uv = _UV_ - 0.5;
+	_pixelPos = _VERTEX_.xyz;
+	gl_Position = UNITY_MATRIX_MVP * _VERTEX_;
+}
+    """
+
+            val groundGridFragment = """
+        precision mediump float; 
+        varying vec2 _uv;
+uniform vec3 _diffuse_;
+
+uniform vec3 _WorldSpaceCameraPos;
+varying vec3 _pixelPos;
+
+void main()
+{
+    float maxDist = 250.;
+
+    //float alpha = (maxDist - length(_pixelPos - _WorldSpaceCameraPos));
+
+    float thickness = 0.05;
+    float spacing = 10.;
+
+    if (fract(_pixelPos.x / spacing) < thickness || fract(_pixelPos.z / spacing) < thickness)
+    {
+        if(int(_pixelPos.z) == 0)
+        {
+            gl_FragColor = vec4(1.0, 0., 0., 0.7);
+        }
+        else if(int(_pixelPos.x) == 0)
+        {
+            gl_FragColor = vec4(0., 0.2, 1., 0.9);
+        }
+        else
+        {
+        
+        //gl_FragColor = vec4(alpha);
+           // gl_FragColor = vec4(vec3(0.5), smoothstep(alpha, 0.0, 0.2));
+            gl_FragColor = vec4(vec3(0.13),  1.);
+        }
+    }
+    else
+    {
+        discard;
+    }
+
+//gl_FragColor = vec4(0.3);
+}
+"""
+
+            return Pair(groundGridVertex, groundGridFragment)
+        }
+
+        fun getScreenQuadShaderCode():Pair<String,String>{
+            val screenQuadVertexCode = """
+            
+attribute vec4 _VERTEX_; 
+           
+attribute vec2 _UV_;
+varying vec2 _uv;
+varying vec4 pos;
+
+void main() 
+{
+   _uv = _UV_;
+   gl_Position = vec4( _VERTEX_.x,  _VERTEX_.y, 0, 1);
+}"""
+            var screenFragTex = """
+            
+precision mediump float; 
+varying vec4 pos;
+
+varying vec2 _uv;
+
+uniform sampler2D sTexture;
+uniform sampler2D _CameraDepthTexture;
+
+float LinearizeDepth(float depth)
+{
+    float far = 1000.0;
+    float near = 0.1f;
+    
+    float z = (depth * 2.0 - 1.0); 
+    return (2.0 * near * far) / (far + near - z * (far - near));
+}
+
+void main()
+{
+    float far = 1000.0;
+
+    float depth = LinearizeDepth(texture2D(_CameraDepthTexture, _uv ).r)/(far-900.);
+    gl_FragColor = vec4(depth);
+    
+    gl_FragColor = texture2D(sTexture, _uv);
+}
+"""
+            return Pair(screenQuadVertexCode, screenFragTex)
         }
     }
 

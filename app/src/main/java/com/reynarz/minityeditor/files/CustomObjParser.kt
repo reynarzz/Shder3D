@@ -13,7 +13,7 @@ class CustomObjParser {
         var position = vec3()
         var uv = vec2()
         var normal = vec3()
-        var indice = 0
+        var index = 0
     }
 
     val fullVerticesData = mutableListOf<Vertex>()
@@ -29,21 +29,22 @@ class CustomObjParser {
         val normals = mutableListOf<vec3>()
         val uv = mutableListOf<vec2>()
         val indices = mutableListOf<Int>()
+        val currentVertices = mutableListOf<Vertex>()
+        val triangulatedVertex = mutableListOf<Vertex>()
 
+        val modelFile = FileManager().readFile(modelPath)
 
-        val modelFile = FileManager().readFileText(modelPath)
-
-        val reader = InputStreamReader(modelFile.byteInputStream())
-
-       // Log.d("Total lines", modelFile)
+        // Log.d("Total lines", modelFile)
 
         var indice = 0
 
-        for (it in reader.readLines()) {
+        for (it in modelFile.readLines()) {
 
             if (it.startsWith("v ")) {
 
-                var splitted = it.split(" ")
+                var splitted = it.split(" ")//.toMutableList()
+                // splitted.retainAll(){ it.toFloatOrNull() != null}
+
                 val position = vec3(splitted[1].toFloat(), splitted[2].toFloat(), splitted[3].toFloat())
 
                 Log.d("position", "(${position.x}, ${position.y}, ${position.z})")
@@ -71,49 +72,94 @@ class CustomObjParser {
 
             if (it.startsWith("f ")) {
 
-                val split1 = it.split(" ").toMutableList()
-                split1.removeAt(0)
+                val faces = it.split(" ").toMutableList()
+                faces.removeAt(0)
+                currentVertices.clear()
+                triangulatedVertex.clear()
 
-                for (v1Content in split1) {
+                for (face in faces) {
 
-                    var value = v1Content.split("/")
+                    var value = face.split("/")
 
-                    val vertexIndex = value[0].toInt()-1
-                    val uvIndex = value[1].toInt()-1
+                    val vertexIndex = value[0].toInt() - 1
+                    val uvIndex = value[1].toInt() - 1
 
-                    Log.d("Indexes ${value.size}", "vertex: ${vertexIndex+1}, uv: ${uvIndex+1}")
+                    Log.d("Indexes ${value.size}", "vertex: ${vertexIndex + 1}, uv: ${uvIndex + 1}")
+
                     val vertex = Vertex()
+
                     vertex.position = vPositions[vertexIndex]
                     vertex.uv = uv[uvIndex]
 
-                    vertex.indice = indice++
+                    vertex.index = indice++
 
                     if (value.size > 2) {
-                        val normalIndex = value[2].toInt()
-                        vertex.normal = normals[normalIndex-1]
+                        val normalIndex = value[2].toInt() - 1
+                        vertex.normal = normals[normalIndex]
                     }
 
-                    fullVerticesData.add(vertex)
+                    currentVertices.add(vertex)
+                    //fullVerticesData.add(vertex)
+                }
+
+                if (currentVertices.size == 4) {
+                    val b1 = vec3().getDistance(currentVertices[0].position, currentVertices[1].position)
+                    val h1 = vec3().getDistance(currentVertices[1].position, currentVertices[2].position)
+
+                    val b2 = vec3().getDistance(currentVertices[0].position, currentVertices[2].position)
+                    val h2 = vec3().getDistance(currentVertices[2].position, currentVertices[3].position)
+
+                    val area1 = (b1 * h1) / 2f
+                    val area2 = (b2 * h2) / 2f
+
+                    if (area1 < area2) {
+                        triangulatedVertex.add(currentVertices[0])
+                        triangulatedVertex.add(currentVertices[1])
+                        triangulatedVertex.add(currentVertices[2])
+
+                        triangulatedVertex.add(currentVertices[0])
+                        triangulatedVertex.add(currentVertices[2])
+                        triangulatedVertex.add(currentVertices[3])
+                    } else {
+                        triangulatedVertex.add(currentVertices[3])
+                        triangulatedVertex.add(currentVertices[1])
+                        triangulatedVertex.add(currentVertices[0])
+
+                        triangulatedVertex.add(currentVertices[3])
+                        triangulatedVertex.add(currentVertices[2])
+                        triangulatedVertex.add(currentVertices[1])
+                    }
+
+                    for (v in triangulatedVertex) {
+                        fullVerticesData.add(v)
+                    }
+
+                } else {
+                    for (v in currentVertices) {
+                        fullVerticesData.add(v)
+                    }
                 }
 
                 //Log.d("position", "(${normal.x}, ${normal.y}, ${normal.z})")
-
             }
         }
 
         for (vertex in fullVerticesData) {
-            verticesFinal.add(-vertex.position.x)
+            verticesFinal.add(vertex.position.x)
             verticesFinal.add(vertex.position.y)
-            verticesFinal.add(-vertex.position.z)
+            verticesFinal.add(vertex.position.z)
 
             uvFinal.add(vertex.uv.x)
             uvFinal.add(vertex.uv.y)
 
-            //normals
 
+            //normals
+            normalsFinal.add(vertex.normal.x)
+            normalsFinal.add(vertex.normal.y)
+            normalsFinal.add(vertex.normal.z)
 
             //indices
-            indices.add(vertex.indice)
+            indices.add(vertex.index)
 
         }
         return ModelData(verticesFinal.toFloatArray(), normalsFinal.toFloatArray(), uvFinal.toFloatArray(), indices.toIntArray(), Bounds(0f, 0f, 0f, 0f, 0f, 0f))

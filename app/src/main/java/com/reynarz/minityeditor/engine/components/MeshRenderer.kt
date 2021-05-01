@@ -17,8 +17,9 @@ class MeshRenderer(private val mesh: Mesh, var material: Material?) : Component(
         mesh.bind(mat!!.program)
     }
 
-//    fun bindForDepth(view: FloatArray, projection: FloatArray, shader: Shader) {
-//        material!!.bind(transform!!.modelM!!, view, projection, shader)
-//        mesh.bind(material!!.program)
-//    }
+    fun bindWithMaterial(view: FloatArray, projection: FloatArray, mat: Material) {
+
+        mat!!.bind(transform!!.modelM!!, view, projection)
+        mesh.bind(mat!!.program)
+    }
 }

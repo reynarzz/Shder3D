@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView
 import android.util.Log
 import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
+import com.reynarz.minityeditor.engine.components.SceneEntity
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -17,122 +18,31 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     val scene: Scene = Scene()
     var rot = vec3(0f, 0f, 0f)
     var zoom = 1f
+    var initialized = false
 
     private val rendererCommands = mutableListOf<() -> Unit>()
     private lateinit var errorMaterial: Material
+    private var editorObjs: MutableList<MeshRenderer>? = null
+
+    var lStartTime = System.currentTimeMillis().toFloat()
+
+    lateinit var mainFrameBuffer: FrameBuffer
+    private var quadShader: Shader? = null
+    var screenQuadMesh: Mesh? = null
+
+    private var selectedEntity: SceneEntity? = null
+    private lateinit var unlitMat :Material
+
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-
     }
 
-    val screenQuadVertexCode = """
-            
-attribute vec4 _VERTEX_; 
-           
-attribute vec2 _UV_;
-varying vec2 _uv;
-varying vec4 pos;
-
-void main() 
-{
-   _uv = _UV_;
-   gl_Position = vec4( _VERTEX_.x,  _VERTEX_.y, 0, 1);
-}"""
-    var screenFragTex = """
-            
-precision mediump float; 
-varying vec4 pos;
-
-varying vec2 _uv;
-
-uniform sampler2D sTexture;
-uniform sampler2D _CameraDepthTexture;
-
-float LinearizeDepth(float depth)
-{
-    float far = 1000.0;
-    float near = 0.1f;
-    
-    float z = (depth * 2.0 - 1.0); 
-    return (2.0 * near * far) / (far + near - z * (far - near));
-}
-
-void main()
-{
-    float far = 1000.0;
-
-    float depth = LinearizeDepth(texture2D(_CameraDepthTexture, _uv ).r)/(far-900.);
-    gl_FragColor = vec4(depth);
-    
-    gl_FragColor = texture2D(sTexture, _uv);
-}
-"""
-
-    val groundGridVertex = """
-     attribute vec4 _VERTEX_;
-attribute vec2 _UV_;
-
-uniform mat4 UNITY_MATRIX_MVP;
-varying vec3 _pixelPos;
-varying vec2 _uv;
-
-void main()
-{
-	_uv = _UV_ - 0.5;
-	_pixelPos = _VERTEX_.xyz;
-	gl_Position = UNITY_MATRIX_MVP * _VERTEX_;
-}
-    """.trimIndent()
-
-    val groundGridFragment = """
-        precision mediump float; 
-        varying vec2 _uv;
-uniform vec3 _diffuse_;
-
-uniform vec3 _WorldSpaceCameraPos;
-varying vec3 _pixelPos;
-
-void main()
-{
-    float maxDist = 250.;
-
-    //float alpha = (maxDist - length(_pixelPos - _WorldSpaceCameraPos));
-
-    float thickness = 0.05;
-    float spacing = 10.;
-
-    if (fract(_pixelPos.x / spacing) < thickness || fract(_pixelPos.z / spacing) < thickness)
-    {
-        if(int(_pixelPos.z) == 0)
-        {
-            gl_FragColor = vec4(1.0, 0., 0., 0.7);
-        }
-        else if(int(_pixelPos.x) == 0)
-        {
-            gl_FragColor = vec4(0., 0.2, 1., 0.9);
-        }
-        else
-        {
-        
-        //gl_FragColor = vec4(alpha);
-           // gl_FragColor = vec4(vec3(0.5), smoothstep(alpha, 0.0, 0.2));
-            gl_FragColor = vec4(vec3(0.13),  1.);
-        }
-    }
-    else
-    {
-        discard;
-    }
-
-//gl_FragColor = vec4(0.3);
-}
-"""
-    var initialized = false
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         if (!initialized) {
             editorObjs = mutableListOf()
 
+            unlitMat = Utils.getUnlitMaterial(1f)
             errorMaterial = Utils.getErrorMaterial()
 
             glEnable(GL_DEPTH_TEST)
@@ -144,7 +54,9 @@ void main()
 
             mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
 
-            quadShader = Shader(screenQuadVertexCode, screenFragTex)
+            val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
+
+            quadShader = Shader(screenQuadShaderCode.first, screenQuadShaderCode.second)
 
             initialized = true
             screenQuadMesh = Utils.getScreenSizeQuad()
@@ -156,7 +68,10 @@ void main()
     }
 
     fun getEditorStuff_Test() {
-        val material = Material(Shader(groundGridVertex, groundGridFragment))
+        val groundShaderCode = Utils.getGroundShadersCode()
+
+        val material = Material(Shader(groundShaderCode.first, groundShaderCode.second))
+
         val plane = Utils.getPlane(2000f)
         //plane.bind(material.program)
         val meshRenderer = MeshRenderer(plane, material)
@@ -167,21 +82,22 @@ void main()
     fun setReplaceShadersCommand(vertexCode: String, fragmentCode: String) {
 
         addRenderCommand {
-            val entity = scene!!.getEntityById(selectedEntityID)
-            val material = entity.testMeshRenderer!!.material
+
+            val material = selectedEntity!!.testMeshRenderer!!.material
             Log.d("replace shader", (material != null).toString())
 
             material!!.shader.replaceShaders(vertexCode, fragmentCode)
         }
     }
 
-    private var editorObjs: MutableList<MeshRenderer>? = null
 
-    var lStartTime = System.currentTimeMillis().toFloat()
-
-    lateinit var mainFrameBuffer: FrameBuffer
-    private var quadShader: Shader? = null
-    var screenQuadMesh: Mesh? = null
+    fun selectEntityID(entityID: String?) {
+        if (entityID != null) {
+            selectedEntity = scene!!.getEntityById(entityID!!)
+        } else {
+            selectedEntity = null
+        }
+    }
 
     fun addRenderCommand(command: () -> Unit) {
         rendererCommands.add(command)
@@ -199,12 +115,14 @@ void main()
         }
     }
 
-    var selectedEntityID = ""
 
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
         mainFrameBuffer.bind()
+
+        glDisable(GL_STENCIL_TEST)
+        glClear(GL_STENCIL_BUFFER_BIT)
 
         glEnable(GL_DEPTH_TEST)
 
@@ -232,23 +150,54 @@ void main()
         val projM = scene!!.editorCamera!!.projectionM
         // val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
 
+
         for (entity in scene!!.entities) {
 
             if (entity.testMeshRenderer != null) {
                 entity.testMeshRenderer!!.bind(viewM, projM, errorMaterial)
             }
 
+            if (selectedEntity != null && entity === selectedEntity) {
+                glDisable(GL_DEPTH_TEST)
+                glEnable(GL_STENCIL_TEST)
+                glStencilFunc(GL_ALWAYS, 1, 0xff)
+                glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
+                glStencilMask(0xff)
+            }
+
+            glDrawElements(GL_TRIANGLES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer)
+
             if (entity.name != "Bounds") {
-                glDrawElements(
-                    GL_TRIANGLES,
-                    entity.testMeshRenderer!!.indicesCount,
-                    GL_UNSIGNED_INT,
-                    entity.testMeshRenderer!!.indexBuffer
-                )
+                //glDrawElements(GL_TRIANGLES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer)
+
+                glDisable(GL_DEPTH_TEST)
+                if (selectedEntity != null && entity === selectedEntity) {
+                    glEnable(GL_STENCIL_TEST)
+                    //glDisable(GL_DEPTH_TEST)
+
+                    glStencilFunc(GL_NOTEQUAL, 1, 0xff); // Pass test if stencil value is 1
+                    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+                    glStencilMask(0x00)
+
+
+                    val scale = selectedEntity!!.testMeshRenderer!!.transform.scale
+
+                    selectedEntity!!.testMeshRenderer!!.transform.scale = vec3(scale.x + 0.05f, scale.y + 0.05f, scale.z + 0.05f)
+                    selectedEntity!!.testMeshRenderer!!.bindWithMaterial(viewM, projM, unlitMat)
+
+                    glDrawElements(GL_TRIANGLES, selectedEntity!!.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, selectedEntity!!.testMeshRenderer!!.indexBuffer)
+
+                    selectedEntity!!.testMeshRenderer!!.transform.scale = vec3(1f, 1f, 1f)
+
+                    glDisable(GL_STENCIL_TEST)
+                    glEnable(GL_DEPTH_TEST)
+
+                }
+
             } else {
-                glDrawElements(
-                    GL_LINES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer
-                )
+//                glDrawElements(
+//                    GL_LINES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer
+//                )
             }
         }
 
@@ -289,4 +238,5 @@ void main()
             screenQuadMesh!!.indexBuffer
         )
     }
+
 }
