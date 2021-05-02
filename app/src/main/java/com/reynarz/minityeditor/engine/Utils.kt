@@ -206,16 +206,16 @@ void main()
 
     //float alpha = (maxDist - length(_pixelPos - _WorldSpaceCameraPos));
 
-    float thickness = 0.05;
-    float spacing = 10.;
+    float thickness = 0.12;
+    float spacing = 1.;
 
     if (fract(_pixelPos.x / spacing) < thickness || fract(_pixelPos.z / spacing) < thickness)
     {
-        if(int(_pixelPos.z) == 0)
+        if(_pixelPos.z > -thickness && _pixelPos.z < thickness)
         {
             gl_FragColor = vec4(1.0, 0., 0., 0.7);
         }
-        else if(int(_pixelPos.x) == 0)
+        else if(_pixelPos.x > -thickness && _pixelPos.x < thickness)
         {
             gl_FragColor = vec4(0., 0.2, 1., 0.9);
         }

@@ -1,8 +1,5 @@
 package com.reynarz.minityeditor.engine.components
 
-import android.os.Build
-import com.reynarz.minityeditor.engine.Mesh
-
 
 class SceneEntity : Entity() {
 
@@ -20,11 +17,12 @@ class SceneEntity : Entity() {
     init {
         components = mutableListOf()
         _transform = Transform()
-
-        //components.add(_transform!!)
     }
 
-    fun <T> getComponent(classType: Class<T>): T where T : Component? {
+    /*
+    * Get a component attached to this scene entity.
+    * */
+    fun <T> getComponent(classType: Class<T>): T? where T : Component? {
         for (i in components!!) {
 
             if (classType.isInstance(i)) {
@@ -32,18 +30,15 @@ class SceneEntity : Entity() {
             }
         }
 
-        return null as T
+        return null
     }
 
+    // The component needs a default empty constructor so the instance can be created.
     fun <T> addComponent(type: Class<T>): T where T : Component? {
-        val component = type.newInstance() as Component
+        val instance = type.newInstance()
 
-        components!!.add(component)
+        components!!.add(instance as Component)
 
-        return component as T
-    }
-
-    fun setActive(active: Boolean) {
-        isActive = active
+        return instance
     }
 }

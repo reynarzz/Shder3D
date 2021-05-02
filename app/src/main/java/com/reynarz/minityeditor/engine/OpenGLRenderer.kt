@@ -188,7 +188,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     glStencilMask(0x00)
 
                     val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-                    val scale = renderer!!. transform . scale
+                    val scale = renderer!!.transform.scale
 
                     renderer!!.transform.scale = vec3(scale.x + 0.05f, scale.y + 0.05f, scale.z + 0.05f)
                     renderer!!.bindWithMaterial(viewM, projM, unlitMat)
