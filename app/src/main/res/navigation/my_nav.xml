@@ -12,8 +12,8 @@
         <action
             android:id="@+id/action_sceneTo_Hierarchy"
             app:destination="@id/hierarchyFragmentView"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_sceneTo_Inspector"
             app:destination="@id/inspectorFragmentView" />
@@ -26,8 +26,8 @@
         <action
             android:id="@+id/action_hierarchyTo_scene"
             app:destination="@id/sceneFragmentView"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/inspectorFragmentView"
