@@ -10,7 +10,7 @@ class MyApp : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MyApp)
-            modules(listOf(AppDataModule, AppEngineComponents))
+            modules(listOf(EngineDataModule, EngineComponentsModule, ViewModelsModule))
 
         }
     }

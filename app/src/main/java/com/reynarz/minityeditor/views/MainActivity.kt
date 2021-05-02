@@ -48,9 +48,9 @@ class MainActivity : AppCompatActivity() {
             private set
         var height = 0
             private set
-
-        lateinit var hierarchyViewModel: HierarchyViewModel
-            private set
+//
+//        lateinit var hierarchyViewModel: HierarchyViewModel
+//            private set
 
         lateinit var inspectorViewModel: InspectorViewModel
             private set
@@ -75,10 +75,10 @@ class MainActivity : AppCompatActivity() {
         //Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        initAllData()
-//
-        setViewModels()
-        openSceneWindow()
+//        initAllData()
+////
+//        setViewModels()
+//        openSceneWindow()
     }
 
     private fun initAllData() {
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
     private fun setViewModels() {
         val viewModelFactory = ViewModelFactory(this)
 
-        hierarchyViewModel = viewModelFactory.getHierarchyViewModel(sceneEntitiesDataInScene)
+        //hierarchyViewModel = viewModelFactory.getHierarchyViewModel(sceneEntitiesDataInScene)
         inspectorViewModel = viewModelFactory.getInspectorEntityViewModel()
     }
 
@@ -141,10 +141,10 @@ class MainActivity : AppCompatActivity() {
     private fun changeMainFragment(fragment: Fragment) {
 
         // android 5 problem
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.mainFragment, fragment)
-            commit()
-        }
+//        supportFragmentManager.beginTransaction().apply {
+//            replace(R.id.mainFragment, fragment)
+//            commit()
+//        }
     }
 
     fun setSelectedEntity(sceneEntityData: SceneEntityData?) {

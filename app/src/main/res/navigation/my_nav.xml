@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/my_nav"
+    app:startDestination="@id/sceneFragmentView"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <fragment
+        android:id="@+id/sceneFragmentView"
+        android:name="com.reynarz.minityeditor.views.SceneFragmentView"
+        android:label="SceneFragmentView"
+        tools:layout="@layout/scene_view_fragment">
+
+        <action
+            android:id="@+id/action_sceneTo_Hierarchy"
+            app:destination="@id/hierarchyFragmentView"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_sceneTo_Inspector"
+            app:destination="@id/inspectorFragmentView" />
+    </fragment>
+    <fragment
+        android:id="@+id/hierarchyFragmentView"
+        android:name="com.reynarz.minityeditor.views.HierarchyFragmentView"
+        android:label="HierarchyFragmentView"
+        tools:layout="@layout/hierarchy_fragment_view">
+        <action
+            android:id="@+id/action_hierarchyTo_scene"
+            app:destination="@id/sceneFragmentView"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/inspectorFragmentView"
+        android:name="com.reynarz.minityeditor.views.InspectorFragmentView"
+        android:label="InspectorFragmentView"
+
+        tools:layout="@layout/inspector_view">
+        <action
+            android:id="@+id/action_inspectorFragmentView_to_sceneFragmentView"
+            app:destination="@id/sceneFragmentView" />
+
+    </fragment>
+</navigation>
