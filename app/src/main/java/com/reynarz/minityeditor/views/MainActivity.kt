@@ -20,6 +20,7 @@ import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 import com.reynarz.minityeditor.viewmodels.ViewModelFactory
+import org.koin.android.ext.android.get
 
 class MainActivity : AppCompatActivity() {
 
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
             for (path in files!!) {
-                val entity = SceneEntityData("Entity1")
+                val entity = get<SceneEntityData>()
                 entity.entityModelPath = path.path
                 loadEntity(entity)
             }
