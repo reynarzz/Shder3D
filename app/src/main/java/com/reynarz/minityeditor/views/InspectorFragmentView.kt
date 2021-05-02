@@ -42,18 +42,16 @@ class InspectorFragmentView : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         inspectorVM.entityName.observe(viewLifecycleOwner, {
-            Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT)
+            Toast.makeText(requireActivity(), it, Toast.LENGTH_LONG)
             Log.d("Change to", it)
         })
 
 
-        inspectorVM.entityName.value = "reynardo"
+
+//        inspectorVM.entityName.value = "reynardo"
 
 
-        binding.btnCloseInspector.setOnClickListener {
-            //Navigation.findNavController(view).navigate(R.id.action_inspectorFragmentView_to_sceneFragmentView)
-            Navigation.findNavController(view).popBackStack()
-        }
+
 //        val checkBox = view.findViewById<AppCompatCheckBox>(R.id.cb_activeEntity)
 //        val entityName = view.findViewById<EditText>(R.id.et_entityName)
 //

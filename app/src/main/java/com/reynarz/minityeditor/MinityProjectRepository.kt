@@ -4,7 +4,7 @@ import com.reynarz.minityeditor.models.ProjectData
 
 
 // This will be the singleton where all the data as the main liveData of the scene is.
-class MinityProjectRepository  constructor(private val projectData: ProjectData) {
+class MinityProjectRepository  constructor(var projectData: ProjectData) {
     companion object {
         @Volatile
         private var instance: MinityProjectRepository? = null
