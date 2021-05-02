@@ -26,8 +26,8 @@
         <action
             android:id="@+id/action_hierarchyTo_scene"
             app:destination="@id/sceneFragmentView"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/inspectorFragmentView"
@@ -38,6 +38,18 @@
         <action
             android:id="@+id/action_inspectorFragmentView_to_sceneFragmentView"
             app:destination="@id/sceneFragmentView" />
+        <action
+            android:id="@+id/action_inspectorFragmentView_to_shaderEditorFragment"
+            app:destination="@id/shaderEditorFragment" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/shaderEditorFragment"
+        android:name="com.reynarz.minityeditor.views.ShaderEditorFragment"
+        android:label="ShaderEditorFragment"
+        tools:layout="@layout/shader_editor_fragment_view">
+        <action
+            android:id="@+id/action_shaderEditorFragment_to_inspectorFragmentView"
+            app:destination="@id/inspectorFragmentView" />
     </fragment>
 </navigation>

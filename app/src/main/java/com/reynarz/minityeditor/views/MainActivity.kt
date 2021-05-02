@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sceneObjectManager: SceneObjectManager
 
+
+
     private val sceneEntitiesDataInScene = mutableListOf<SceneEntityData>()
 
     lateinit var shaderDataBase: ShaderDataBase
@@ -52,8 +54,8 @@ class MainActivity : AppCompatActivity() {
 //        lateinit var hierarchyViewModel: HierarchyViewModel
 //            private set
 
-        lateinit var inspectorViewModel: InspectorViewModel
-            private set
+//        lateinit var inspectorViewModel: InspectorViewModel
+//            private set
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,10 +91,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setViewModels() {
-        val viewModelFactory = ViewModelFactory(this)
+        //val viewModelFactory = ViewModelFactory(this)
 
         //hierarchyViewModel = viewModelFactory.getHierarchyViewModel(sceneEntitiesDataInScene)
-        inspectorViewModel = viewModelFactory.getInspectorEntityViewModel()
+        //inspectorViewModel = viewModelFactory.getInspectorEntityViewModel()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -5,6 +5,7 @@ import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
+import com.reynarz.minityeditor.viewmodels.ViewModelFactory
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.util.*
@@ -16,6 +17,7 @@ val EngineDataModule: Module = module {
     factory { TransformComponentData() }
     factory { MeshRendererComponentData() }
     factory { SceneEntityData("Entity", get(), get()) }
+    single { ProjectData("default name") }
 }
 
 val EngineComponentsModule: Module = module {
@@ -26,8 +28,12 @@ val EngineComponentsModule: Module = module {
     }
 }
 
-val ViewModelsModule: Module = module{
+val ViewModelsModule: Module = module {
 
     single { HierarchyViewModel() }
-
+    single { MinityProjectRepository(get()) }
+    single {
+        val minityProjectRepository = MinityProjectRepository.getInstance(FakeDataBase.getInstance().projectData)
+        ViewModelFactory(get())
+    }
 }

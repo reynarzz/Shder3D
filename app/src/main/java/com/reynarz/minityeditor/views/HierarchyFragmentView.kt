@@ -38,7 +38,7 @@ class HierarchyFragmentView : Fragment(R.layout.hierarchy_fragment_view) {
 
         view.findViewById<Button>(R.id.btn_closeHierarchy).setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_hierarchyTo_scene)
-            mainActivity.openSceneWindow()
+            //mainActivity.openSceneWindow()
         }
     }
 }

@@ -21,7 +21,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         setAddModelButton()
         setSaveButton()
-        setEditModelButton()
+        setEditModelButton(view)
     }
 
     private fun setHierarchyButton(view: View) {
@@ -73,7 +73,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
         }
     }
 
-    private fun setEditModelButton() {
+    private fun setEditModelButton(view : View) {
 
         val editModel = requireView()!!.findViewById<Button>(R.id.btn_editModelComponents)
 
@@ -89,8 +89,9 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
         }
 
         editModel.setOnClickListener {
-            populateSceneEntityViewModel(MainActivity.inspectorViewModel, (activity as MainActivity).selectedSceneEntity!!)
-            MainActivity.instance.openInspectorWindow()
+            //--populateSceneEntityViewModel(MainActivity.inspectorViewModel, (activity as MainActivity).selectedSceneEntity!!)
+            //MainActivity.instance.openInspectorWindow()
+            Navigation.findNavController(view).navigate(R.id.action_sceneTo_Inspector)
         }
     }
 }

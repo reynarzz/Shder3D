@@ -1,75 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@color/semi_black" />
+<layout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+    <data>
+        <import type="androidx.databinding.Observable"/>
+        <variable
+            name="viewmodel"
+            type="com.reynarz.minityeditor.viewmodels.InspectorViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/imageView4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@color/colorPrimary" />
+            android:src="@color/semi_black" />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/cb_activeEntity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:checked="false"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/et_entityName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="text|textNoSuggestions"
-            android:text="EntityName"
-            android:textAlignment="textStart"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-            app:layout_constraintEnd_toStartOf="@+id/btn_closeInspector"
-            app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@color/colorPrimary" />
 
-        <Button
-            android:id="@+id/btn_closeInspector"
-            android:layout_width="wrap_content"
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_activeEntity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:checked="@{viewmodel.visible}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/et_entityName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="text|textNoSuggestions"
+                android:text="@={viewmodel.entityName}"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                app:layout_constraintEnd_toStartOf="@+id/btn_closeInspector"
+                app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_closeInspector"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:background="@color/semi_black"
+                android:text="Close"
+                android:onClick="@{() -> viewmodel.onCloseInspector()}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_componentsRecycleView"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/semi_black"
-            android:text="Close"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_componentsRecycleView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

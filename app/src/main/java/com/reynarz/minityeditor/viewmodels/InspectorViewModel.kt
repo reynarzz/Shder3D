@@ -1,14 +1,14 @@
 package com.reynarz.minityeditor.viewmodels
 
+import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.models.ComponentData
 
-class InspectorViewModel : ViewModel() {
+class InspectorViewModel(private val minityProjectRepository: MinityProjectRepository) : ViewModel() {
 
-    val entityName : MutableLiveData<String> by lazy{
-        MutableLiveData<String>()
-    }
+    val entityName = MutableLiveData<String>()
 
     val selected: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
@@ -26,7 +26,9 @@ class InspectorViewModel : ViewModel() {
 
     }
 
-    fun onComponentChanged() {
+    fun onCloseInspector() {
 
     }
+
+    fun getEntityName() = minityProjectRepository.getEntities()[minityProjectRepository.getSelectedEntity()]
 }

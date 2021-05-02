@@ -4,7 +4,11 @@ import kotlinx.serialization.*
 import java.util.*
 
 @Serializable
-data class SceneEntityData(var name: String, var transformData: TransformComponentData, var meshRendererData: MeshRendererComponentData) {
+data class SceneEntityData(
+    var name: String,
+    var transformData: TransformComponentData,
+    var meshRendererData: MeshRendererComponentData
+) {
     var active = true
     var isSelected = false
 

@@ -3,7 +3,9 @@ plugins {
     id 'kotlin-android'
 
 }
+
 apply plugin: 'kotlinx-serialization'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 30
@@ -19,6 +21,11 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/INDEX.LIST'
     }
+
+    dataBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId "com.reynarz.minityeditor"
         minSdkVersion 21
@@ -35,10 +42,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
