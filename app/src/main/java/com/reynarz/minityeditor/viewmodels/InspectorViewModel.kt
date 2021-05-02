@@ -1,12 +1,12 @@
 package com.reynarz.minityeditor.viewmodels
 
-import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.models.ComponentData
 
-class InspectorViewModel(private val minityProjectRepository: MinityProjectRepository) : ViewModel() {
+class InspectorViewModel(private val minityProjectRepository: MinityProjectRepository, private val defaultNavigator: DefaultNavigator) : ViewModel() {
 
     val entityName = MutableLiveData<String>()
 
@@ -27,7 +27,8 @@ class InspectorViewModel(private val minityProjectRepository: MinityProjectRepos
     }
 
     fun onCloseInspector() {
-
+       // navigation pop
+        defaultNavigator.goBack()
     }
 
     fun getEntityName() = minityProjectRepository.getEntities()[minityProjectRepository.getSelectedEntity()]

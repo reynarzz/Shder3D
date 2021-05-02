@@ -13,38 +13,27 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.databinding.InspectorViewBinding
 import com.reynarz.minityeditor.models.ComponentData
-import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.SceneEntityData
-import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
-import com.reynarz.minityeditor.viewmodels.ViewModelFactory
-import org.koin.android.ext.android.get
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class InspectorFragmentView : Fragment() {
 
-    private lateinit var viewModel: InspectorViewModel
+    private val inspectorVM: InspectorViewModel by viewModel()
+
+    private lateinit var binding: InspectorViewBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val factory = get<ViewModelFactory>()
-        Log.d("Is null", (factory === null).toString())
+        binding = DataBindingUtil.inflate(inflater, R.layout.inspector_view, null, false)
 
-        viewModel = ViewModelProvider(this, factory).get(InspectorViewModel::class.java)
-        //val binding: InspectorViewBinding = InspectorViewBinding.inflate(layoutInflater)
-
-        val binding = DataBindingUtil.inflate<InspectorViewBinding>(inflater, R.layout.inspector_view, null, false)
-
-
-        binding.viewmodel = viewModel
+        binding.viewmodel = inspectorVM
 
         return binding.root
     }
@@ -52,19 +41,19 @@ class InspectorFragmentView : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.entityName.observe(viewLifecycleOwner, {
+        inspectorVM.entityName.observe(viewLifecycleOwner, {
             Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT)
             Log.d("Change to", it)
         })
 
 
-        viewModel.entityName.value = "reynardo"
+        inspectorVM.entityName.value = "reynardo"
 
 
-//        binding.btnCloseInspector.setOnClickListener {
-//            Navigation.findNavController(view).navigate(R.id.action_inspectorFragmentView_to_sceneFragmentView)
-//
-//        }
+        binding.btnCloseInspector.setOnClickListener {
+            //Navigation.findNavController(view).navigate(R.id.action_inspectorFragmentView_to_sceneFragmentView)
+            Navigation.findNavController(view).popBackStack()
+        }
 //        val checkBox = view.findViewById<AppCompatCheckBox>(R.id.cb_activeEntity)
 //        val entityName = view.findViewById<EditText>(R.id.et_entityName)
 //

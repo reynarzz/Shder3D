@@ -6,9 +6,9 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
+import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.SceneObjectManager
@@ -17,10 +17,8 @@ import com.reynarz.minityeditor.engine.data.ShaderDataBase
 import com.reynarz.minityeditor.files.FileManager
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.SceneEntityData
-import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
-import com.reynarz.minityeditor.viewmodels.InspectorViewModel
-import com.reynarz.minityeditor.viewmodels.ViewModelFactory
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sceneObjectManager: SceneObjectManager
 
 
-
     private val sceneEntitiesDataInScene = mutableListOf<SceneEntityData>()
 
     lateinit var shaderDataBase: ShaderDataBase
@@ -42,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     var selectedSceneEntity: SceneEntityData? = null
         private set
+    private val navigator: DefaultNavigator by inject()
 
     companion object {
         lateinit var instance: MainActivity
@@ -63,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         instance = this
+        navigator.activity = this
         openGLView = findViewById(R.id.OpenGLView_activity)
         sceneFragment = SceneFragmentView()
 
