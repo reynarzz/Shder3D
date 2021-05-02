@@ -48,10 +48,6 @@ class InspectorFragmentView : Fragment() {
 
 
 
-//        inspectorVM.entityName.value = "reynardo"
-
-
-
 //        val checkBox = view.findViewById<AppCompatCheckBox>(R.id.cb_activeEntity)
 //        val entityName = view.findViewById<EditText>(R.id.et_entityName)
 //
