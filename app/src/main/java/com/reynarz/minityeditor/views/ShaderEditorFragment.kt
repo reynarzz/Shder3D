@@ -26,7 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
     var materialData: MaterialData? = null
-    private lateinit var binding : ShaderEditorFragmentViewBinding
+    private lateinit var binding: ShaderEditorFragmentViewBinding
     private val shaderViewModel: ShaderEditorViewModel by viewModel()
 
     lateinit var renderer: OpenGLRenderer
@@ -35,12 +35,13 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.shader_editor_fragment_view, null, false)
 
-        shaderViewModel.setData(ShaderData("asd","asd").also {
+        shaderViewModel.setData(ShaderData("asd", "asd").also {
             val unlit = Utils.getUnlitShader(1f)
             it.vertexShader = unlit.first
             it.fragmentShader = unlit.second
 
         })
+
         binding.viewmodel = shaderViewModel
 
         return binding.root
@@ -62,45 +63,45 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             //MainActivity.instance.openInspectorWindow()
         }
 
-        val include1 = getInclude(activity!!.assets, "includes/unity.h")
+   //     val include1 = getInclude(activity!!.assets, "includes/unity.h")
 
         codeEditTex.setText(shaderData.fragmentShader)
 
-        var fragShaderFocused = true
-
-        switchShaderType.setOnClickListener {
-            fragShaderFocused = !fragShaderFocused
-
-            if (fragShaderFocused) {
-                codeEditTex.setText(shaderData.fragmentShader)
-            } else {
-                codeEditTex.setText(shaderData.vertexShader)
-            }
-        }
-
-        showHideButton.setOnClickListener {
-            setPreviewMode()
-        }
-
-        compileButton.setOnClickListener {
-
-            if (fragShaderFocused) {
-                shaderData.fragmentShader = codeEditTex.editableText.toString()
-            } else {
-                shaderData.vertexShader = codeEditTex.editableText.toString()
-            }
-
-            renderer.setReplaceShadersCommand(
-                Utils.ShaderFileUtils.processInclude(include1, shaderData.vertexShader),
-                Utils.ShaderFileUtils.processInclude(include1, shaderData.fragmentShader)
-            )
-
-            var compilationMessageCallback = { message: String ->
-                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-            }
-
-            compilationMessageCallback("Compiled!")
-        }
+//        var fragShaderFocused = true
+//
+//        switchShaderType.setOnClickListener {
+//            fragShaderFocused = !fragShaderFocused
+//
+//            if (fragShaderFocused) {
+//                codeEditTex.setText(shaderData.fragmentShader)
+//            } else {
+//                codeEditTex.setText(shaderData.vertexShader)
+//            }
+//        }
+//
+//        showHideButton.setOnClickListener {
+//            setPreviewMode()
+//        }
+//
+//        compileButton.setOnClickListener {
+//
+//            if (fragShaderFocused) {
+//                shaderData.fragmentShader = codeEditTex.editableText.toString()
+//            } else {
+//                shaderData.vertexShader = codeEditTex.editableText.toString()
+//            }
+//
+//            renderer.setReplaceShadersCommand(
+//                Utils.ShaderFileUtils.processInclude(include1, shaderData.vertexShader),
+//                Utils.ShaderFileUtils.processInclude(include1, shaderData.fragmentShader)
+//            )
+//
+//            var compilationMessageCallback = { message: String ->
+//                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+//            }
+//
+//            compilationMessageCallback("Compiled!")
+//        }
     }
 
     private fun getInclude(assets: AssetManager, include: String): String {
@@ -110,17 +111,17 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
     }
 
     private fun setPreviewMode() {
-        val codeContainer = view!!.findViewById<ConstraintLayout>(R.id.codeContainer)
-        val background = view!!.findViewById<ImageView>(R.id.iv_backgroundImage)
-        val switchShaderTypeContainer = view!!.findViewById<ConstraintLayout>(R.id.cl_switchShaderContainer)
-        val compileContainer = view!!.findViewById<ConstraintLayout>(R.id.cl_compileShaderContainer)
-        val closeShaderWindowContainer = view!!.findViewById<ConstraintLayout>(R.id.cl_closeShaderWindowContainer)
-
-        background.visibility = if (background.visibility === View.VISIBLE) View.INVISIBLE else View.VISIBLE
-
-        codeContainer.visibility = background.visibility
-        switchShaderTypeContainer.visibility = background.visibility
-        compileContainer.visibility = background.visibility
-        closeShaderWindowContainer.visibility = background.visibility
+//        val codeContainer = view!!.findViewById<ConstraintLayout>(R.id.codeContainer)
+//        val background = view!!.findViewById<ImageView>(R.id.iv_backgroundImage)
+//        val switchShaderTypeContainer = view!!.findViewById<ConstraintLayout>(R.id.cl_switchShaderContainer)
+//        val compileContainer = view!!.findViewById<ConstraintLayout>(R.id.cl_compileShaderContainer)
+//        val closeShaderWindowContainer = view!!.findViewById<ConstraintLayout>(R.id.cl_closeShaderWindowContainer)
+//
+//        background.visibility = if (background.visibility === View.VISIBLE) View.INVISIBLE else View.VISIBLE
+//
+//        codeContainer.visibility = background.visibility
+//        switchShaderTypeContainer.visibility = background.visibility
+//        compileContainer.visibility = background.visibility
+//        closeShaderWindowContainer.visibility = background.visibility
     }
 }
