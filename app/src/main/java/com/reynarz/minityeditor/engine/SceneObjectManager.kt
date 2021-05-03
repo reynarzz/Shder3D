@@ -62,7 +62,7 @@ class SceneObjectManager(
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
         val materialData = sceneEntityData.meshRendererData.materialsData.getOrNull(0)
 
-        if (materialData != null) {
+        if (materialData != null && entity != null) {
             val shaderData = materialData.shaderData
 
             entity.getComponent(MeshRenderer::class.java)!!.material = Material(Shader(shaderData.vertexShader, shaderData.fragmentShader))
@@ -72,7 +72,7 @@ class SceneObjectManager(
     fun removeMaterial(sceneEntityData: SceneEntityData)
     {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
-        entity.getComponent(MeshRenderer::class.java)!!.material = null
+        entity?.getComponent(MeshRenderer::class.java)!!.material = null
     }
 
 }

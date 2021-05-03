@@ -75,22 +75,12 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
     private fun setEditModelButton(view : View) {
 
+        // use bindings
         val editModel = requireView()!!.findViewById<Button>(R.id.btn_editModelComponents)
 
-        fun populateSceneEntityViewModel(viewModel: InspectorViewModel, sceneEntityData: SceneEntityData) {
 
-            viewModel.entityName.value = sceneEntityData.name
-            viewModel.visible.value = sceneEntityData.active
-            viewModel.selected.value = sceneEntityData.isSelected
-
-            viewModel.componentsData.value = mutableListOf()
-            viewModel.componentsData.value!!.add(sceneEntityData.transformData)
-            viewModel.componentsData.value!!.add(sceneEntityData.meshRendererData)
-        }
 
         editModel.setOnClickListener {
-            //--populateSceneEntityViewModel(MainActivity.inspectorViewModel, (activity as MainActivity).selectedSceneEntity!!)
-            //MainActivity.instance.openInspectorWindow()
             Navigation.findNavController(view).navigate(R.id.action_sceneTo_Inspector)
         }
     }

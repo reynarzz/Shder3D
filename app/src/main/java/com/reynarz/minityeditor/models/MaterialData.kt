@@ -22,6 +22,6 @@ class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
 
     //d (alpha)
     var disolve = 0f
-    var name = ""
+    var name = "Material"
     var texturesDataID = mutableListOf<String>()
 }

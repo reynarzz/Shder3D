@@ -5,8 +5,12 @@ import androidx.navigation.findNavController
 
 class DefaultNavigator {
 
-    fun goBack() {
-        _activity?.findNavController(R.id.btn_closeInspector)?.popBackStack()
+    fun goBack(id : Int) {
+        _activity?.findNavController(id)?.popBackStack()
+    }
+
+    fun goToShaderEditor() {
+        _activity?.findNavController(R.id.btn_closeInspector)?.navigate(R.id.action_inspectorFragmentView_to_shaderEditorFragment)
     }
 
     private var _activity: Activity? = null

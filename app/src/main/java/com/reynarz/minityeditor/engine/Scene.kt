@@ -33,7 +33,7 @@ class Scene {
         entities.remove(sceneEntity)
     }
 
-    fun getEntityById(id: String): SceneEntity {
+    fun getEntityById(id: String): SceneEntity? {
 
         for (i in entities){
             if(i.entityID == id){
@@ -41,7 +41,7 @@ class Scene {
             }
         }
         Log.d("Problems", "Problems with the entity id")
-        return SceneEntity()
+        return null
     }
 
 }

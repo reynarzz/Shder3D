@@ -11,14 +11,17 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.ComponentData
+import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
+import org.koin.java.KoinJavaComponent.get
 import java.util.*
 
-class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
+class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, private val navigator : DefaultNavigator) :
     RecyclerView.Adapter<InspectorRecycleViewAdapter.InspectorViwHolder>() {
 
     class InspectorViwHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -52,16 +55,16 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel) :
                 }
                 R.layout.mesh_renderer_fragment_view -> {
 
-                    val adapter = MeshRendererMaterialsAdapter(componentData as MeshRendererComponentData)
+                    val adapter = MeshRendererMaterialsAdapter(componentData as MeshRendererComponentData, navigator)
 
                     val addMaterialButton = findViewById<Button>(R.id.btn_addToComponentList)
                     addMaterialButton.visibility = View.VISIBLE
 
                     addMaterialButton.setOnClickListener {
 
-                        val mat = MainActivity.instance.dataFactory.getNewMaterialData("Material (${UUID.randomUUID()})")
+                        val mat: MaterialData = get(MaterialData::class.java)
 
-                        // add to the view model data
+                        // Add to the view model data, //bad.
                         (value!![position] as MeshRendererComponentData).materialsData.add(mat)
 
                         //apply the data to view model first to notify.

@@ -12,7 +12,6 @@ import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.SceneObjectManager
-import com.reynarz.minityeditor.engine.data.DataFactory
 import com.reynarz.minityeditor.engine.data.ShaderDataBase
 import com.reynarz.minityeditor.files.FileManager
 import com.reynarz.minityeditor.models.MaterialData
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var openGLView: OpenGLView
     private lateinit var sceneFragment: SceneFragmentView
     private val shaderFragment = ShaderEditorFragment()
-    private val inspectorFragment = InspectorFragmentView()
     private val fileManager = FileManager()
 
     private lateinit var sceneObjectManager: SceneObjectManager
@@ -35,8 +33,6 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var shaderDataBase: ShaderDataBase
 
-    var dataFactory = DataFactory()
-
     var selectedSceneEntity: SceneEntityData? = null
         private set
     private val navigator: DefaultNavigator by inject()
@@ -44,16 +40,11 @@ class MainActivity : AppCompatActivity() {
     companion object {
         lateinit var instance: MainActivity
             private set
+
         var width = 0
             private set
         var height = 0
             private set
-//
-//        lateinit var hierarchyViewModel: HierarchyViewModel
-//            private set
-
-//        lateinit var inspectorViewModel: InspectorViewModel
-//            private set
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,10 +126,6 @@ class MainActivity : AppCompatActivity() {
         changeMainFragment(shaderFragment)
     }
 
-    fun openInspectorWindow() {
-        changeMainFragment(inspectorFragment)
-    }
-
     private fun changeMainFragment(fragment: Fragment) {
 
         // android 5 problem
@@ -165,16 +152,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadAllData() {
-        val entities = fileManager.loadEntities().sceneEntitiesDataInScene
+        //val entities = fileManager.loadProject().sceneEntitiesDataInScene
 
-        for (entity in entities) {
-
-            if (entity.isSelected) {
-                setSelectedEntity(entity)
-            }
-
-            loadEntity(entity)
-        }
+//        for (entity in entities) {
+//
+//            if (entity.isSelected) {
+//                setSelectedEntity(entity)
+//            }
+//
+//            loadEntity(entity)
+//        }
     }
 
     fun updateMaterials(sceneEntityData: SceneEntityData?) {

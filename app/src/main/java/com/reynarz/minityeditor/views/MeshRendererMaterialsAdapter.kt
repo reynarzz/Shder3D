@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import java.util.*
 
-class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRendererComponentData) : RecyclerView.Adapter<MeshRendererMaterialsAdapter.MaterialsViewHolder>() {
+class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRendererComponentData,private val navigator :DefaultNavigator) : RecyclerView.Adapter<MeshRendererMaterialsAdapter.MaterialsViewHolder>() {
     class MaterialsViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MaterialsViewHolder {
@@ -32,7 +33,9 @@ class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRe
             val removeMatButton = findViewById<Button>(R.id.btn_removeMaterial)
 
             editMatButton.setOnClickListener {
-                MainActivity.instance!!.openShaderWindow(meshRendererData)
+                navigator.goToShaderEditor()
+
+               // MainActivity.instance!!.openShaderWindow(meshRendererData)
 
                 Log.d("Edit mat", position.toString())
             }

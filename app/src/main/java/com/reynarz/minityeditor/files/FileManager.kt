@@ -3,6 +3,7 @@ package com.reynarz.minityeditor.files
 import android.os.Environment
 import android.util.Log
 import com.reynarz.minityeditor.engine.data.ShaderDataBase
+import com.reynarz.minityeditor.models.ProjectData
 import com.reynarz.minityeditor.models.SceneEntityData
 import java.io.BufferedReader
 import java.io.File
@@ -97,7 +98,7 @@ class FileManager {
         file.writeText(Json.encodeToString((sceneEntitiesDataInScene)))
     }
 
-    fun loadEntities(): EntitiesContainer {
+    fun loadProject(): ProjectData {
         val directory = getFile("", "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
 
@@ -105,12 +106,13 @@ class FileManager {
             val obj = Json.decodeFromString<MutableList<SceneEntityData>>(file.readText())
 
              Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
-            EntitiesContainer(obj)
+            ProjectData("randomName").also {
+                it.sceneEntities = obj
+            }
         } else {
-            EntitiesContainer(mutableListOf())
+            ProjectData("randomName").also {
+                it.sceneEntities = mutableListOf()
+            }
         }
     }
-
-    @Serializable
-    data class EntitiesContainer(var sceneEntitiesDataInScene: MutableList<SceneEntityData>) {}
 }
