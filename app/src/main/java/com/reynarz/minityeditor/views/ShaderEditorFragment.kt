@@ -7,11 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.databinding.ShaderEditorFragmentViewBinding
 import com.reynarz.minityeditor.engine.OpenGLRenderer
@@ -22,25 +21,23 @@ import com.reynarz.minityeditor.viewmodels.ShaderEditorViewModel
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.get
 
 class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
-    var materialData: MaterialData? = null
     private lateinit var binding: ShaderEditorFragmentViewBinding
     private val shaderViewModel: ShaderEditorViewModel by viewModel()
-
+    private lateinit var shaderData: ShaderData
     lateinit var renderer: OpenGLRenderer
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.shader_editor_fragment_view, null, false)
 
-        shaderViewModel.setData(ShaderData("asd", "asd").also {
-            val unlit = Utils.getUnlitShader(1f)
-            it.vertexShader = unlit.first
-            it.fragmentShader = unlit.second
+        val minityRepository: MinityProjectRepository = get(MinityProjectRepository::class.java)
+        shaderData = minityRepository.selectedMaterial.shaderData
 
-        })
+        shaderViewModel.setData(shaderData)
 
         binding.viewmodel = shaderViewModel
 
@@ -50,8 +47,6 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val shaderData = ShaderData("", "asd")//materialData!!.shaderData
-
         val compileButton = view.findViewById<Button>(R.id.buttonCompile)
         val closeShaderWindow = view.findViewById<Button>(R.id.btn_closeShaderWindow)
         val codeEditTex = view.findViewById<EditText>(R.id.et_fragmentCode)
@@ -59,14 +54,22 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         val showHideButton = view.findViewById<Button>(R.id.btn_showHide)
         val switchShaderType = view.findViewById<Button>(R.id.btn_switchShaderView)
 
-        closeShaderWindow.setOnClickListener {
-            //MainActivity.instance.openInspectorWindow()
+        val include1 = getInclude(requireActivity().assets, "includes/unity.h")
+
+        shaderViewModel.onCompileShader = {
+            shaderData.vertexShader = codeEditTex.editableText.toString()
+            shaderData.fragmentShader = shaderViewModel.fragmentShader.value!!
+
+            var compilationMessageCallback = { message: String ->
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+            }
+
+            compilationMessageCallback("Compiled and saved")
+//            renderer.setReplaceShadersCommand(
+//                Utils.processInclude(include1, shaderData.vertexShader),
+//                Utils.processInclude(include1, shaderData.fragmentShader)
+//            )
         }
-
-   //     val include1 = getInclude(activity!!.assets, "includes/unity.h")
-
-        codeEditTex.setText(shaderData.fragmentShader)
-
 //        var fragShaderFocused = true
 //
 //        switchShaderType.setOnClickListener {
@@ -78,9 +81,9 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 //                codeEditTex.setText(shaderData.vertexShader)
 //            }
 //        }
-//
-//        showHideButton.setOnClickListener {
-//            setPreviewMode()
+////
+//        binding.btnShowHide.setOnClickListener {
+//            binding.codeContainer.visibility = View.INVISIBLE
 //        }
 //
 //        compileButton.setOnClickListener {

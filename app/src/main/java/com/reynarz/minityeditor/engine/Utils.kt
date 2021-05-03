@@ -284,28 +284,24 @@ void main()
 """
             return Pair(screenQuadVertexCode, screenFragTex)
         }
-    }
 
-    class ShaderFileUtils {
-        companion object {
-            fun processInclude(include: String, shaderCode: String): String {
+        fun processInclude(include: String, shaderCode: String): String {
 
-                var shader = shaderCode
+            var shader = shaderCode
 
-                shaderCode.reader().forEachLine {
-                    if (!it.contains("//") && it.contains("#")) {
+            shaderCode.reader().forEachLine {
+                if (!it.contains("//") && it.contains("#")) {
 
-                        var lowerCase = it.toLowerCase()
+                    var lowerCase = it.toLowerCase()
 
-                        if (lowerCase.contains("unity.h")) {
+                    if (lowerCase.contains("unity.h")) {
 
-                            shader = shaderCode.replace(it, include)
-                        }
+                        shader = shaderCode.replace(it, include)
                     }
                 }
-
-                return shader;
             }
+
+            return shader;
         }
     }
 }

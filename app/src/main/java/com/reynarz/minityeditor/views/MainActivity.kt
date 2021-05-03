@@ -120,10 +120,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openShaderWindow(materialData: MaterialData) {
-        shaderFragment.renderer = openGLView.renderer
-        shaderFragment.materialData = materialData
-
-        changeMainFragment(shaderFragment)
+//        shaderFragment.renderer = openGLView.renderer
+//        shaderFragment.materialData = materialData
+//
+//        changeMainFragment(shaderFragment)
     }
 
     private fun changeMainFragment(fragment: Fragment) {
