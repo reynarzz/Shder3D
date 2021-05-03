@@ -6,9 +6,11 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.DefaultNavigator
+import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.SceneObjectManager
@@ -21,15 +23,13 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var openGLView: OpenGLView
+    lateinit var openGLView: OpenGLView
     private lateinit var sceneFragment: SceneFragmentView
-    private val shaderFragment = ShaderEditorFragment()
+   // private val shaderFragment = ShaderEditorFragment()
     private val fileManager = FileManager()
 
     private lateinit var sceneObjectManager: SceneObjectManager
 
-
-    private val sceneEntitiesDataInScene = mutableListOf<SceneEntityData>()
 
     lateinit var shaderDataBase: ShaderDataBase
 
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         lateinit var instance: MainActivity
             private set
-
+        var time = System.currentTimeMillis()
         var width = 0
             private set
         var height = 0
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         sceneFragment = SceneFragmentView()
 
         sceneObjectManager = SceneObjectManager(baseContext, openGLView.renderer)
-        shaderFragment.renderer = openGLView.renderer
+        //shaderFragment.renderer = openGLView.renderer
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         //Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-//        initAllData()
+        initAllData()
 ////
 //        setViewModels()
 //        openSceneWindow()
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initAllData() {
         // set the shaderData.
-        shaderDataBase = fileManager.loadShaderDatabase()
+        //shaderDataBase = fileManager.loadShaderDatabase()
 
         loadAllData()
     }
@@ -106,12 +106,12 @@ class MainActivity : AppCompatActivity() {
 
         openGLView.renderer.addRenderCommand {
 
-            // add the data to the list, why inside here works? (if i put it outside the command doesn't work)
-            sceneEntitiesDataInScene.add(entity)
-
             // load the object
             sceneObjectManager.testLoadObject(entity)
             sceneObjectManager.addMaterial(entity)
+
+            //test
+            openGLView.renderer.selectEntityID(entity.entityID) // test
         }
     }
 
@@ -148,20 +148,21 @@ class MainActivity : AppCompatActivity() {
 
 
     fun saveAllData() {
-        fileManager.saveEntities(sceneEntitiesDataInScene)
+
     }
 
     private fun loadAllData() {
-        //val entities = fileManager.loadProject().sceneEntitiesDataInScene
+        val project: MinityProjectRepository = get()
+        val entities = project.getProjectData().sceneEntities
 
-//        for (entity in entities) {
-//
-//            if (entity.isSelected) {
-//                setSelectedEntity(entity)
-//            }
-//
-//            loadEntity(entity)
-//        }
+        for (entity in entities) {
+
+            if (entity.isSelected) {
+                setSelectedEntity(entity)
+            }
+
+            loadEntity(entity)
+        }
     }
 
     fun updateMaterials(sceneEntityData: SceneEntityData?) {
@@ -180,4 +181,8 @@ class MainActivity : AppCompatActivity() {
         openGLView.onPause()
     }
 
+    override fun onBackPressed() {
+
+        super.onBackPressed()
+    }
 }

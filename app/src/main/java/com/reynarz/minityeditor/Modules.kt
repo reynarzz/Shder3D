@@ -53,5 +53,6 @@ val ViewModelsModule = module {
 
     viewModel { InspectorViewModel(get()) }
     viewModel { ShaderEditorViewModel(get()) }
+
     single { InspectorRecycleViewAdapter(get(), get()) }
 }

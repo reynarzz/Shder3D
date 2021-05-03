@@ -118,7 +118,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
-
+        Log.d("time", MainActivity.time.toString())
         mainFrameBuffer.bind()
 
         glDisable(GL_STENCIL_TEST)

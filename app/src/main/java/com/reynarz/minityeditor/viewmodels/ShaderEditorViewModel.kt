@@ -37,5 +37,4 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
         fragmentShader.value = shaderData.fragmentShader
         showEditor.value = true
     }
-
 }

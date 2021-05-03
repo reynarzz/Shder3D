@@ -21,20 +21,20 @@ import com.reynarz.minityeditor.viewmodels.ShaderEditorViewModel
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.java.KoinJavaComponent.get
+import org.koin.android.ext.android.*
 
 class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
     private lateinit var binding: ShaderEditorFragmentViewBinding
     private val shaderViewModel: ShaderEditorViewModel by viewModel()
     private lateinit var shaderData: ShaderData
-    lateinit var renderer: OpenGLRenderer
+   // lateinit var renderer: OpenGLRenderer
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.shader_editor_fragment_view, null, false)
 
-        val minityRepository: MinityProjectRepository = get(MinityProjectRepository::class.java)
+        val minityRepository: MinityProjectRepository = get()
         shaderData = minityRepository.selectedMaterial.shaderData
 
         shaderViewModel.setData(shaderData)
@@ -49,7 +49,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
         val compileButton = view.findViewById<Button>(R.id.buttonCompile)
         val closeShaderWindow = view.findViewById<Button>(R.id.btn_closeShaderWindow)
-        val codeEditTex = view.findViewById<EditText>(R.id.et_fragmentCode)
+        //val codeEditTex = view.findViewById<EditText>(R.id.et_fragmentCode)
 
         val showHideButton = view.findViewById<Button>(R.id.btn_showHide)
         val switchShaderType = view.findViewById<Button>(R.id.btn_switchShaderView)
@@ -57,7 +57,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         val include1 = getInclude(requireActivity().assets, "includes/unity.h")
 
         shaderViewModel.onCompileShader = {
-            shaderData.vertexShader = codeEditTex.editableText.toString()
+            shaderData.vertexShader = shaderViewModel.vertexShader.value!!
             shaderData.fragmentShader = shaderViewModel.fragmentShader.value!!
 
             var compilationMessageCallback = { message: String ->
@@ -65,10 +65,10 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             }
 
             compilationMessageCallback("Compiled and saved")
-//            renderer.setReplaceShadersCommand(
-//                Utils.processInclude(include1, shaderData.vertexShader),
-//                Utils.processInclude(include1, shaderData.fragmentShader)
-//            )
+           MainActivity.instance.openGLView.renderer.setReplaceShadersCommand(
+                Utils.processInclude(include1, shaderData.vertexShader),
+                Utils.processInclude(include1, shaderData.fragmentShader)
+            )
         }
 //        var fragShaderFocused = true
 //
