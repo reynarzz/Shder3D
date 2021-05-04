@@ -17,7 +17,7 @@ class Utils {
 
             val screenQuadUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
 
-            return Mesh(screenQuadVerts, screenQuadIndex, screenQuadUV)
+            return Mesh(screenQuadVerts, screenQuadIndex, screenQuadUV, FloatArray(1))
         }
 
         fun getQuad(size: Float): Mesh {
@@ -35,7 +35,7 @@ class Utils {
 
             val screenQuadUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
 
-            return Mesh(screenQuadVerts, screenQuadIndex, screenQuadUV)
+            return Mesh(screenQuadVerts, screenQuadIndex, screenQuadUV, FloatArray(1))
         }
 
         fun getPlane(size: Float): Mesh {
@@ -53,7 +53,7 @@ class Utils {
 
             val screenPlaneUV = listOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f).toFloatArray()
 
-            return Mesh(screenPlaneVerts, screenPlaneIndex, screenPlaneUV)
+            return Mesh(screenPlaneVerts, screenPlaneIndex, screenPlaneUV, FloatArray(1))
         }
 
         fun getErrorShaderCode(): Pair<String, String> {
@@ -170,6 +170,34 @@ void main()
             val unlitShader = getUnlitShader(unlitAmount)
 
             val shader = Shader(unlitShader.first, unlitShader.second)
+
+            return Material(shader)
+        }
+
+        fun getOutlineMaterial(): Material {
+
+            var vertexTex = """
+            
+            attribute vec4 _VERTEX_; 
+            uniform mat4 UNITY_MATRIX_MVP;
+            attribute vec3 _NORMAL_;
+            
+            void main() 
+            {
+                vec4 pos = _VERTEX_;
+                pos.xyz += _NORMAL_ * 0.4;
+                
+               gl_Position = UNITY_MATRIX_MVP * pos;
+            }"""
+
+            var fragTex = """precision mediump float; 
+
+            void main()
+            {
+                gl_FragColor = vec4(1.0); 
+            }"""
+
+            val shader = Shader(vertexTex, fragTex)
 
             return Material(shader)
         }

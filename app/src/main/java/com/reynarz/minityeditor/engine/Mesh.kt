@@ -6,12 +6,13 @@ import java.nio.*
 const val FLOAT_BYTES = 4
 const val COORDS_PER_VERTEX = 3
 
-class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray) {
+class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray, val normals: FloatArray) {
 
     var vertexBuffer: FloatBuffer? = null
 
     var indexBuffer: IntBuffer? = null
     var uvBuffer: FloatBuffer? = null
+    var normalsBuffer: FloatBuffer? = null
 
     val indicesCount = indices.size
     val vertexCount = vertices.size
@@ -44,6 +45,14 @@ class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray) 
                 position(0)
             }
         }
+
+        normalsBuffer = ByteBuffer.allocateDirect(normals.size * 4).run {
+            order(ByteOrder.nativeOrder())
+            asFloatBuffer().apply {
+                put(normals)
+                position(0)
+            }
+        }
     }
 
     fun bind(program: Int) {
@@ -66,5 +75,9 @@ class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray) 
 
         glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, uvBuffer)
         glEnableVertexAttribArray(uvAttrib)
+
+        val normalsAttrib = glGetAttribLocation(program, "_NORMAL_")
+        glVertexAttribPointer(normalsAttrib, 3, GL_FLOAT, true, 3 * 4, normalsBuffer)
+        glEnableVertexAttribArray(normalsAttrib)
     }
 }

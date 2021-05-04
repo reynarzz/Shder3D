@@ -9,7 +9,6 @@ import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.models.SceneEntityData
-import com.reynarz.minityeditor.models.TransformComponentData
 import org.koin.java.KoinJavaComponent.get
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -41,7 +40,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             val entity = scene.getEntityById(repository.selectedSceneEntity?.entityID)
             return entity
         }
-    private lateinit var unlitMat: Material
+    private lateinit var outlineMaterial: Material
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
     }
@@ -52,7 +51,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         if (!initialized) {
             editorObjs = mutableListOf()
 
-            unlitMat = Utils.getUnlitMaterial(1f)
+            outlineMaterial = Utils.getUnlitMaterial(1f)
             errorMaterial = Utils.getErrorMaterial()
 
             glEnable(GL_DEPTH_TEST)
@@ -197,14 +196,15 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                         glStencilMask(0x00)
 
                         val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-                        val scale = vec3(renderer!!.transform.scale.x, renderer!!.transform.scale.y, renderer!!.transform.scale.z)
+//                        val scale = vec3(renderer!!.transform.scale.x, renderer!!.transform.scale.y, renderer!!.transform.scale.z)
+//
+//                        renderer!!.transform.scale = vec3(scale.x + 0.02f, scale.y + 0.02f, scale.z + 0.02f)
+                        //renderer!!.bind(viewM, projM, outlineMaterial)
+                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial)
 
-                        renderer!!.transform.scale = vec3(scale.x + 0.02f, scale.y + 0.02f, scale.z + 0.02f)
-                        renderer!!.bindWithMaterial(viewM, projM, unlitMat)
+                        glDrawElements(GL_LINES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer.mesh.indexBuffer)
 
-                        glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer.mesh.indexBuffer)
-
-                        renderer.transform.scale = scale
+                        //renderer.transform.scale = scale
 
                         glDisable(GL_STENCIL_TEST)
                         glEnable(GL_DEPTH_TEST)

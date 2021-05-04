@@ -9,6 +9,16 @@ import java.io.InputStreamReader
 
 class CustomObjParser {
 
+    var minX = 0f
+    var minY = 0f
+    var minZ = 0f
+
+    var maxX = 0f
+    var maxY = 0f
+    var maxZ = 0f
+
+    var bounds: Bounds? = null
+
     class Vertex {
         var position = vec3()
         var uv = vec2()
@@ -47,6 +57,7 @@ class CustomObjParser {
 
                 val position = vec3(splitted[1].toFloat(), splitted[2].toFloat(), splitted[3].toFloat())
 
+                calcBoundingBox(position.x, position.y, position.z)
                 //Log.d("position", "(${position.x}, ${position.y}, ${position.z})")
                 vPositions.add(position)
 
@@ -144,6 +155,7 @@ class CustomObjParser {
             }
         }
 
+        // triangulate here!
         for (vertex in fullVerticesData) {
             verticesFinal.add(vertex.position.x)
             verticesFinal.add(vertex.position.y)
@@ -152,7 +164,6 @@ class CustomObjParser {
             uvFinal.add(vertex.uv.x)
             uvFinal.add(vertex.uv.y)
 
-
             //normals
             normalsFinal.add(vertex.normal.x)
             normalsFinal.add(vertex.normal.y)
@@ -160,8 +171,31 @@ class CustomObjParser {
 
             //indices
             indices.add(vertex.index)
-
         }
-        return ModelData(verticesFinal.toFloatArray(), normalsFinal.toFloatArray(), uvFinal.toFloatArray(), indices.toIntArray(), Bounds(0f, 0f, 0f, 0f, 0f, 0f))
+
+        return ModelData(verticesFinal.toFloatArray(), normalsFinal.toFloatArray(), uvFinal.toFloatArray(), indices.toIntArray(), Bounds(minX, minY, minZ, maxX, maxY, maxZ))
+    }
+
+    fun calcBoundingBox(x: Float, y: Float, z: Float) {
+        if (x < minX) {
+            minX = x
+        }
+        if (x > maxX) {
+            maxX = x
+        }
+
+        if (y < minY) {
+            minY = y
+        }
+        if (y > maxY) {
+            maxY = y
+        }
+
+        if (z < minZ) {
+            minZ = z
+        }
+        if (z > maxZ) {
+            maxZ = z
+        }
     }
 }

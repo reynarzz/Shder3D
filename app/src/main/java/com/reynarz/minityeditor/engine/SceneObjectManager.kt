@@ -17,7 +17,7 @@ class SceneObjectManager(
         val modelData = dataBase.getModel(sceneEntityData.entityModelPath)
 
         var objData = modelData
-        val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs)
+        val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs, objData.mNormals)
 
         val mat = Utils.getDefaultMaterial()
         mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
@@ -36,10 +36,6 @@ class SceneObjectManager(
 
         addedRenderer!!.mesh = mesh
         addedRenderer!!.material = mat
-//
-//        sceneEntity.testMeshRenderer = renderer
-//        //test
-//        sceneEntity.testMeshRenderer!!.material = mat
 
 //        val bounding = boundingBoxTest(objData.bounds)
 //
@@ -55,7 +51,7 @@ class SceneObjectManager(
 
         var cube = ObjParser(context!!, "models/cube.obj").getModelData()
 
-        val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1))
+        val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1), FloatArray(1))
         //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
 
         return MeshRenderer(mesh, Utils.getUnlitMaterial(0.75f))
