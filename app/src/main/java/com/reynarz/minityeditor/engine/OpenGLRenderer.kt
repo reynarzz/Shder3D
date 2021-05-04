@@ -4,9 +4,11 @@ import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.util.Log
+import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
+import org.koin.java.KoinJavaComponent.get
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -30,7 +32,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private var quadShader: Shader? = null
     var screenQuadMesh: Mesh? = null
 
-    private var selectedEntity: SceneEntity? = null
+    private val repository:MinityProjectRepository = get(MinityProjectRepository::class.java)
+
+    private val selectedEntity: SceneEntity?
+    get() {
+        val entity = scene.getEntityById(repository.selectedSceneEntity?.entityID)
+        return entity
+    }
     private lateinit var unlitMat: Material
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -90,14 +98,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
     }
 
-
-    fun selectEntityID(entityID: String?) {
-        if (entityID != null) {
-            selectedEntity = scene!!.getEntityById(entityID!!)
-        } else {
-            selectedEntity = null
-        }
-    }
 
     fun addRenderCommand(command: () -> Unit) {
         rendererCommands.add(command)

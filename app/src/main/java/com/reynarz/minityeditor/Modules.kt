@@ -7,6 +7,7 @@ import com.reynarz.minityeditor.files.FileManager
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.viewmodels.HierarchyViewModel
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
+import com.reynarz.minityeditor.viewmodels.SceneViewModel
 import com.reynarz.minityeditor.viewmodels.ShaderEditorViewModel
 import com.reynarz.minityeditor.views.InspectorRecycleViewAdapter
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -53,6 +54,7 @@ val ViewModelsModule = module {
     viewModel { HierarchyViewModel(get()) }
     viewModel { InspectorViewModel(get()) }
     viewModel { ShaderEditorViewModel(get()) }
+    viewModel { SceneViewModel(get()) }
 
     single { InspectorRecycleViewAdapter(get(), get()) }
 }

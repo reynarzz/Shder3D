@@ -45,7 +45,6 @@ class HierarchyFragmentView : Fragment(R.layout.hierarchy_fragment_view) {
             Log.d("Entity is null", (entity === null).toString())
 
             repository.selectedSceneEntity = entity
-            MainActivity.instance.setSelectedEntity(entity)
         })
 
         if(viewModel.entitiesInScene.value!!.size == 0){

@@ -24,18 +24,9 @@ import org.koin.android.ext.android.inject
 class MainActivity : AppCompatActivity() {
 
     lateinit var openGLView: OpenGLView
-    private lateinit var sceneFragment: SceneFragmentView
-
-    // private val shaderFragment = ShaderEditorFragment()
-    private val fileManager = FileManager()
 
     private lateinit var sceneObjectManager: SceneObjectManager
 
-
-    lateinit var shaderDataBase: ShaderDataBase
-
-    var selectedSceneEntity: SceneEntityData? = null
-        private set
     private val navigator: DefaultNavigator by inject()
 
     companion object {
@@ -55,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         instance = this
         navigator.activity = this
         openGLView = findViewById(R.id.OpenGLView_activity)
-        sceneFragment = SceneFragmentView()
 
         sceneObjectManager = SceneObjectManager(baseContext, openGLView.renderer)
         //shaderFragment.renderer = openGLView.renderer
@@ -131,52 +121,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun openSceneWindow() {
-        changeMainFragment(sceneFragment)
-    }
-
-    fun openShaderWindow(materialData: MaterialData) {
-//        shaderFragment.renderer = openGLView.renderer
-//        shaderFragment.materialData = materialData
-//
-//        changeMainFragment(shaderFragment)
-    }
-
-    private fun changeMainFragment(fragment: Fragment) {
-
-        // android 5 problem
-//        supportFragmentManager.beginTransaction().apply {
-//            replace(R.id.mainFragment, fragment)
-//            commit()
-//        }
-    }
-
-    fun setSelectedEntity(sceneEntityData: SceneEntityData?) {
-        selectedSceneEntity = sceneEntityData
-
-        if (selectedSceneEntity != null) {
-
-            openGLView.renderer.selectEntityID(selectedSceneEntity!!.entityID)
-        } else {
-            openGLView.renderer.selectEntityID(null)
-        }
-    }
-
-
-    fun saveAllData() {
-
-    }
-
     private fun loadAllData() {
         val project: MinityProjectRepository = get()
         val entities = project.getProjectData().sceneEntities
 
         for (entity in entities) {
-
-//            if (entity.isSelected) {
-//                setSelectedEntity(entity)
-//            }
-
             loadEntity(entity)
         }
     }
