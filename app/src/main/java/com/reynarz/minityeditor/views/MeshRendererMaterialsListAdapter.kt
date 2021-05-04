@@ -12,6 +12,7 @@ import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.MeshRendererComponentData
+import com.reynarz.minityeditor.models.TextureData
 import org.koin.java.KoinJavaComponent.get
 
 class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: MeshRendererComponentData, private val navigator :DefaultNavigator) : RecyclerView.Adapter<MeshRendererMaterialsListAdapter.MaterialsViewHolder>() {
@@ -24,14 +25,21 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
     override fun onBindViewHolder(holder: MaterialsViewHolder, position: Int) {
 
         holder.itemView.apply {
-
-
             var materialData = meshRendererComponentData.materialsData[position]
 
 
+            // Texture RecyclerView
             val rvTexture = findViewById<RecyclerView>(R.id.rv_textureList)
             rvTexture.adapter = MaterialTexturesAdapter(materialData)
             rvTexture.layoutManager = GridLayoutManager(holder.itemView.context, 3)
+
+            // Add Texture Slot
+            val addTextureSlotButton = findViewById<Button>(R.id.btn_addTextureSlot)
+            addTextureSlotButton.setOnClickListener {
+
+                materialData.texturesData.add(TextureData(materialData.texturesData.size.toString()))
+                rvTexture.adapter?.notifyDataSetChanged()
+            }
 
             val materialNameText = findViewById<TextView>(R.id.tv_meshRendererMaterialName)
             materialNameText.text = materialData.name

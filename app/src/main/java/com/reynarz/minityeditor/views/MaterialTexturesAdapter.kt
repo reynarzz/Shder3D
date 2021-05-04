@@ -19,8 +19,6 @@ class MaterialTexturesAdapter(private val materialData: MaterialData) : Recycler
     }
 
     override fun getItemCount(): Int {
-        return 4//materialData.texturesData.size
+        return materialData.texturesData.size
     }
-
-
 }
