@@ -71,6 +71,8 @@ class InspectorFragmentView : Fragment() {
                         val transform = i as TransformComponentData
 
                         entityData!!.transformData = transform
+
+                        MainActivity.instance.updateTransform(entityData)
                     }
 
                     R.layout.mesh_renderer_fragment_view -> {

@@ -8,6 +8,8 @@ import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
+import com.reynarz.minityeditor.models.SceneEntityData
+import com.reynarz.minityeditor.models.TransformComponentData
 import org.koin.java.KoinJavaComponent.get
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -32,13 +34,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private var quadShader: Shader? = null
     var screenQuadMesh: Mesh? = null
 
-    private val repository:MinityProjectRepository = get(MinityProjectRepository::class.java)
+    private val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
 
     private val selectedEntity: SceneEntity?
-    get() {
-        val entity = scene.getEntityById(repository.selectedSceneEntity?.entityID)
-        return entity
-    }
+        get() {
+            val entity = scene.getEntityById(repository.selectedSceneEntity?.entityID)
+            return entity
+        }
     private lateinit var unlitMat: Material
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -98,6 +100,15 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
     }
 
+    fun setTransform(sceneEntityData: SceneEntityData) {
+        addRenderCommand {
+            val transform = selectedEntity?.getComponent(MeshRenderer::class.java)?.transform
+            transform?.position = sceneEntityData.transformData.position
+            transform?.eulerAngles = sceneEntityData.transformData.eulerAngles
+            transform?.scale = sceneEntityData.transformData.scale
+
+        }
+    }
 
     fun addRenderCommand(command: () -> Unit) {
         rendererCommands.add(command)
@@ -153,59 +164,57 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (entity in scene!!.entities) {
 
+            if (entity.isActive) {
 
 //            if (entity.testMeshRenderer != null) {
 //                entity.testMeshRenderer!!.bind(viewM, projM, errorMaterial)
 //            }
 
-            val renderer = entity.getComponent(MeshRenderer::class.java)
+                val renderer = entity.getComponent(MeshRenderer::class.java)
 
-            if (renderer != null) {
-                //Log.d("Bind", "Binded")
-                renderer.bind(viewM, projM, errorMaterial)
-            }
+                renderer?.bind(viewM, projM, errorMaterial)
 
-            if (selectedEntity != null && entity === selectedEntity) {
-                // glDisable(GL_DEPTH_TEST)
-                glEnable(GL_STENCIL_TEST)
-                glStencilFunc(GL_ALWAYS, 1, 0xff)
-                glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
-                glStencilMask(0xff)
-            }
-
-            glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
-
-            if (entity.name != "Bounds") {
-                //glDrawElements(GL_TRIANGLES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer)
-
-                // glDisable(GL_DEPTH_TEST)
                 if (selectedEntity != null && entity === selectedEntity) {
+                    // glDisable(GL_DEPTH_TEST)
                     glEnable(GL_STENCIL_TEST)
-                    //glDisable(GL_DEPTH_TEST)
-
-                    glStencilFunc(GL_NOTEQUAL, 1, 0xff); // Pass test if stencil value is 1
-                    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-                    glStencilMask(0x00)
-
-                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-                    val scale = renderer!!.transform.scale
-
-                    renderer!!.transform.scale = vec3(scale.x + 0.05f, scale.y + 0.05f, scale.z + 0.05f)
-                    renderer!!.bindWithMaterial(viewM, projM, unlitMat)
-
-                    glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer.mesh.indexBuffer)
-
-                    renderer.transform.scale = vec3(1f, 1f, 1f)
-
-                    glDisable(GL_STENCIL_TEST)
-                    glEnable(GL_DEPTH_TEST)
-
+                    glStencilFunc(GL_ALWAYS, 1, 0xff)
+                    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
+                    glStencilMask(0xff)
                 }
 
-            } else {
+                glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
+
+                if (entity.name != "Bounds") {
+                    //glDrawElements(GL_TRIANGLES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer)
+
+                    // glDisable(GL_DEPTH_TEST)
+                    if (selectedEntity != null && entity === selectedEntity) {
+                        glEnable(GL_STENCIL_TEST)
+                        //glDisable(GL_DEPTH_TEST)
+
+                        glStencilFunc(GL_NOTEQUAL, 1, 0xff); // Pass test if stencil value is 1
+                        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+                        glStencilMask(0x00)
+
+                        val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
+                        val scale = vec3(renderer!!.transform.scale.x, renderer!!.transform.scale.y, renderer!!.transform.scale.z)
+
+                        renderer!!.transform.scale = vec3(scale.x + 0.02f, scale.y + 0.02f, scale.z + 0.02f)
+                        renderer!!.bindWithMaterial(viewM, projM, unlitMat)
+
+                        glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer.mesh.indexBuffer)
+
+                        renderer.transform.scale = scale
+
+                        glDisable(GL_STENCIL_TEST)
+                        glEnable(GL_DEPTH_TEST)
+                    }
+
+                } else {
 //                glDrawElements(
 //                    GL_LINES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer
 //                )
+                }
             }
         }
 

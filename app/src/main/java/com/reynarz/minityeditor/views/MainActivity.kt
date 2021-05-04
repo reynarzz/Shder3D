@@ -59,9 +59,6 @@ class MainActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         initAllData()
-////
-//        setViewModels()
-//        openSceneWindow()
     }
 
     private fun initAllData() {
@@ -69,13 +66,6 @@ class MainActivity : AppCompatActivity() {
         //shaderDataBase = fileManager.loadShaderDatabase()
 
         loadAllData()
-    }
-
-    private fun setViewModels() {
-        //val viewModelFactory = ViewModelFactory(this)
-
-        //hierarchyViewModel = viewModelFactory.getHierarchyViewModel(sceneEntitiesDataInScene)
-        //inspectorViewModel = viewModelFactory.getInspectorEntityViewModel()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,9 +78,6 @@ class MainActivity : AppCompatActivity() {
             for (path in files!!) {
                 val entity = get<SceneEntityData>()
                 entity.entityModelPath = path.path
-
-                // val repository: MinityProjectRepository = get()
-                // val entities = repository.getProjectData().sceneEntities.add(entity)
 
 
                 val repository: MinityProjectRepository = get()
@@ -112,12 +99,8 @@ class MainActivity : AppCompatActivity() {
 
         openGLView.renderer.addRenderCommand {
 
-            // load the object
             sceneObjectManager.testLoadObject(entity)
             sceneObjectManager.addMaterial(entity)
-
-            // val repository: MinityProjectRepository = get()
-            // val entities = repository.getProjectData().sceneEntities.add(entity)
         }
     }
 
@@ -134,6 +117,10 @@ class MainActivity : AppCompatActivity() {
         openGLView.renderer.addRenderCommand {
             sceneObjectManager.addMaterial(sceneEntityData!!)
         }
+    }
+
+    fun updateTransform(sceneEntityData: SceneEntityData?) {
+        openGLView.renderer.setTransform(sceneEntityData!!)
     }
 
     override fun onResume() {
