@@ -11,6 +11,8 @@ class MinityProjectRepository() {
 
     private var projectData: ProjectData? = null
     lateinit var selectedMaterial: MaterialData
+    var selectedTextureSlot = 0
+
     var selectedSceneEntity: SceneEntityData? = null
 
     fun getProjectData(): ProjectData {

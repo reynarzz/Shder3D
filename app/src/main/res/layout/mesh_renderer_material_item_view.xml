@@ -96,7 +96,7 @@
                     android:layout_height="0dp"
                     android:background="@color/transparent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/btn_removeMaterial"
+                    app:layout_constraintEnd_toStartOf="@+id/cl_removeTextureContainer"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -119,32 +119,70 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:tint="@color/purple_200" />
 
-                <Button
-                    android:id="@+id/btn_addTextureSlot"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/transparent"
-                    app:layout_constraintEnd_toEndOf="@+id/btn_editMaterialShaderFromInspector"
-                    app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:src="@color/colorPrimary"
-                    app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
-                    app:layout_constraintEnd_toEndOf="@+id/btn_editMaterialShaderFromInspector"
-                    app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_addTextureContainer"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_removeMaterial"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/add"
-                    app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
-                    app:layout_constraintEnd_toEndOf="@+id/btn_editMaterialShaderFromInspector"
-                    app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/btn_addTextureSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/add"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintEnd_toEndOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_removeTextureContainer"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    app:layout_constraintEnd_toStartOf="@+id/cl_addTextureContainer"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/btn_removeTextureSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/delete"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintEnd_toEndOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
                     android:layout_width="0dp"

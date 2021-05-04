@@ -15,7 +15,7 @@ import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.TextureData
 import org.koin.java.KoinJavaComponent.get
 
-class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: MeshRendererComponentData, private val navigator :DefaultNavigator) : RecyclerView.Adapter<MeshRendererMaterialsListAdapter.MaterialsViewHolder>() {
+class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: MeshRendererComponentData, private val navigator: DefaultNavigator) : RecyclerView.Adapter<MeshRendererMaterialsListAdapter.MaterialsViewHolder>() {
     class MaterialsViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MaterialsViewHolder {
@@ -41,6 +41,15 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
                 rvTexture.adapter?.notifyDataSetChanged()
             }
 
+            // Remove Texture Slot
+            val removeTextureSlotButton = findViewById<Button>(R.id.btn_removeTextureSlot)
+            removeTextureSlotButton.setOnClickListener {
+
+                materialData.texturesData.removeAt(materialData.texturesData.size-1)
+                rvTexture.adapter?.notifyDataSetChanged()
+            }
+
+
             val materialNameText = findViewById<TextView>(R.id.tv_meshRendererMaterialName)
             materialNameText.text = materialData.name
 
@@ -48,12 +57,12 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
             val removeMatButton = findViewById<Button>(R.id.btn_removeMaterial)
 
             editMatButton.setOnClickListener {
-                val minityRepository : MinityProjectRepository = get(MinityProjectRepository::class.java)
+                val minityRepository: MinityProjectRepository = get(MinityProjectRepository::class.java)
                 minityRepository.selectedMaterial = materialData
 
                 navigator.goToShaderEditor()
 
-               // MainActivity.instance!!.openShaderWindow(meshRendererData)
+                // MainActivity.instance!!.openShaderWindow(meshRendererData)
 
                 Log.d("Edit mat", position.toString())
             }

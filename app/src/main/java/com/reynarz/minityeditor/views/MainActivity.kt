@@ -69,27 +69,45 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         // Add new obj to database, and add it to the hierarchy immediately.
-        if (requestCode == 1 && data != null) {
+        if (data != null) {
             val files = data!!.getParcelableArrayListExtra<MediaFile>(FilePickerActivity.MEDIA_FILES)
 
-            for (path in files!!) {
-                val entity = get<SceneEntityData>()
-                entity.entityModelPath = path.path
-
-
-                val repository: MinityProjectRepository = get()
-                repository.getProjectData().sceneEntities.add(entity)
-
-                Log.d("total entities count", repository.getProjectData().sceneEntities.size.toString())
-
-                for (i in repository.getProjectData().sceneEntities) {
-                    Log.d("Patht", i.entityModelPath)
-
-                }
-
-                loadEntity(entity)
+            if (requestCode == 1) {
+                onModelSelectedToLoad(files)
+            } else if (requestCode == 2) {
+                onTextureSelected(files)
             }
         }
+    }
+
+    private fun onModelSelectedToLoad(files: ArrayList<MediaFile>?) {
+        for (path in files!!) {
+            val entity = get<SceneEntityData>()
+            entity.entityModelPath = path.path
+
+
+            val repository: MinityProjectRepository = get()
+            repository.getProjectData().sceneEntities.add(entity)
+
+            Log.d("total entities count", repository.getProjectData().sceneEntities.size.toString())
+
+            for (i in repository.getProjectData().sceneEntities) {
+                Log.d("Patht", i.entityModelPath)
+
+            }
+
+            loadEntity(entity)
+        }
+    }
+
+    private fun onTextureSelected(files: ArrayList<MediaFile>?) {
+
+        // just one texture per slot
+        val textureMedia = files?.get(0)
+
+
+        val repository: MinityProjectRepository = get()
+        repository.selectedMaterial.texturesData[repository.selectedTextureSlot].path = textureMedia?.path!!
     }
 
     private fun loadEntity(entity: SceneEntityData) {
