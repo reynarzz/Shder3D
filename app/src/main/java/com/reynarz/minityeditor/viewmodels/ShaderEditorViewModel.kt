@@ -1,6 +1,8 @@
 package com.reynarz.minityeditor.viewmodels
 
 import android.util.Log
+import android.view.View
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.reynarz.minityeditor.DefaultNavigator
@@ -16,6 +18,7 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
 
     private var showingEditor = true
     lateinit var onCompileShader: () -> Unit
+    lateinit var onHideOrShowEditor: () -> Unit
 
     fun onCompile() {
         onCompileShader()
@@ -25,11 +28,18 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
 
     fun onHideShowEditor() {
 
-        Log.d("Changed", "Show editor ${showEditor.value}")
+        onHideOrShowEditor()
+       // showEditor.value = false
+      //  Log.d("Changed", "Show editor ${showEditor.value}")
     }
 
     fun onCloseEditor() {
         navigator.goBack(R.id.btn_closeShaderWindow)
+    }
+
+    @BindingAdapter("app:goneUnless")
+    fun goneUnless(view: View, visible: Boolean) {
+        view.visibility = if(visible) View.VISIBLE else View.INVISIBLE
     }
 
     fun setData(shaderData: ShaderData) {

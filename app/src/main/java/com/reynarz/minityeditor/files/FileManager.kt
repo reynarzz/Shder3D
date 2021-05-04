@@ -67,8 +67,8 @@ class FileManager {
         return BufferedReader(InputStreamReader(FileInputStream(fullPath)))
     }
 
-    fun readFileText(fullpath :String) : String{
-       return File(fullpath).readText()
+    fun readFileText(fullpath: String): String {
+        return File(fullpath).readText()
     }
 
     fun loadShaderDatabase(): ShaderDataBase {
@@ -80,7 +80,7 @@ class FileManager {
 //
 //        }
 //
-        return  ShaderDataBase()
+        return ShaderDataBase()
     }
 
     private fun getFile(directoy: String, file: String): File {
@@ -100,7 +100,7 @@ class FileManager {
         file.writeText(Json.encodeToString((sceneEntitiesDataInScene)))
     }
 
-    fun saveCurrentProject(){
+    fun saveCurrentProject() {
         val directory = getFile("", "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
 
@@ -110,21 +110,27 @@ class FileManager {
             file.createNewFile()
         }
 
-        val repository:MinityProjectRepository = get(MinityProjectRepository::class.java)
+        val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
+
+        val entities = repository.getProjectData().sceneEntities
+
+        for (i in entities) {
+            i.isSelected = false
+        }
 
         //test
-        file.writeText(Json.encodeToString((repository.getProjectData().sceneEntities)))
+        file.writeText(Json.encodeToString(entities))
     }
 
     fun loadProject(): ProjectData {
         val directory = getFile("", "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
-        Log.d("loadproject","load")
+        Log.d("loadproject", "load")
 
         return if (file.exists()) {
             val obj = Json.decodeFromString<MutableList<SceneEntityData>>(file.readText())
 
-           //  Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
+            //  Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
             ProjectData("randomName").also {
                 it.sceneEntities = obj
             }

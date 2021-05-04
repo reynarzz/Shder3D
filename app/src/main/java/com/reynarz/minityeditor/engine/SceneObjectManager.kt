@@ -19,10 +19,10 @@ class SceneObjectManager(
         var objData = modelData
         val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs, objData.mNormals)
 
-        val mat = Utils.getDefaultMaterial()
-        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
+//        val mat = Utils.getDefaultMaterial()
+//        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
 
-       // val renderer = MeshRenderer(mesh, null)
+        // val renderer = MeshRenderer(mesh, null)
 
         val sceneEntity = SceneEntity()
 
@@ -35,7 +35,7 @@ class SceneObjectManager(
         addedRenderer.transform.scale = sceneEntityData.transformData.scale
 
         addedRenderer!!.mesh = mesh
-        addedRenderer!!.material = mat
+        //addedRenderer!!.material = mat
 
 //        val bounding = boundingBoxTest(objData.bounds)
 //
@@ -69,8 +69,7 @@ class SceneObjectManager(
         }
     }
 
-    fun removeMaterial(sceneEntityData: SceneEntityData)
-    {
+    fun removeMaterial(sceneEntityData: SceneEntityData) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
         entity?.getComponent(MeshRenderer::class.java)!!.material = null
     }

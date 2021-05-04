@@ -322,7 +322,7 @@ void main()
 
                     var lowerCase = it.toLowerCase()
 
-                    if (lowerCase.contains("unity.h")) {
+                    if (lowerCase.contains("minity")) {
 
                         shader = shaderCode.replace(it, include)
                     }

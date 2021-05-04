@@ -5,16 +5,16 @@ uniform mat4 UNITY_MATRIX_P; //done
 uniform mat4 UNITY_MATRIX_T_MV;
 uniform mat4 UNITY_MATRIX_IT_MV;
 uniform mat4 unity_ObjectToWorld; //done
-uniform mat4 unity_WorldToObject;
+uniform mat4 unity_WorldToObject;//done
 uniform vec4 _ScreenParams; //done
-uniform vec3 _WorldSpaceCameraPos;
+uniform vec3 _WorldSpaceCameraPos;//done
 uniform vec4 _ProjectionParams;
 uniform vec4 _ZBufferParams;
 
 uniform vec4 _WorldSpaceLightPos0;
 uniform vec4 _LightColor0;
 
-uniform vec4 _Time; //done
+uniform vec4 _Time;
 uniform vec4 unity_DeltaTime; //done
 
 #define float4 vec4

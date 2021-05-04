@@ -62,9 +62,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAllData() {
-        // set the shaderData.
-        //shaderDataBase = fileManager.loadShaderDatabase()
-
         loadAllData()
     }
 

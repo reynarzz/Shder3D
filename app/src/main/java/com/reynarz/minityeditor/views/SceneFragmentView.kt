@@ -29,7 +29,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
     private val repository: MinityProjectRepository = get()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.scene_view_fragment, container, false)
+        binding = DataBindingUtil.inflate<SceneViewFragmentBinding>(inflater, R.layout.scene_view_fragment, container, false)
 
 
 

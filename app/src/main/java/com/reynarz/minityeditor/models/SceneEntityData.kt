@@ -10,6 +10,8 @@ data class SceneEntityData(
     var meshRendererData: MeshRendererComponentData
 ) {
     var active = true
+
+    @Serializable
     var isSelected = false
 
     //var transformData = TransformComponentData()
