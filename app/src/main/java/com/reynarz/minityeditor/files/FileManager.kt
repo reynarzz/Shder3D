@@ -101,11 +101,12 @@ class FileManager {
     fun loadProject(): ProjectData {
         val directory = getFile("", "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
+        Log.d("loadproject","load")
 
         return if (file.exists()) {
             val obj = Json.decodeFromString<MutableList<SceneEntityData>>(file.readText())
 
-             Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
+           //  Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
             ProjectData("randomName").also {
                 it.sceneEntities = obj
             }

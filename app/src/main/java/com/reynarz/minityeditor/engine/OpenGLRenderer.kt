@@ -118,7 +118,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
-        Log.d("time", MainActivity.time.toString())
+        //Log.d("time", MainActivity.time.toString())
         mainFrameBuffer.bind()
 
         glDisable(GL_STENCIL_TEST)
@@ -161,7 +161,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             val renderer = entity.getComponent(MeshRenderer::class.java)
 
             if (renderer != null) {
-                Log.d("Bind", "Binded")
+                //Log.d("Bind", "Binded")
                 renderer.bind(viewM, projM, errorMaterial)
             }
 

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name = "viewmodel"
+            type="com.reynarz.minityeditor.viewmodels.HierarchyViewModel"/>
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -36,6 +41,7 @@
             android:layout_height="0dp"
             android:background="@color/semi_black"
             android:text="Close"
+            android:onClick="@{() -> viewmodel.closeHierarchy()}"
             app:layout_constraintBottom_toBottomOf="@+id/imageView6"
             app:layout_constraintEnd_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,6 +61,7 @@
             android:layout_height="0dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
+            tools:listitem="@layout/hierarchy_items_view"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 

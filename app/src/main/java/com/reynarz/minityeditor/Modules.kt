@@ -48,9 +48,9 @@ val GenericModule: Module = module {
 
 val ViewModelsModule = module {
 
-    single { HierarchyViewModel() }
     single { MinityProjectRepository() }
 
+    viewModel { HierarchyViewModel(get()) }
     viewModel { InspectorViewModel(get()) }
     viewModel { ShaderEditorViewModel(get()) }
 

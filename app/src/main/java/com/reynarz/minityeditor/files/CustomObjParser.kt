@@ -47,7 +47,7 @@ class CustomObjParser {
 
                 val position = vec3(splitted[1].toFloat(), splitted[2].toFloat(), splitted[3].toFloat())
 
-                Log.d("position", "(${position.x}, ${position.y}, ${position.z})")
+                //Log.d("position", "(${position.x}, ${position.y}, ${position.z})")
                 vPositions.add(position)
 
             }
@@ -56,7 +56,7 @@ class CustomObjParser {
                 var splitted = it.split(" ")
 
                 val uvCoord = vec2(splitted[1].toFloat(), splitted[2].toFloat())
-                Log.d("UV", "(${uvCoord.x}, ${uvCoord.y})")
+                //Log.d("UV", "(${uvCoord.x}, ${uvCoord.y})")
 
                 uv.add(uvCoord)
             }
@@ -65,7 +65,7 @@ class CustomObjParser {
                 var splitted = it.split(" ")
                 val normal = vec3(splitted[1].toFloat(), splitted[2].toFloat(), splitted[3].toFloat())
 
-                Log.d("normals", "(${normal.x}, ${normal.y}, ${normal.z})")
+                //Log.d("normals", "(${normal.x}, ${normal.y}, ${normal.z})")
 
                 normals.add(normal)
             }
@@ -84,7 +84,7 @@ class CustomObjParser {
                     val vertexIndex = value[0].toInt() - 1
                     val uvIndex = value[1].toInt() - 1
 
-                    Log.d("Indexes ${value.size}", "vertex: ${vertexIndex + 1}, uv: ${uvIndex + 1}")
+                    //Log.d("Indexes ${value.size}", "vertex: ${vertexIndex + 1}, uv: ${uvIndex + 1}")
 
                     val vertex = Vertex()
 

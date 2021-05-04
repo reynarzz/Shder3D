@@ -9,9 +9,6 @@ import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.ComponentData
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.SceneEntityData
-import com.reynarz.minityeditor.models.TransformComponentData
-import org.koin.java.KoinJavaComponent.get
-
 
 class InspectorViewModel(
     private val defaultNavigator: DefaultNavigator

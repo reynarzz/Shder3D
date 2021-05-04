@@ -3,10 +3,10 @@ package com.reynarz.minityeditor.views
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.DefaultNavigator
@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var openGLView: OpenGLView
     private lateinit var sceneFragment: SceneFragmentView
-   // private val shaderFragment = ShaderEditorFragment()
+
+    // private val shaderFragment = ShaderEditorFragment()
     private val fileManager = FileManager()
 
     private lateinit var sceneObjectManager: SceneObjectManager
@@ -97,6 +98,21 @@ class MainActivity : AppCompatActivity() {
             for (path in files!!) {
                 val entity = get<SceneEntityData>()
                 entity.entityModelPath = path.path
+
+                // val repository: MinityProjectRepository = get()
+                // val entities = repository.getProjectData().sceneEntities.add(entity)
+
+
+                val repository: MinityProjectRepository = get()
+                repository.getProjectData().sceneEntities.add(entity)
+
+                Log.d("total entities count", repository.getProjectData().sceneEntities.size.toString())
+
+                for (i in repository.getProjectData().sceneEntities) {
+                    Log.d("Patht", i.entityModelPath)
+
+                }
+
                 loadEntity(entity)
             }
         }
@@ -110,8 +126,8 @@ class MainActivity : AppCompatActivity() {
             sceneObjectManager.testLoadObject(entity)
             sceneObjectManager.addMaterial(entity)
 
-            //test
-            openGLView.renderer.selectEntityID(entity.entityID) // test
+            // val repository: MinityProjectRepository = get()
+            // val entities = repository.getProjectData().sceneEntities.add(entity)
         }
     }
 
@@ -157,9 +173,9 @@ class MainActivity : AppCompatActivity() {
 
         for (entity in entities) {
 
-            if (entity.isSelected) {
-                setSelectedEntity(entity)
-            }
+//            if (entity.isSelected) {
+//                setSelectedEntity(entity)
+//            }
 
             loadEntity(entity)
         }

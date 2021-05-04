@@ -18,25 +18,22 @@ import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.java.KoinJavaComponent.get
 
 class InspectorFragmentView : Fragment() {
 
     private val viewModel: InspectorViewModel by viewModel()
-    private val navigator : DefaultNavigator = get(DefaultNavigator::class.java)
+    private val navigator : DefaultNavigator = get()
 
     private lateinit var binding: InspectorViewBinding
     private lateinit var entityData: SceneEntityData
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val projectData = get<MinityProjectRepository>(MinityProjectRepository::class.java).getProjectData()
+        val repository = get<MinityProjectRepository>()
 
-        entityData = if (projectData.sceneEntities.size != 0)
-            projectData.sceneEntities[projectData.selectedEntityIndex]
-        else
-            get(SceneEntityData::class.java)  // (the "else" is for testing, remove it!)
+        entityData = repository.selectedSceneEntity!!
 
         viewModel.setData(entityData)
 

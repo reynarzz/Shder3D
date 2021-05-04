@@ -1,16 +1,28 @@
 package com.reynarz.minityeditor.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.reynarz.minityeditor.DefaultNavigator
+import com.reynarz.minityeditor.R
+import com.reynarz.minityeditor.models.ProjectData
 import com.reynarz.minityeditor.models.SceneEntityData
 
-class HierarchyViewModel : ViewModel() {
+class HierarchyViewModel(private val navigator: DefaultNavigator) : ViewModel() {
 
-    val selectedEntityIndex : MutableLiveData<Int> by lazy{
-        MutableLiveData<Int>()
+    val selectedEntityIndex = MutableLiveData<Int>()
+
+    val entitiesInScene = MutableLiveData<MutableList<SceneEntityData>>()
+
+    fun closeHierarchy() {
+        navigator.goBack(R.id.btn_closeHierarchy)
     }
 
-    val entitiesInScene: MutableLiveData<MutableList<SceneEntityData>> by lazy {
-        MutableLiveData<MutableList<SceneEntityData>>()
+    fun setData(projectData: ProjectData) {
+
+        entitiesInScene.value = mutableListOf()
+        for (i in projectData.sceneEntities) {
+            entitiesInScene.value!!.add(i)
+        }
     }
 }
