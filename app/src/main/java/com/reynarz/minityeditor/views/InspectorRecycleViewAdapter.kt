@@ -19,7 +19,6 @@ import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 import org.koin.java.KoinJavaComponent.get
-import java.util.*
 
 class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, private val navigator : DefaultNavigator) :
     RecyclerView.Adapter<InspectorRecycleViewAdapter.InspectorViwHolder>() {
@@ -55,7 +54,7 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, pri
                 }
                 R.layout.mesh_renderer_fragment_view -> {
 
-                    val adapter = MeshRendererMaterialsAdapter(componentData as MeshRendererComponentData, navigator)
+                    val adapter = MeshRendererMaterialsListAdapter(componentData as MeshRendererComponentData, navigator)
 
                     val addMaterialButton = findViewById<Button>(R.id.btn_addToComponentList)
                     addMaterialButton.visibility = View.VISIBLE

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.MinityProjectRepository
@@ -13,7 +14,7 @@ import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import org.koin.java.KoinJavaComponent.get
 
-class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRendererComponentData,private val navigator :DefaultNavigator) : RecyclerView.Adapter<MeshRendererMaterialsAdapter.MaterialsViewHolder>() {
+class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: MeshRendererComponentData, private val navigator :DefaultNavigator) : RecyclerView.Adapter<MeshRendererMaterialsListAdapter.MaterialsViewHolder>() {
     class MaterialsViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MaterialsViewHolder {
@@ -24,7 +25,13 @@ class MeshRendererMaterialsAdapter(private val meshRendererComponentData: MeshRe
 
         holder.itemView.apply {
 
+
             var materialData = meshRendererComponentData.materialsData[position]
+
+
+            val rvTexture = findViewById<RecyclerView>(R.id.rv_textureList)
+            rvTexture.adapter = MaterialTexturesAdapter(materialData)
+            rvTexture.layoutManager = GridLayoutManager(holder.itemView.context, 3)
 
             val materialNameText = findViewById<TextView>(R.id.tv_meshRendererMaterialName)
             materialNameText.text = materialData.name

@@ -83,10 +83,10 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@color/transparent"
-                    app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_removeMaterial"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/backgroundImage" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
                     android:id="@+id/btn_removeMaterial"
@@ -121,12 +121,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_textureList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:itemCount="2"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
                 tools:listitem="@layout/texture_item_view" />
         </androidx.constraintlayout.widget.ConstraintLayout>
