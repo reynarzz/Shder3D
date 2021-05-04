@@ -30,6 +30,10 @@ class SceneObjectManager(
         sceneEntity.name = sceneEntityData.name
         val addedRenderer = sceneEntity.addComponent(MeshRenderer::class.java)
 
+        addedRenderer.transform.position = sceneEntityData.transformData.position
+        addedRenderer.transform.eulerAngles = sceneEntityData.transformData.eulerAngles
+        addedRenderer.transform.scale = sceneEntityData.transformData.scale
+
         addedRenderer!!.mesh = mesh
         addedRenderer!!.material = mat
 //
