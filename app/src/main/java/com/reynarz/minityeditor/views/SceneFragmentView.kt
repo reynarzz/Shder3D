@@ -9,8 +9,10 @@ import androidx.navigation.Navigation
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.reynarz.minityeditor.R
+import com.reynarz.minityeditor.files.FileManager
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
+import org.koin.android.ext.android.get
 
 class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
@@ -44,8 +46,8 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
     private fun setSaveButton() {
         val saveButton = requireView()!!.findViewById<Button>(R.id.btn_saveProject)
         saveButton.setOnClickListener {
-            MainActivity.instance.saveAllData()
-
+          val filemanager = get<FileManager>()
+            filemanager.saveCurrentProject()
         }
     }
 

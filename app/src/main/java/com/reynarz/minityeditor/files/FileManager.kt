@@ -2,6 +2,7 @@ package com.reynarz.minityeditor.files
 
 import android.os.Environment
 import android.util.Log
+import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.data.ShaderDataBase
 import com.reynarz.minityeditor.models.ProjectData
 import com.reynarz.minityeditor.models.SceneEntityData
@@ -11,6 +12,7 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import org.koin.java.KoinJavaComponent.get
 
 class FileManager {
 
@@ -96,6 +98,22 @@ class FileManager {
         }
 
         file.writeText(Json.encodeToString((sceneEntitiesDataInScene)))
+    }
+
+    fun saveCurrentProject(){
+        val directory = getFile("", "$minityEntitiesFolderName")
+        val file = File(directory, "$minityEntitiesFolderName.txt")
+
+        if (!directory.exists()) {
+            directory.mkdir()
+
+            file.createNewFile()
+        }
+
+        val repository:MinityProjectRepository = get(MinityProjectRepository::class.java)
+
+        //test
+        file.writeText(Json.encodeToString((repository.getProjectData().sceneEntities)))
     }
 
     fun loadProject(): ProjectData {

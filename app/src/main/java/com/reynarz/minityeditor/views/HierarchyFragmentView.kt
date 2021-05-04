@@ -48,6 +48,10 @@ class HierarchyFragmentView : Fragment(R.layout.hierarchy_fragment_view) {
             MainActivity.instance.setSelectedEntity(entity)
         })
 
+        if(viewModel.entitiesInScene.value!!.size == 0){
+            binding.rvHierarcy.visibility = View.GONE
+        }
+
         binding.rvHierarcy.apply {
             adapter = HierarchyRecyclerAdapter(viewModel)
             layoutManager = LinearLayoutManager(context)
