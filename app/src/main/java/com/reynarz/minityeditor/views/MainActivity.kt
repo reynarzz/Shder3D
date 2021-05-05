@@ -105,9 +105,13 @@ class MainActivity : AppCompatActivity() {
         // just one texture per slot
         val textureMedia = files?.get(0)
 
-
         val repository: MinityProjectRepository = get()
-        repository.selectedMaterial.texturesData[repository.selectedTextureSlot].path = textureMedia?.path!!
+        val currentTextureSlot = repository.selectedMaterial.texturesData[repository.selectedTextureSlot]
+
+        currentTextureSlot.path = textureMedia?.path!!
+        openGLView.renderer.setTextureCommand(currentTextureSlot)
+
+        Log.d("texture selected ${repository.selectedTextureSlot}", textureMedia?.path?.toString()!!)
     }
 
     private fun loadEntity(entity: SceneEntityData) {

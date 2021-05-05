@@ -39,6 +39,8 @@ class MaterialTexturesAdapter(private val materialData: MaterialData) : Recycler
             setTextureButton.setOnClickListener {
 
                 repository.selectedTextureSlot = position
+                repository.selectedMaterial = materialData
+
                 val intent = Intent(MainActivity.instance, FilePickerActivity::class.java)
 
                 intent.putExtra(

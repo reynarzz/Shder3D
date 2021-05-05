@@ -9,6 +9,11 @@ class Material(val shader: Shader) {
 
     val program = shader.program
 
+    val MVP = FloatArray(16)
+    val MV = FloatArray(16)
+
+    val InvModel = FloatArray(16)
+
 //    var MainColor: Vec4 = Vec4()
 //        set(color) {
 //            val program = shader.program
@@ -19,7 +24,7 @@ class Material(val shader: Shader) {
 //            }
 //        }
 
-    private var textures: MutableList<Texture>? = null
+    var textures: MutableList<Texture>? = null
 
     init {
         textures = mutableListOf()
@@ -89,18 +94,6 @@ class Material(val shader: Shader) {
         set("_WorldSpaceCameraPos", vec3(view[3], view[7], view[11]))
     }
 
-    val MVP = FloatArray(16)
-    val MV = FloatArray(16)
-
-    val InvModel = FloatArray(16)
-
-    fun addTexture(texture: Texture) {
-        textures!!.add(texture)
-    }
-
-    fun removeTexture(texture: Texture) {
-        textures!!.remove(texture)
-    }
 
     fun set(uniformName: String, matrix: FloatArray) {
         val uniformLocation = glGetUniformLocation(shader.program, uniformName)

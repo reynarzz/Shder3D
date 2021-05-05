@@ -1,14 +1,17 @@
 package com.reynarz.minityeditor.engine
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.util.Log
 import com.reynarz.minityeditor.MinityProjectRepository
-import com.reynarz.minityeditor.views.MainActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.models.SceneEntityData
+import com.reynarz.minityeditor.models.TextureData
+import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -96,6 +99,24 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             Log.d("replace shader", (material != null).toString())
 
             material!!.shader.replaceShaders(vertexCode, fragmentCode)
+        }
+    }
+
+    fun setTextureCommand(textureData: TextureData) {
+
+        addRenderCommand {
+            val options = BitmapFactory.Options()
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888
+            val bitmap = BitmapFactory.decodeFile(textureData.path, options)
+
+            val meshRenderer = selectedEntity?.getComponent(MeshRenderer::class.java)
+
+            if (meshRenderer?.material?.textures!!.size >= repository.selectedTextureSlot) {
+                (Texture(bitmap))
+
+            }
+
+            repository
         }
     }
 

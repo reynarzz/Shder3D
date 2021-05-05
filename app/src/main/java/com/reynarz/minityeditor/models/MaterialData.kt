@@ -1,7 +1,9 @@
 package com.reynarz.minityeditor.models
 
+import android.graphics.Bitmap
 import com.reynarz.minityeditor.engine.vec3
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
@@ -23,6 +25,10 @@ class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
     //d (alpha)
     var disolve = 0f
     var name = "Material"
+
     //--var texturesDataID = mutableListOf<String>()
     var texturesData = mutableListOf<TextureData>()
+
+    @Transient
+    lateinit var previewBitmap: Bitmap
 }

@@ -43,17 +43,24 @@ class Texture {
     }
 
     constructor(context: Context, path: String) {
-        loadTexture(context, path)
-    }
-
-    private fun loadTexture(context: Context, path: String) {
 
         var bitmap = doInBackground(context, path)
 
-        val imageArray = imageToBitmap(bitmap)
-        bitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
+        loadTexture(bitmap)
+    }
 
-        bitmap = createFlippedBitmap(bitmap, false, true)
+    constructor(bitmap: Bitmap) {
+        loadTexture(bitmap)
+    }
+
+    private fun loadTexture(bitmap: Bitmap) {
+        var editableBitmap = bitmap
+
+        val imageArray = bitmapToImageArray(editableBitmap)
+
+        editableBitmap = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.size)
+
+        editableBitmap = createFlippedBitmap(editableBitmap, false, true)
 
         _textureID = IntArray(1)
         glGenTextures(1, _textureID, 0)
@@ -64,7 +71,7 @@ class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
-        GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0)
+        GLUtils.texImage2D(GL_TEXTURE_2D, 0, editableBitmap, 0)
     }
 
     fun unloadTexture(textureId: Int) {
@@ -93,7 +100,7 @@ class Texture {
         return Bitmap.createBitmap(image)
     }
 
-    private fun imageToBitmap(bitmap: Bitmap): ByteArray {
+    private fun bitmapToImageArray(bitmap: Bitmap): ByteArray {
 
         val stream = ByteArrayOutputStream()
 
