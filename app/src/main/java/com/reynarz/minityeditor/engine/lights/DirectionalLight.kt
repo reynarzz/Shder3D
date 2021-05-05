@@ -14,8 +14,8 @@ class DirectionalLight(normalizedDirection: vec3) : Light() {
         //transform.position = normalizedDirection
         // projection.
         Matrix.orthoM(lightProjectionM, 0, -70f, 70f, -70f, 70f, 1f, 100.0f)
-        Matrix.setLookAtM(lightView, 0, 1f, -4f, 2f, 0f,0f,0f, 0f, 1f, 0f)
-        Matrix.translateM(lightView, 0, 0f, 20f, 0f)
+        Matrix.setLookAtM(lightView, 0, -1f, 4f, -2f, 0f,0f,0f, 0f, 1f, 0f)
+        Matrix.translateM(lightView, 0, 0f, -20f, 0f)
 
         Matrix.multiplyMM(lightViewProj, 0, lightProjectionM, 0, lightView, 0)
 
