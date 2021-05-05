@@ -59,25 +59,9 @@ class Material(val shader: Shader) {
 
     private fun setUniforms(model: FloatArray, view: FloatArray, projection: FloatArray) {
 
-        //        var UNITY_MATRIX_MVP = glGetUniformLocation(program, "UNITY_MATRIX_MVP")
-//        var UNITY_MATRIX_MV = glGetUniformLocation(program, "UNITY_MATRIX_MV")
-//        var UNITY_MATRIX_V = glGetUniformLocation(program, "UNITY_MATRIX_V")
-//        var UNITY_MATRIX_P = glGetUniformLocation(program, "UNITY_MATRIX_P")
 //        var UNITY_MATRIX_T_MV = glGetUniformLocation(program, "UNITY_MATRIX_T_MV")
 //        var UNITY_MATRIX_IT_MV = glGetUniformLocation(program, "UNITY_MATRIX_IT_MV")
-//        var unity_ObjectToWorld = glGetUniformLocation(program, "unity_ObjectToWorld")
-//        var unity_WorldToObject = glGetUniformLocation(program, "unity_WorldToObject")
 //
-//        var _ScreenParams = glGetUniformLocation(program, "_ScreenParams")
-//        var _WorldSpaceCameraPos = glGetUniformLocation(program, "_WorldSpaceCameraPos")
-//        var _ProjectionParams = glGetUniformLocation(program, "_ProjectionParams")
-//        var _ZBufferParams = glGetUniformLocation(program, "_ZBufferParams")
-//
-//        var _WorldSpaceLightPos0 = glGetUniformLocation(program, "_WorldSpaceLightPos0")
-//        var _LightColor0 = glGetUniformLocation(program, "_LightColor0")
-//
-//        var _Time = glGetUniformLocation(program, "_Time")
-//        var unity_DeltaTime = glGetUniformLocation(program, "unity_DeltaTime")
 
 
         Matrix.multiplyMM(MVP, 0, projection, 0, view, 0)
@@ -87,14 +71,28 @@ class Material(val shader: Shader) {
 
         Matrix.invertM(InvModel, 0, model, 0)
 
+        val nearPlane = 0.1f
+        val farPlane = 1000f
+        val t = 1f // need the current time of the app.
+        val deltaTime = 1f // need current delta time of the app.
+
+
         set("UNITY_MATRIX_MVP", MVP)
         set("UNITY_MATRIX_MV", MV)
+        set("UNITY_MATRIX_M", model)
         set("UNITY_MATRIX_V", view)
         set("UNITY_MATRIX_P", projection)
+        set("unity_CameraProjection", projection)
         set("unity_WorldToObject", InvModel)
         set("unity_ObjectToWorld", model)
         set("_ScreenParams", vec4(MainActivity.width.toFloat(), MainActivity.height.toFloat(), 1f + 1f / MainActivity.width.toFloat(), 1f + 1f / MainActivity.height.toFloat()))
         set("_WorldSpaceCameraPos", vec3(view[3], view[7], view[11]))
+        set("_ZBufferParams", vec4(1f - farPlane / nearPlane, farPlane / nearPlane, (1f - farPlane / nearPlane) / farPlane, (farPlane / nearPlane) / farPlane))
+        set("_ProjectionParams", vec4(1f, nearPlane, farPlane, 1f / farPlane))
+        set("_LightColor0", vec4())
+        set("_WorldSpaceLightPos0", vec4())
+        set("_Time", vec4(t / 20f, t, t * 2, t * 3))
+        set("unity_DeltaTime", vec4(deltaTime, 1f / deltaTime, 0f/*smoothDt*/, 0f/*1/smoothDt*/))
     }
 
 

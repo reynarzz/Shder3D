@@ -44,11 +44,13 @@ class vec3 {
 
     }
 
-    fun normalize() {
+    fun normalize() : vec3 {
         val dist = getDistance(vec3(), this)
         x /= dist
         y /= dist
         z /= dist
+
+        return this
     }
 
     fun dot(a: vec3, b: vec3): Float {

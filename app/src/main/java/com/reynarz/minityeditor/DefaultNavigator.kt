@@ -5,8 +5,8 @@ import androidx.navigation.findNavController
 
 class DefaultNavigator {
 
-    fun goBack(id : Int) {
-        _activity?.findNavController(id)?.popBackStack()
+    fun goBack(aViewInCurrentFragment: Int) {
+        _activity?.findNavController(aViewInCurrentFragment)?.popBackStack()
     }
 
     fun goToShaderEditor() {
@@ -15,11 +15,11 @@ class DefaultNavigator {
 
     private var _activity: Activity? = null
 
-     var activity:Activity?
-    get(){
-        return _activity
-    }
-    set(value){
-        _activity = value
-    }
+    var activity: Activity?
+        get() {
+            return _activity
+        }
+        set(value) {
+            _activity = value
+        }
 }

@@ -3,10 +3,12 @@ package com.reynarz.minityeditor.engine
 import android.util.Log
 import com.reynarz.minityeditor.engine.components.Camera
 import com.reynarz.minityeditor.engine.components.SceneEntity
+import com.reynarz.minityeditor.engine.lights.DirectionalLight
 
 class Scene {
 
     val entities: MutableList<SceneEntity> = mutableListOf()
+    val directionalLight = DirectionalLight(vec3(1f, -1f, 1f).normalize())
 
     enum class CurrentCamera {
         EDITOR_CAMERA,

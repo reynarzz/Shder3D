@@ -33,6 +33,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var lStartTime = System.currentTimeMillis().toFloat()
 
     lateinit var mainFrameBuffer: FrameBuffer
+    lateinit var shadowMapFrameBuffer: FrameBuffer
     private var quadShader: Shader? = null
     var screenQuadMesh: Mesh? = null
 
@@ -65,6 +66,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             scene!!.editorCamera!!.updateProjection(width, height)
 
             mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
+            mainFrameBuffer.genNormalFrameBuffer()
+
+            shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
+            shadowMapFrameBuffer.genNormalFrameBuffer()
 
             val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
 
@@ -75,6 +80,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             touchPointer = TouchPointer(scene!!.editorCamera!!)
 
+            println("Current Opengl thread: " + Thread.currentThread().name)
             getEditorStuff_Test()
         }
     }
@@ -145,9 +151,36 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
     }
 
+    private fun shadowPass() {
+
+        shadowMapFrameBuffer.bind()
+
+        glEnable(GL_DEPTH_TEST)
+
+        glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
+
+        glClearColor(0.2f, 0.2f, 0.2f, 1f)
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+
+
+        for (entity in scene!!.entities) {
+
+            if (entity.isActive) {
+
+                val renderer = entity.getComponent(MeshRenderer::class.java)
+
+                renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getLightViewProjectionMatrix(), errorMaterial)
+                glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
+            }
+        }
+        shadowMapFrameBuffer.unBind()
+    }
 
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
+
+        shadowPass()
+
         //Log.d("time", MainActivity.time.toString())
         mainFrameBuffer.bind()
 
@@ -180,6 +213,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         val projM = scene!!.editorCamera!!.projectionM
         // val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
 
+        glViewport(0, 0, MainActivity.width, MainActivity.height)
 
         for (entity in scene!!.entities) {
 
@@ -192,6 +226,12 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 renderer?.bind(viewM, projM, errorMaterial)
+//Shadow Map test
+                glActiveTexture(GL_TEXTURE2)
+                glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.colorTexture)
+
+                val depthUniform = glGetUniformLocation(renderer!!.material!!.shader.program, "_DEPTH")
+                glUniform1i(depthUniform, 2)
 
                 if (selectedEntity != null && entity === selectedEntity) {
                     // glDisable(GL_DEPTH_TEST)

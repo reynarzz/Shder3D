@@ -47,7 +47,7 @@ class SplashScreenActivity : AppCompatActivity() {
             openMainActivity()
         }
     }
-
+    //fix this
     private var allGranted = false
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

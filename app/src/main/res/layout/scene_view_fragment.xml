@@ -69,7 +69,7 @@
                         android:layout_height="match_parent"
                         android:scaleX="0.6"
                         android:scaleY="0.6"
-                        android:src="@drawable/draw" />
+                        android:src="@drawable/nut" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout

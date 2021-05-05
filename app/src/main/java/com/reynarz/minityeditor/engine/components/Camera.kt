@@ -14,6 +14,10 @@ class Camera : Component() {
     init {
         Matrix.setIdentityM(projectionM, 0)
         Matrix.setIdentityM(projectionMInv, 0)
+
+        //eye = camera pos
+        //center
+        //Matrix.setLookAtM()
     }
 
     fun updateProjection(width: Int, height: Int) {
