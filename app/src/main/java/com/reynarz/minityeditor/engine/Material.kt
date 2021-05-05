@@ -40,9 +40,10 @@ class Material(val shader: Shader) {
 
 
     // for shadow mapping,
-    fun bind(model: FloatArray, view: FloatArray, projection: FloatArray, shader: Shader) {
+    fun bind(model: FloatArray, view: FloatArray, projection: FloatArray, lightViewM: FloatArray) {
         shader.bind()
         setUniforms(model, view, projection)
+        set("_LIGHT", lightViewM)
 
         bindTextures()
     }
@@ -93,6 +94,8 @@ class Material(val shader: Shader) {
         set("_WorldSpaceLightPos0", vec4())
         set("_Time", vec4(t / 20f, t, t * 2, t * 3))
         set("unity_DeltaTime", vec4(deltaTime, 1f / deltaTime, 0f/*smoothDt*/, 0f/*1/smoothDt*/))
+
+
     }
 
 

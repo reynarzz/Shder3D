@@ -1,14 +1,13 @@
 package com.reynarz.minityeditor.engine
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.util.Log
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
+import com.reynarz.minityeditor.engine.components.Transform
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.models.TextureData
 import com.reynarz.minityeditor.views.MainActivity
@@ -36,6 +35,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     lateinit var shadowMapFrameBuffer: FrameBuffer
     private var quadShader: Shader? = null
     var screenQuadMesh: Mesh? = null
+    private lateinit var lightTransform : Transform
+
+    private lateinit var lightObj: MeshRenderer
 
     private val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
 
@@ -69,7 +71,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             mainFrameBuffer.genNormalFrameBuffer()
 
             shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-            shadowMapFrameBuffer.genNormalFrameBuffer()
+            shadowMapFrameBuffer.genBufferForDepth()
 
             val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
 
@@ -82,6 +84,17 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             println("Current Opengl thread: " + Thread.currentThread().name)
             getEditorStuff_Test()
+
+            var lightEntity = SceneEntity()
+            val meshRenderer = lightEntity.addComponent(MeshRenderer::class.java)
+            meshRenderer.mesh = Utils.getQuad(2f)
+            meshRenderer.material = Utils.getErrorMaterial()
+            meshRenderer.transform.modelM = scene.directionalLight.getLightViewMatrix()
+
+            lightTransform = meshRenderer.transform
+            //scene.editorCamera!!.transform.modelM = scene.directionalLight.getLightViewMatrix()
+
+            scene.entities.add(lightEntity)
         }
     }
 
@@ -156,24 +169,29 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         shadowMapFrameBuffer.bind()
 
         glEnable(GL_DEPTH_TEST)
+        glDisable(GL_STENCIL_TEST)
+        glClear(GL_STENCIL_BUFFER_BIT)
 
         glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
+        //glViewport(0, 0, shadowMapFrameBuffer.width/2, shadowMapFrameBuffer.height/2)
 
-        glClearColor(0.2f, 0.2f, 0.2f, 1f)
+        glClearColor(0.0f, 0.0f, 0.0f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
 
         for (entity in scene!!.entities) {
 
-            if (entity.isActive) {
 
-                val renderer = entity.getComponent(MeshRenderer::class.java)
+            val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getLightViewProjectionMatrix(), errorMaterial)
-                glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
-            }
+            renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial)
+            glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
+
         }
         shadowMapFrameBuffer.unBind()
+
+        glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
+
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -200,15 +218,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         //shader.setDeltaTimeTest(lEndTime.toFloat(), output)
 
 
-        //the camera should have as well a 'viewProjectionM'
-
         scene!!.editorCamera!!.transform.eulerAngles = vec3(rot.y, rot.x, rot.z)
         scene!!.editorCamera!!.transform.position = vec3(0f, 0f, -100f)
         scene!!.editorCamera!!.transform.scale = vec3(zoom, zoom, zoom)
 
-//        entity.testMeshRenderer!!.transform
-//        entity.testMeshRenderer!!.transform.scale = Vec3(zoom, zoom, zoom)
-//
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
         // val ray = touchPointer.getWorldPosRay(OpenGLView.xPixel, OpenGLView.yPixel)
@@ -225,10 +238,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                renderer?.bind(viewM, projM, errorMaterial)
+                renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight())
 //Shadow Map test
                 glActiveTexture(GL_TEXTURE2)
-                glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.colorTexture)
+                glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
 
                 val depthUniform = glGetUniformLocation(renderer!!.material!!.shader.program, "_DEPTH")
                 glUniform1i(depthUniform, 2)

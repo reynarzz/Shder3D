@@ -27,7 +27,7 @@ class Camera : Component() {
             45.0f,
             width.toFloat() / height.toFloat(),
             1.0f,
-            1000.0f
+            500.0f
         )
 
         Matrix.invertM(projectionMInv, 0, projectionM , 0)

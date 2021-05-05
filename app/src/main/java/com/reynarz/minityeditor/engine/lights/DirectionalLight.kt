@@ -11,21 +11,26 @@ class DirectionalLight(normalizedDirection: vec3) : Light() {
 
     init {
 
-        transform.position = normalizedDirection
+        //transform.position = normalizedDirection
         // projection.
-        Matrix.orthoM(lightProjectionM, 0, -10f, 10f, -10f, 10f, 0.1f, 17.5f)
+        Matrix.orthoM(lightProjectionM, 0, -70f, 70f, -70f, 70f, 1f, 100.0f)
+        Matrix.setLookAtM(lightView, 0, 1f, -4f, 2f, 0f,0f,0f, 0f, 1f, 0f)
+        Matrix.translateM(lightView, 0, 0f, 20f, 0f)
 
-        Matrix.multiplyMM(lightViewProj, 0, getLightViewProjectionMatrix(), 0, getLightViewMatrix(), 0)
+        Matrix.multiplyMM(lightViewProj, 0, lightProjectionM, 0, lightView, 0)
 
-        Matrix.setLookAtM(lightView, 0, -2f, 4f, -1f, 0f,0f,0f, 0f, 1f, 0f)
-
+      //  Matrix.translateM(lightView, 0, 10f, 10f, 30f)
     }
 
     fun getLightViewMatrix(): FloatArray {
         return lightView
     }
 
-    fun getLightViewProjectionMatrix(): FloatArray {
+    fun getProjectionM(): FloatArray {
+        return lightProjectionM
+    }
+
+    fun getViewProjLight() : FloatArray{
         return lightViewProj
     }
 }

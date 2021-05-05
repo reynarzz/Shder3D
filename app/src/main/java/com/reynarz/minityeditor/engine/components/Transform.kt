@@ -61,7 +61,7 @@ class Transform { // : Component()
         }
 
     var modelM: FloatArray? = null
-        private set
+        //private set
 
     var modelMInv: FloatArray? = null
         private set

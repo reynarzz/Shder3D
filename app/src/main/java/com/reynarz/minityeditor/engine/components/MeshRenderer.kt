@@ -30,4 +30,12 @@ class MeshRenderer() : Component() {
         mat!!.bind(transform!!.modelM!!, view, projection)
         mesh.bind(mat!!.program)
     }
+
+    fun bindShadow(view: FloatArray, projection: FloatArray, default: Material, lightViewM: FloatArray) {
+
+        val mat = if (material != null && material!!.shader.compiledCorrectly) material else default
+
+        mat!!.bind(transform!!.modelM!!, view, projection, lightViewM)
+        mesh.bind(mat!!.program)
+    }
 }
