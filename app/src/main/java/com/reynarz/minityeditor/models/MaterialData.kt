@@ -29,6 +29,5 @@ class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
     //--var texturesDataID = mutableListOf<String>()
     var texturesData = mutableListOf<TextureData>()
 
-    @Transient
-    lateinit var previewBitmap: Bitmap
+
 }

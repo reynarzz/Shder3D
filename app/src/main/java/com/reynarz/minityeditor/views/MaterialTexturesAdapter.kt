@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -31,10 +32,11 @@ class MaterialTexturesAdapter(private val materialData: MaterialData) : Recycler
             val cardViewContainer = findViewById<CardView>(R.id.cv_cardViewContainer)
             val setTextureContainer = findViewById<ConstraintLayout>(R.id.cl_setTextureContainer)
             val setTextureButton = setTextureContainer.findViewById<Button>(R.id.btn_setTexture)
+            val textureImagePreview = cardViewContainer.findViewById<ImageView>(R.id.iv_texturePreview)
 
             cardViewContainer.visibility = if (textureData.path.isNullOrEmpty()) View.GONE else View.VISIBLE
             setTextureContainer.visibility = if (textureData.path.isNullOrEmpty()) View.VISIBLE else View.GONE
-
+            textureImagePreview.setImageBitmap(textureData.previewBitmap)
 
             setTextureButton.setOnClickListener {
 

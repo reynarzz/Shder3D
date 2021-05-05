@@ -48,8 +48,11 @@ class Material(val shader: Shader) {
 
 
     private fun bindTextures() {
-        for (i in textures!!.indices) {
-            textures!![i].bind(i)
+        for (slot in textures!!.indices) {
+            textures!![slot].bind(slot)
+
+            val depthUniform = glGetUniformLocation(program, "_TEX_$slot")
+            glUniform1i(depthUniform, slot)
         }
     }
 

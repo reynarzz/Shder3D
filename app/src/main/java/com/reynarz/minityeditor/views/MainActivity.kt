@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             sceneObjectManager.testLoadObject(entity)
             sceneObjectManager.addMaterial(entity)
         }
+
     }
 
     private fun loadAllData() {

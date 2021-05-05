@@ -66,6 +66,10 @@ class SceneObjectManager(
             val shaderData = materialData.shaderData
 
             entity.getComponent(MeshRenderer::class.java)!!.material = Material(Shader(shaderData.vertexShader, shaderData.fragmentShader))
+
+//            for (texture in materialData.texturesData) {
+//                openGLRenderer.setTextureCommand(texture)
+//            }
         }
     }
 
