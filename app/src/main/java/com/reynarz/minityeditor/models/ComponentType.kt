@@ -2,8 +2,7 @@ package com.reynarz.minityeditor.models
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-open class ComponentData(var name: String, var componentType: ComponentType) {
-
+enum class ComponentType {
+    Transform, MeshRenderer
 }

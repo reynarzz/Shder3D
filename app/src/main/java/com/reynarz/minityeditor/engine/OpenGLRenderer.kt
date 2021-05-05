@@ -108,7 +108,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             val meshRenderer = selectedEntity?.getComponent(MeshRenderer::class.java)
 
-            val bitmap = Utils.getBitmapFromPath(textureData.path)
+            val bitmap = Utils.getBitmapFromPath(textureData.path!!)
             if (meshRenderer?.material?.textures!!.size > repository.selectedTextureSlot) {
                 meshRenderer?.material?.textures!![repository.selectedTextureSlot] = Texture(bitmap)
             } else {

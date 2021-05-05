@@ -1,5 +1,6 @@
 package com.reynarz.minityeditor.views
 
+import android.opengl.GLES20.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +28,6 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
         holder.itemView.apply {
             var materialData = meshRendererComponentData.materialsData[position]
 
-
             // Texture RecyclerView
             val rvTexture = findViewById<RecyclerView>(R.id.rv_textureList)
             rvTexture.adapter = MaterialTexturesAdapter(materialData)
@@ -37,15 +37,17 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
             val addTextureSlotButton = findViewById<Button>(R.id.btn_addTextureSlot)
             addTextureSlotButton.setOnClickListener {
 
-                materialData.texturesData.add(TextureData(materialData.texturesData.size.toString()))
-                rvTexture.adapter?.notifyDataSetChanged()
+                if (materialData.texturesData.size < GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS) {
+                    materialData.texturesData.add(TextureData(materialData.texturesData.size.toString()))
+                    rvTexture.adapter?.notifyDataSetChanged()
+                }
             }
 
             // Remove Texture Slot
             val removeTextureSlotButton = findViewById<Button>(R.id.btn_removeTextureSlot)
             removeTextureSlotButton.setOnClickListener {
 
-                materialData.texturesData.removeAt(materialData.texturesData.size-1)
+                materialData.texturesData.removeAt(materialData.texturesData.size - 1)
                 rvTexture.adapter?.notifyDataSetChanged()
             }
 

@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/black" />
+            app:tint="#292929" />
 
         <ImageView
             android:id="@+id/backgroundImage"
@@ -145,7 +145,7 @@
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/add"
+                        android:src="@drawable/plus"
                         app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
                         app:layout_constraintEnd_toEndOf="@+id/btn_addTextureSlot"
                         app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
@@ -177,7 +177,7 @@
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/delete"
+                        android:src="@drawable/minus"
                         app:layout_constraintBottom_toBottomOf="@+id/btn_removeTextureSlot"
                         app:layout_constraintEnd_toEndOf="@+id/btn_removeTextureSlot"
                         app:layout_constraintStart_toStartOf="@+id/btn_removeTextureSlot"

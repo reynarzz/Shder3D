@@ -13,14 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.R
-import com.reynarz.minityeditor.models.ComponentData
-import com.reynarz.minityeditor.models.MaterialData
-import com.reynarz.minityeditor.models.MeshRendererComponentData
-import com.reynarz.minityeditor.models.TransformComponentData
+import com.reynarz.minityeditor.engine.Utils
+import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 import org.koin.java.KoinJavaComponent.get
 
-class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, private val navigator : DefaultNavigator) :
+class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, private val navigator: DefaultNavigator) :
     RecyclerView.Adapter<InspectorRecycleViewAdapter.InspectorViwHolder>() {
 
     class InspectorViwHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -44,15 +42,15 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, pri
             val frame = holder.itemView.findViewById<FrameLayout>(R.id.fragment_componentContent)
 
             val view = LayoutInflater.from(holder.itemView.context)
-                .inflate(componentData.componentViewID, null, false)
+                .inflate(Utils.componentTypeToID(componentData.componentType), null, false)
 
             frame.addView(view)
 
-            when (componentData.componentViewID) {
-                R.layout.transform_fragment_view -> {
+            when (componentData.componentType) {
+                ComponentType.Transform -> {
                     setTransformListeners(this, componentData as TransformComponentData, value)
                 }
-                R.layout.mesh_renderer_fragment_view -> {
+                ComponentType.MeshRenderer -> {
 
                     val adapter = MeshRendererMaterialsListAdapter(componentData as MeshRendererComponentData, navigator)
 

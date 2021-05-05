@@ -1,7 +1,10 @@
 package com.reynarz.minityeditor.engine
 
+import com.reynarz.minityeditor.models.ComponentType
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.reynarz.minityeditor.R
+
 
 class Utils {
     companion object {
@@ -111,7 +114,7 @@ varying vec4 pos;
 
 varying vec2 _uv;
 
-uniform sampler2D sTexture;
+uniform sampler2D _tex0;
 
 void main()
 {
@@ -316,6 +319,12 @@ void main()
             return Pair(screenQuadVertexCode, screenFragTex)
         }
 
+        fun componentTypeToID(componentType: ComponentType): Int {
+            return when (componentType) {
+                ComponentType.Transform -> R.layout.transform_fragment_view
+                ComponentType.MeshRenderer -> R.layout.mesh_renderer_fragment_view
+            }
+        }
 
         fun getBitmapFromPath(path: String): Bitmap {
             val options = BitmapFactory.Options()

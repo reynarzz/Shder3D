@@ -4,6 +4,6 @@ import com.reynarz.minityeditor.R
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MeshRendererComponentData() : ComponentData("Mesh Renderer", R.layout.mesh_renderer_fragment_view) {
+class MeshRendererComponentData() : ComponentData("Mesh Renderer", ComponentType.MeshRenderer) {
     var materialsData = mutableListOf<MaterialData>()
 }

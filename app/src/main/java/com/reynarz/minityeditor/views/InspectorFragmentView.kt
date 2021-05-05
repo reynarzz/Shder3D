@@ -13,7 +13,7 @@ import com.reynarz.minityeditor.DefaultNavigator
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.databinding.InspectorViewBinding
-import com.reynarz.minityeditor.models.ComponentData
+import com.reynarz.minityeditor.models.ComponentType
 import com.reynarz.minityeditor.models.MeshRendererComponentData
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.models.TransformComponentData
@@ -66,8 +66,8 @@ class InspectorFragmentView : Fragment() {
         viewModel!!.componentsData.observe(viewLifecycleOwner, {
 
             for (i in it) {
-                when (i.componentViewID) {
-                    R.layout.transform_fragment_view -> {
+                when (i.componentType) {
+                    ComponentType.Transform -> {
                         val transform = i as TransformComponentData
 
                         entityData!!.transformData = transform
@@ -75,7 +75,7 @@ class InspectorFragmentView : Fragment() {
                         MainActivity.instance.updateTransform(entityData)
                     }
 
-                    R.layout.mesh_renderer_fragment_view -> {
+                    ComponentType.MeshRenderer -> {
                         val meshRendererData = i as MeshRendererComponentData
 
                         entityData.meshRendererData = meshRendererData

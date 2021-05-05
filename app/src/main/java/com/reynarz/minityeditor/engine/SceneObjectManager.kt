@@ -70,7 +70,7 @@ class SceneObjectManager(
 
             for (textureData in materialData.texturesData) {
 
-                val bitmap = Utils.getBitmapFromPath(textureData.path)
+                val bitmap = Utils.getBitmapFromPath(textureData.path!!)
                 material.textures?.add(Texture(bitmap))
 
                 textureData.previewBitmap = bitmap
@@ -82,5 +82,4 @@ class SceneObjectManager(
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
         entity?.getComponent(MeshRenderer::class.java)!!.material = null
     }
-
 }

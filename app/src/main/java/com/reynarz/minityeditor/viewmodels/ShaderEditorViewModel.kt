@@ -37,11 +37,6 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
         navigator.goBack(R.id.btn_closeShaderWindow)
     }
 
-    @BindingAdapter("app:goneUnless")
-    fun goneUnless(view: View, visible: Boolean) {
-        view.visibility = if(visible) View.VISIBLE else View.INVISIBLE
-    }
-
     fun setData(shaderData: ShaderData) {
         vertexShader.value = shaderData.vertexShader
         fragmentShader.value = shaderData.fragmentShader

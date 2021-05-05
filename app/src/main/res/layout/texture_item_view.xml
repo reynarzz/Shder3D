@@ -10,7 +10,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:background="@color/transparent"
-        android:foreground="@drawable/delete"
+        android:foreground="@drawable/remove"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,10 +63,10 @@
 
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
 
-                    android:src="@drawable/add"
+                    android:src="@drawable/plus"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

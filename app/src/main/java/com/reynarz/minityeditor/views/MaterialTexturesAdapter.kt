@@ -19,7 +19,7 @@ import org.koin.java.KoinJavaComponent.get
 class MaterialTexturesAdapter(private val materialData: MaterialData) : RecyclerView.Adapter<MaterialTexturesAdapter.MaterialTexturesViewHolder>() {
     class MaterialTexturesViewHolder(view: View) : RecyclerView.ViewHolder(view) {}
 
-    private var repository : MinityProjectRepository = get(MinityProjectRepository::class.java)
+    private var repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MaterialTexturesViewHolder {
         return MaterialTexturesViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.texture_item_view, parent, false))
@@ -32,11 +32,19 @@ class MaterialTexturesAdapter(private val materialData: MaterialData) : Recycler
             val cardViewContainer = findViewById<CardView>(R.id.cv_cardViewContainer)
             val setTextureContainer = findViewById<ConstraintLayout>(R.id.cl_setTextureContainer)
             val setTextureButton = setTextureContainer.findViewById<Button>(R.id.btn_setTexture)
+            val removeTextureButton = findViewById<Button>(R.id.btn_removeTexture)
             val textureImagePreview = cardViewContainer.findViewById<ImageView>(R.id.iv_texturePreview)
 
-            cardViewContainer.visibility = if (textureData.path.isNullOrEmpty()) View.GONE else View.VISIBLE
-            setTextureContainer.visibility = if (textureData.path.isNullOrEmpty()) View.VISIBLE else View.GONE
-            textureImagePreview.setImageBitmap(textureData.previewBitmap)
+
+            fun enableDisableViews() {
+                cardViewContainer.visibility = if (textureData.path.isNullOrEmpty()) View.GONE else View.VISIBLE
+                removeTextureButton.visibility = cardViewContainer.visibility
+                setTextureContainer.visibility = if (textureData.path.isNullOrEmpty()) View.VISIBLE else View.GONE
+
+                textureImagePreview.setImageBitmap(textureData.previewBitmap)
+            }
+
+            enableDisableViews()
 
             setTextureButton.setOnClickListener {
 
@@ -55,11 +63,19 @@ class MaterialTexturesAdapter(private val materialData: MaterialData) : Recycler
                         .setShowAudios(false)
                         .setSkipZeroSizeFiles(true)
                         .setMaxSelection(1)
-                       // .setSuffixes(".obj")
+                        // .setSuffixes(".obj")
                         .build()
                 )
 
                 MainActivity.instance.startActivityForResult(intent, 2)
+            }
+
+            // the texture has to be removed from the renderer.
+            removeTextureButton.setOnClickListener {
+                textureData.path = null
+                textureData.previewBitmap = null
+
+                enableDisableViews()
             }
         }
     }

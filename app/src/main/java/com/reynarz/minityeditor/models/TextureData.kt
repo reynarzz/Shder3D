@@ -7,7 +7,7 @@ import kotlinx.serialization.Transient
 @Serializable
 data class TextureData(var name: String) {
     var id = 0
-    var path = ""
+    var path: String? = null
     var filter = 0
 
     @Transient
