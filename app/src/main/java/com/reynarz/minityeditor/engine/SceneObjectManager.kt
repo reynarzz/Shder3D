@@ -64,12 +64,17 @@ class SceneObjectManager(
 
         if (materialData != null && entity != null) {
             val shaderData = materialData.shaderData
+            val material = Material(Shader(shaderData.vertexShader, shaderData.fragmentShader))
 
             entity.getComponent(MeshRenderer::class.java)!!.material = Material(Shader(shaderData.vertexShader, shaderData.fragmentShader))
 
-//            for (texture in materialData.texturesData) {
-//                openGLRenderer.setTextureCommand(texture)
-//            }
+            for (textureData in materialData.texturesData) {
+
+                val bitmap = Utils.getBitmapFromPath(textureData.path)
+                material.textures?.add(Texture(bitmap))
+
+                textureData.previewBitmap = bitmap
+            }
         }
     }
 

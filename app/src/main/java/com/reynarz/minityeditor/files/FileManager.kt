@@ -114,10 +114,6 @@ class FileManager {
 
         val entities = repository.getProjectData().sceneEntities
 
-        for (i in entities) {
-            i.isSelected = false
-        }
-
         //test
         file.writeText(Json.encodeToString(entities))
     }

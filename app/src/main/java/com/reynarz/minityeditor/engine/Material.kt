@@ -51,8 +51,7 @@ class Material(val shader: Shader) {
         for (slot in textures!!.indices) {
             textures!![slot].bind(slot)
 
-            val depthUniform = glGetUniformLocation(program, "_TEX_$slot")
-            glUniform1i(depthUniform, slot)
+            set("_tex$slot", slot)
         }
     }
 
@@ -116,5 +115,10 @@ class Material(val shader: Shader) {
     fun set(uniformName: String, float: Float) {
         val uniformLocation = glGetUniformLocation(shader.program, uniformName)
         glUniform1f(uniformLocation, float)
+    }
+
+    fun set(uniformName: String, int: Int) {
+        val uniformLocation = glGetUniformLocation(shader.program, uniformName)
+        glUniform1i(uniformLocation, int)
     }
 }

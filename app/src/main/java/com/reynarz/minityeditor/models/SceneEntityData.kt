@@ -11,7 +11,7 @@ data class SceneEntityData(
 ) {
     var active = true
 
-    @Serializable
+    @Transient
     var isSelected = false
 
     //var transformData = TransformComponentData()

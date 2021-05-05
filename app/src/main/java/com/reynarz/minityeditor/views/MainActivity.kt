@@ -114,15 +114,6 @@ class MainActivity : AppCompatActivity() {
         Log.d("texture selected ${repository.selectedTextureSlot}", textureMedia?.path?.toString()!!)
     }
 
-    private fun loadEntity(entity: SceneEntityData) {
-
-        openGLView.renderer.addRenderCommand {
-
-            sceneObjectManager.testLoadObject(entity)
-            sceneObjectManager.addMaterial(entity)
-        }
-
-    }
 
     private fun loadAllData() {
         val project: MinityProjectRepository = get()
@@ -130,6 +121,15 @@ class MainActivity : AppCompatActivity() {
 
         for (entity in entities) {
             loadEntity(entity)
+        }
+    }
+
+    private fun loadEntity(entity: SceneEntityData) {
+
+        openGLView.renderer.addRenderCommand {
+
+            sceneObjectManager.testLoadObject(entity)
+            sceneObjectManager.addMaterial(entity)
         }
     }
 

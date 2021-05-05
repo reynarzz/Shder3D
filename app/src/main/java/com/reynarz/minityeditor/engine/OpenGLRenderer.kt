@@ -105,12 +105,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun setTextureCommand(textureData: TextureData) {
 
         addRenderCommand {
-            val options = BitmapFactory.Options()
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888
-            val bitmap = BitmapFactory.decodeFile(textureData.path, options)
 
             val meshRenderer = selectedEntity?.getComponent(MeshRenderer::class.java)
 
+            val bitmap = Utils.getBitmapFromPath(textureData.path)
             if (meshRenderer?.material?.textures!!.size > repository.selectedTextureSlot) {
                 meshRenderer?.material?.textures!![repository.selectedTextureSlot] = Texture(bitmap)
             } else {

@@ -11,7 +11,7 @@ data class TextureData(var name: String) {
     var filter = 0
 
     @Transient
-    lateinit var previewBitmap: Bitmap
+    var previewBitmap: Bitmap? = null
 }
 
 data class CubemapTextureData(var list: MutableList<String>) {

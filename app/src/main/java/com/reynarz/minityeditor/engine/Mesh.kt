@@ -61,14 +61,7 @@ class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray, 
 
             glEnableVertexAttribArray(it)
 
-            glVertexAttribPointer(
-                it,
-                COORDS_PER_VERTEX,
-                GL_FLOAT,
-                false,
-                vertexStride,
-                vertexBuffer
-            )
+            glVertexAttribPointer(it, COORDS_PER_VERTEX, GL_FLOAT, false, vertexStride, vertexBuffer)
         }
 
         val uvAttrib = glGetAttribLocation(program, "_UV_")

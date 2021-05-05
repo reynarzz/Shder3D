@@ -1,5 +1,8 @@
 package com.reynarz.minityeditor.engine
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+
 class Utils {
     companion object {
         fun getScreenSizeQuad(): Mesh {
@@ -267,7 +270,7 @@ void main()
             return Pair(groundGridVertex, groundGridFragment)
         }
 
-        fun getScreenQuadShaderCode():Pair<String,String>{
+        fun getScreenQuadShaderCode(): Pair<String, String> {
             val screenQuadVertexCode = """
             
 attribute vec4 _VERTEX_; 
@@ -311,6 +314,13 @@ void main()
 }
 """
             return Pair(screenQuadVertexCode, screenFragTex)
+        }
+
+
+        fun getBitmapFromPath(path: String): Bitmap {
+            val options = BitmapFactory.Options()
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888
+            return BitmapFactory.decodeFile(path, options)
         }
 
         fun processInclude(include: String, shaderCode: String): String {
