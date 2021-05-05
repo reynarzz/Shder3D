@@ -2,6 +2,7 @@ package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20.*
 import android.opengl.Matrix
+import android.util.Log
 import com.reynarz.minityeditor.views.MainActivity
 
 class Material(val shader: Shader) {
@@ -48,6 +49,7 @@ class Material(val shader: Shader) {
 
 
     private fun bindTextures() {
+
         for (slot in textures!!.indices) {
             textures!![slot].bind(slot)
 
@@ -76,7 +78,6 @@ class Material(val shader: Shader) {
 //
 //        var _Time = glGetUniformLocation(program, "_Time")
 //        var unity_DeltaTime = glGetUniformLocation(program, "unity_DeltaTime")
-
 
 
         Matrix.multiplyMM(MVP, 0, projection, 0, view, 0)

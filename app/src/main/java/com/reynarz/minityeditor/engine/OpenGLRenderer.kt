@@ -263,8 +263,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.depthTexture)
 
 
+        val grabPass = glGetUniformLocation(prog, "_BackgroundTexture")
+        glUniform1i(grabPass, 0)
+
         val depthUniform = glGetUniformLocation(prog, "_CameraDepthTexture")
         glUniform1i(depthUniform, 1)
+
+
 
         glViewport(0, 0, MainActivity.width, MainActivity.height)
 
