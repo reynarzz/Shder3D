@@ -124,24 +124,7 @@ class FileManager {
         Log.d("loadproject", "load")
 
         return if (file.exists()) {
-            val project = Json.decodeFromString<ProjectData>(file.readText())
-
-
-            var cameraSceneEntity = SceneEntityData("Camera", TransformComponentData(), MeshRendererComponentData().also {
-                val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
-                val shaderData = get<ShaderData>(ShaderData::class.java)
-
-                shaderData.vertexShader = screenQuadShaderCode.first
-                shaderData.fragmentShader = screenQuadShaderCode.second
-
-                it.materialsData.add(MaterialData("Screen Material", shaderData))
-            })
-
-            var directionalLightEntity = SceneEntityData("DirectionalLight", TransformComponentData(), MeshRendererComponentData())
-            project.defaultSceneEntities.add(cameraSceneEntity)
-            project.defaultSceneEntities.add(directionalLightEntity)
-            return project
-            //  Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
+           return Json.decodeFromString(file.readText())
 
         } else {
             ProjectData("randomName").also {
@@ -156,6 +139,8 @@ class FileManager {
                 })
                 var directionalLightEntity = SceneEntityData("DirectionalLight", TransformComponentData(), MeshRendererComponentData())
 
+                cameraSceneEntity.entityType = EntityType.Editor
+                directionalLightEntity.entityType = EntityType.Editor
 
                 it.defaultSceneEntities.add(cameraSceneEntity)
                 it.defaultSceneEntities.add(directionalLightEntity)

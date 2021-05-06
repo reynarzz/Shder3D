@@ -4,6 +4,12 @@ import kotlinx.serialization.*
 import java.util.*
 
 @Serializable
+enum class EntityType {
+    Editor,
+    User
+}
+
+@Serializable
 data class SceneEntityData(
     var name: String,
     var transformData: TransformComponentData,
@@ -19,6 +25,7 @@ data class SceneEntityData(
 
     var entityModelPath = ""
     var entityID = ""
+    var entityType: EntityType = EntityType.User
 
     init {
         entityID = UUID.randomUUID().toString()

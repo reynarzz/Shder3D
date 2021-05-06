@@ -73,7 +73,7 @@ class SceneObjectManager(
             val shaderData = materialData.shaderData
             val material = Material(Shader(shaderData.vertexShader, shaderData.fragmentShader))
 
-            entity.getComponent(MeshRenderer::class.java)!!.material = material
+            entity.getComponent(MeshRenderer::class.java)!!.materials.add(material)
 
             for (textureData in materialData.texturesData) {
 
@@ -89,7 +89,7 @@ class SceneObjectManager(
 
     fun removeMaterial(sceneEntityData: SceneEntityData) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
-        entity?.getComponent(MeshRenderer::class.java)!!.material = null
+        entity?.getComponent(MeshRenderer::class.java)!!.materials.clear()
     }
 
     fun recreateCameraEntity(sceneEntityData: SceneEntityData) {

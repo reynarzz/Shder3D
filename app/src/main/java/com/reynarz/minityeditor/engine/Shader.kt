@@ -35,7 +35,7 @@ class Shader(vertexSource: String, fragmentSource: String) {
         glDeleteShader(vertexShader)
         glDeleteShader(fragmentShader)
 
-        glDeleteProgram(program)
+        //glDeleteProgram(program)
 
         createShaders(vertex, fragment)
     }
