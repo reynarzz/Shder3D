@@ -350,7 +350,7 @@ void main()
                    gl_Position = pos;
                 }
 
-            """.trimIndent()
+            """.trimMargin()
 
             var fragCode = """
                             
@@ -359,32 +359,35 @@ varying vec4 pos;
 
 varying vec2 _uv;
 
-uniform sampler2D _tex1;
-uniform sampler2D _DEPTH;
+uniform sampler2D _tex0;
+uniform sampler2D _SHADOWMAP;
 varying vec4 fragPosLS;
 
 float shadow(vec4 lpos)
 {
   vec3 proj = lpos.xyz/lpos.w;
-  proj= proj*0.5+0.5;
-  float closestD = texture2D(_DEPTH, proj.xy).r;
+  proj = proj*0.5+0.5;
+  float closestD = texture2D(_SHADOWMAP, proj.xy).r;
   float current = proj.z;
 
-  float shadow = current-0.004 > closestD? 1.0:0.0;
-  if(proj.z >1.)
-shadow=0.;
+  float shadow = current-0.004 > closestD? 1.0 : 0.0;
+  
+  if(proj.z > 1.0)
+      shadow = 0.0;
+      
   return shadow;
  
 }
 
 void main()
 {
-    //gl_FragColor = 
- gl_FragColor =vec4(vec3(
-clamp(1.- shadow(fragPosLS)+0.7, 0., 1.)),1.)*
-texture2D(_tex1,_uv);
+float shadow = clamp(1.- shadow(fragPosLS) + 0.7, 0., 1.);
+
+vec4 color = vec4(vec3(shadow), 1.);
+
+ gl_FragColor =color * texture2D(_tex0,_uv);
 }
-            """.trimIndent()
+            """.trimMargin()
 
             return Pair(vertexCode, fragCode)
         }

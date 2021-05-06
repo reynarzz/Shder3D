@@ -243,7 +243,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
 
                 if (renderer?.material != null) {
-                    val depthUniform = glGetUniformLocation(renderer!!.material!!.shader.program, "_DEPTH")
+                    val depthUniform = glGetUniformLocation(renderer!!.material!!.shader.program, "_SHADOWMAP")
                     glUniform1i(depthUniform, 2)
                 }
 
