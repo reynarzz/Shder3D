@@ -20,7 +20,10 @@ val EngineDataModule: Module = module {
     factory {
 
         ShaderData("SName", UUID.randomUUID().toString()).also {
-            val unlit = Utils.getUnlitShader(1.0f)
+//            val unlit = Utils.getUnlitShader(1.0f)
+
+            val unlit = Utils.getShadowMappedShader()
+
 
             it.vertexShader = unlit.first
             it.fragmentShader = unlit.second

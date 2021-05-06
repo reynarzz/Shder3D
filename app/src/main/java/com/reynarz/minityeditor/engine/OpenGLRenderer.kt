@@ -35,7 +35,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     lateinit var shadowMapFrameBuffer: FrameBuffer
     private var quadShader: Shader? = null
     var screenQuadMesh: Mesh? = null
-    private lateinit var lightTransform : Transform
+    private lateinit var lightTransform: Transform
 
     private lateinit var lightObj: MeshRenderer
 
@@ -166,14 +166,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private fun shadowPass() {
 
+        glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
+
         shadowMapFrameBuffer.bind()
 
         glEnable(GL_DEPTH_TEST)
         glDisable(GL_STENCIL_TEST)
         glClear(GL_STENCIL_BUFFER_BIT)
-
-        glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
-        //glViewport(0, 0, shadowMapFrameBuffer.width/2, shadowMapFrameBuffer.height/2)
 
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
@@ -243,8 +242,11 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 glActiveTexture(GL_TEXTURE2)
                 glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
 
-                val depthUniform = glGetUniformLocation(renderer!!.material!!.shader.program, "_DEPTH")
-                glUniform1i(depthUniform, 2)
+                if (renderer?.material != null) {
+                    val depthUniform = glGetUniformLocation(renderer!!.material!!.shader.program, "_DEPTH")
+                    glUniform1i(depthUniform, 2)
+                }
+
 
                 if (selectedEntity != null && entity === selectedEntity) {
                     // glDisable(GL_DEPTH_TEST)

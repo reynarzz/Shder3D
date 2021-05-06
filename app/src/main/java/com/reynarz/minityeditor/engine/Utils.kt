@@ -319,6 +319,76 @@ void main()
             return Pair(screenQuadVertexCode, screenFragTex)
         }
 
+        fun getShadowMappedShader(): Pair<String, String> {
+
+            val vertexCode = """
+                
+                            
+                attribute vec4 _VERTEX_; 
+                           
+                attribute vec2 _UV_;
+                varying vec2 _uv;
+                varying vec4 pos;
+                uniform mat4 UNITY_MATRIX_MVP;
+                uniform mat4 unity_ObjectToWorld;
+                uniform mat4 _LIGHT;
+
+                varying mat4 lightM;
+                varying vec3 fragPos;
+                varying vec4 fragPosLS;
+
+
+                void main() 
+                {
+                   _uv = _UV_;
+                   fragPos = vec4(unity_ObjectToWorld * _VERTEX_).xyz;
+
+                  lightM = _LIGHT;
+
+                   pos = UNITY_MATRIX_MVP * _VERTEX_;
+                   fragPosLS = lightM * vec4(fragPos,1.);
+                   gl_Position = pos;
+                }
+
+            """.trimIndent()
+
+            var fragCode = """
+                            
+precision mediump float; 
+varying vec4 pos;
+
+varying vec2 _uv;
+
+uniform sampler2D _tex1;
+uniform sampler2D _DEPTH;
+varying vec4 fragPosLS;
+
+float shadow(vec4 lpos)
+{
+  vec3 proj = lpos.xyz/lpos.w;
+  proj= proj*0.5+0.5;
+  float closestD = texture2D(_DEPTH, proj.xy).r;
+  float current = proj.z;
+
+  float shadow = current-0.004 > closestD? 1.0:0.0;
+  if(proj.z >1.)
+shadow=0.;
+  return shadow;
+ 
+}
+
+void main()
+{
+    //gl_FragColor = 
+ gl_FragColor =vec4(vec3(
+clamp(1.- shadow(fragPosLS)+0.7, 0., 1.)),1.)*
+texture2D(_tex1,_uv);
+}
+            """.trimIndent()
+
+            return Pair(vertexCode, fragCode)
+        }
+
         fun componentTypeToID(componentType: ComponentType): Int {
             return when (componentType) {
                 ComponentType.Transform -> R.layout.transform_fragment_view

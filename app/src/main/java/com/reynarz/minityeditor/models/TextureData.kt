@@ -14,6 +14,6 @@ data class TextureData(var name: String) {
     var previewBitmap: Bitmap? = null
 }
 
-data class CubemapTextureData(var list: MutableList<String>) {
-
-}
+//data class CubemapTextureData(var list: MutableList<String>) {
+//
+//}

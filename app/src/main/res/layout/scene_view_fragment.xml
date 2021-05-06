@@ -56,7 +56,8 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/btn_editModelComponents"
                         app:layout_constraintStart_toStartOf="@+id/btn_editModelComponents"
-                        app:layout_constraintTop_toTopOf="@+id/btn_editModelComponents" />
+                        app:layout_constraintTop_toTopOf="@+id/btn_editModelComponents"
+                        app:tint="@color/semi_black" />
 
                     <Button
                         android:id="@+id/btn_editModelComponents"
@@ -89,7 +90,8 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/btn_removeModelFromScene" />
+                        app:layout_constraintTop_toTopOf="@+id/btn_removeModelFromScene"
+                        app:tint="@color/semi_black" />
 
                     <Button
                         android:id="@+id/btn_removeModelFromScene"
@@ -133,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/material_file"
-                app:tint="@color/semi_transparent1" />
+                app:tint="@color/semi_black" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -167,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/material_file"
-                app:tint="@color/semi_transparent1" />
+                app:tint="@color/semi_black" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -193,7 +195,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/botton_bar_rounded" />
+                android:src="@drawable/botton_bar_rounded"
+                app:tint="@color/semi_black" />
 
 
             <LinearLayout
