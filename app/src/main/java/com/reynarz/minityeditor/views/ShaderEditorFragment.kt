@@ -46,7 +46,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val include1 = getInclude(requireActivity().assets, "includes/minity.h")
+        val include1 = Utils.getInclude(requireActivity().assets, "includes/minity.h")
 
         shaderViewModel.onHideOrShowEditor = {
             setPreviewMode()
@@ -108,11 +108,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 //        }
     }
 
-    private fun getInclude(assets: AssetManager, include: String): String {
-        val inStream = assets.open(include)
-        val reader = BufferedReader(InputStreamReader(inStream))
-        return reader.readText()
-    }
+
 
     private fun setPreviewMode() {
         val codeContainer = requireView().findViewById<ConstraintLayout>(R.id.codeContainer)

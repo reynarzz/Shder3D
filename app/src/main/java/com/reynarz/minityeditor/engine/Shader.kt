@@ -71,7 +71,9 @@ class Shader(vertexSource: String, fragmentSource: String) {
             vertexResult.second
             fragmentResult.second
 
-            program = glCreateProgram()
+            if(!glIsProgram(program)){
+                program = glCreateProgram()
+            }
 
             glAttachShader(program, vertexShader)
             glAttachShader(program, fragmentShader)

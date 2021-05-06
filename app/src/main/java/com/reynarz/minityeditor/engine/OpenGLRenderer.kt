@@ -126,7 +126,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     fun setReplaceShadersCommand(vertexCode: String, fragmentCode: String) {
-
         addRenderCommand {
 
             val material = selectedEntity!!.getComponent(MeshRenderer::class.java)!!.materials[0]
@@ -347,18 +346,19 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         meshRenderer?.bind(identityM, identityM, errorMaterial)
 
-        glActiveTexture(GL_TEXTURE0)
+        // this should be binded differently
+        glActiveTexture(GL_TEXTURE20)
         glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.colorTexture)
 
-        glActiveTexture(GL_TEXTURE1)
+        glActiveTexture(GL_TEXTURE21)
         glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.depthTexture)
 
 
         val grabPass = glGetUniformLocation(meshRenderer!!.materials[0]!!.program, "_MainTex")
-        glUniform1i(grabPass, 0)
+        glUniform1i(grabPass, 20)
 
         val depthUniform = glGetUniformLocation(meshRenderer!!.materials[0]!!.program, "_CameraDepthTexture")
-        glUniform1i(depthUniform, 1)
+        glUniform1i(depthUniform, 21)
 
 
 

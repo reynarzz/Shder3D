@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         navigator.activity = this
         openGLView = findViewById(R.id.OpenGLView_activity)
 
-        sceneObjectManager = SceneObjectManager(baseContext, openGLView.renderer)
+        sceneObjectManager = SceneObjectManager(this, openGLView.renderer)
         //shaderFragment.renderer = openGLView.renderer
 
         val displayMetrics = DisplayMetrics()
@@ -170,7 +170,6 @@ class MainActivity : AppCompatActivity() {
     fun removeSceneEntity(entity: SceneEntityData?) {
         openGLView.renderer.addRenderCommand {
             openGLView.renderer.scene.removeSceneEntityByID(entity?.entityID)
-
         }
     }
 }

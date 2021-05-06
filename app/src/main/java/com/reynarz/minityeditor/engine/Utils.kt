@@ -1,9 +1,13 @@
 package com.reynarz.minityeditor.engine
 
+import android.content.res.AssetManager
 import com.reynarz.minityeditor.models.ComponentType
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.R
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 
 class Utils {
@@ -416,6 +420,18 @@ vec4 color = vec4(vec3(shadow), 1.);
             }
 
             return shader;
+        }
+
+        fun processMinityInclude(activity: AppCompatActivity, shaderCode: String): String {
+            val include = getInclude(activity.assets, "includes/minity.h")
+
+            return processInclude(include, shaderCode)
+        }
+
+        fun getInclude(assets: AssetManager, include: String): String {
+            val inStream = assets.open(include)
+            val reader = BufferedReader(InputStreamReader(inStream))
+            return reader.readText()
         }
     }
 }

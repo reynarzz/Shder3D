@@ -1,13 +1,14 @@
 package com.reynarz.minityeditor.engine
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.data.ModelsDataBase
 import com.reynarz.minityeditor.models.SceneEntityData
 
 class SceneObjectManager(
-    private val context: Context?,
+    private val activity: AppCompatActivity?,
     private val openGLRenderer: OpenGLRenderer
 ) {
 
@@ -56,7 +57,7 @@ class SceneObjectManager(
 
     fun boundingBoxTest(bounds: Bounds): MeshRenderer {
 
-        var cube = ObjParser(context!!, "models/cube.obj").getModelData()
+        var cube = ObjParser(activity!!.baseContext!!, "models/cube.obj").getModelData()
 
         val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1), FloatArray(1))
         //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
@@ -71,7 +72,12 @@ class SceneObjectManager(
 
         if (materialData != null && entity != null) {
             val shaderData = materialData.shaderData
-            val material = Material(Shader(shaderData.vertexShader, shaderData.fragmentShader))
+
+            val vertex = Utils.processMinityInclude(activity!!,shaderData.vertexShader)
+            val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
+
+
+            val material = Material(Shader(vertex, fragment))
 
             entity.getComponent(MeshRenderer::class.java)!!.materials.add(material)
 
@@ -92,15 +98,28 @@ class SceneObjectManager(
         entity?.getComponent(MeshRenderer::class.java)!!.materials.clear()
     }
 
+    // this contains duplicated code
     fun recreateCameraEntity(sceneEntityData: SceneEntityData) {
         val cameraEntity = SceneEntity()
         val meshRenderer = cameraEntity.addComponent(MeshRenderer::class.java)
         meshRenderer.mesh = Utils.getScreenSizeQuad()
 
         for (materialData in sceneEntityData.meshRendererData.materialsData) {
+            val vertex = Utils.processMinityInclude(activity!!, materialData.shaderData.vertexShader)
+            val fragment = Utils.processMinityInclude(activity!!, materialData.shaderData.fragmentShader)
 
-            val material = Material(Shader(materialData.shaderData.vertexShader, materialData.shaderData.fragmentShader))
+            val material = Material(Shader(vertex, fragment))
             meshRenderer.materials.add(material)
+
+            for (textureData in materialData.texturesData) {
+
+                if (textureData.path != null) {
+                    val bitmap = Utils.getBitmapFromPath(textureData.path!!)
+                    material.textures?.add(Texture(bitmap))
+
+                    textureData.previewBitmap = bitmap
+                }
+            }
         }
 
         openGLRenderer.cameraEntity = cameraEntity

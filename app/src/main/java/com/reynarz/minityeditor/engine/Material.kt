@@ -72,8 +72,8 @@ class Material(val shader: Shader) {
 
         Matrix.invertM(InvModel, 0, model, 0)
 
-        val nearPlane = 0.1f
-        val farPlane = 1000f
+        val nearPlane = 1f
+        val farPlane = 500f
         val t = 1f // need the current time of the app.
         val deltaTime = 1f // need current delta time of the app.
 
