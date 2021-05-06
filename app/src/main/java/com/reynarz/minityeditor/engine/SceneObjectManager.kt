@@ -70,10 +70,12 @@ class SceneObjectManager(
 
             for (textureData in materialData.texturesData) {
 
-                val bitmap = Utils.getBitmapFromPath(textureData.path!!)
-                material.textures?.add(Texture(bitmap))
+                if (textureData.path != null) {
+                    val bitmap = Utils.getBitmapFromPath(textureData.path!!)
+                    material.textures?.add(Texture(bitmap))
 
-                textureData.previewBitmap = bitmap
+                    textureData.previewBitmap = bitmap
+                }
             }
         }
     }

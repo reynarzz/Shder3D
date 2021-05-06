@@ -112,10 +112,10 @@ class FileManager {
 
         val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
 
-        val entities = repository.getProjectData().sceneEntities
+        val project = repository.getProjectData()
 
         //test
-        file.writeText(Json.encodeToString(entities))
+        file.writeText(Json.encodeToString(project))
     }
 
     fun loadProject(): ProjectData {
@@ -124,12 +124,10 @@ class FileManager {
         Log.d("loadproject", "load")
 
         return if (file.exists()) {
-            val obj = Json.decodeFromString<MutableList<SceneEntityData>>(file.readText())
+            Json.decodeFromString(file.readText())
 
             //  Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
-            ProjectData("randomName").also {
-                it.sceneEntities = obj
-            }
+
         } else {
             ProjectData("randomName").also {
                 it.sceneEntities = mutableListOf()

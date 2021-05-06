@@ -350,7 +350,7 @@ void main()
                    gl_Position = pos;
                 }
 
-            """.trimMargin()
+            """.trimIndent()
 
             var fragCode = """
                             
@@ -370,7 +370,16 @@ float shadow(vec4 lpos)
   float closestD = texture2D(_SHADOWMAP, proj.xy).r;
   float current = proj.z;
 
-  float shadow = current-0.004 > closestD? 1.0 : 0.0;
+  float shadow = 0.;
+   
+   if(current-0.004 > closestD)
+   {
+   shadow = 1.;
+   }
+   else
+   {
+   shadow = 0.;
+   }
   
   if(proj.z > 1.0)
       shadow = 0.0;
@@ -387,7 +396,7 @@ vec4 color = vec4(vec3(shadow), 1.);
 
  gl_FragColor =color * texture2D(_tex0,_uv);
 }
-            """.trimMargin()
+            """.trimIndent()
 
             return Pair(vertexCode, fragCode)
         }

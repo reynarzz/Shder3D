@@ -10,6 +10,7 @@ import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.components.Transform
 import com.reynarz.minityeditor.models.SceneEntityData
 import com.reynarz.minityeditor.models.TextureData
+import com.reynarz.minityeditor.models.TransformComponentData
 import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
 import javax.microedition.khronos.egl.EGLConfig
@@ -18,6 +19,7 @@ import javax.microedition.khronos.opengles.GL10
 
 class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
+    private lateinit var cameraTransformData: TransformComponentData
     lateinit var touchPointer: TouchPointer
 
     val scene: Scene = Scene()
@@ -65,7 +67,12 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             //glEnable(GL_BLEND)
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
+            cameraTransformData = repository.getProjectData().cameraTransformData
+
             scene!!.editorCamera!!.updateProjection(width, height)
+            scene!!.editorCamera?.transform?.position = cameraTransformData.position
+            rot = cameraTransformData.eulerAngles
+            zoom = cameraTransformData.scale.x
 
             mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
             mainFrameBuffer.genNormalFrameBuffer()
@@ -216,10 +223,14 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         lStartTime = lEndTime
         //shader.setDeltaTimeTest(lEndTime.toFloat(), output)
 
-
-        scene!!.editorCamera!!.transform.eulerAngles = vec3(rot.y, rot.x, rot.z)
         scene!!.editorCamera!!.transform.position = vec3(0f, 0f, -100f)
+        scene!!.editorCamera!!.transform.eulerAngles = vec3(rot.y, rot.x, rot.z)
         scene!!.editorCamera!!.transform.scale = vec3(zoom, zoom, zoom)
+
+        cameraTransformData.position = scene!!.editorCamera!!.transform.position
+        cameraTransformData.eulerAngles = rot
+        cameraTransformData.scale.x = zoom
+
 
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
