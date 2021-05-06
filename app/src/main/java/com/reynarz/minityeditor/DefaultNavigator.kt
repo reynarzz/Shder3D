@@ -13,6 +13,10 @@ class DefaultNavigator {
         _activity?.findNavController(R.id.btn_closeInspector)?.navigate(R.id.action_inspectorFragmentView_to_shaderEditorFragment)
     }
 
+    fun navigateTo(aViewInCurrentFragment: Int, transitionID: Int) {
+        _activity?.findNavController(aViewInCurrentFragment)?.navigate(transitionID)
+    }
+
     private var _activity: Activity? = null
 
     var activity: Activity?

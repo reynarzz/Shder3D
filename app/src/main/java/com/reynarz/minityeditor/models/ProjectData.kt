@@ -7,5 +7,5 @@ data class ProjectData(var projectName: String) {
     var cameraTransformData = TransformComponentData("Camera Transform")
 
     var sceneEntities = mutableListOf<SceneEntityData>()
-
+    var defaultSceneEntities = mutableListOf<SceneEntityData>()
 }

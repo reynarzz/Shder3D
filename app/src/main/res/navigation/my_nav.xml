@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/my_nav"
-    app:startDestination="@id/sceneFragmentView"
-    xmlns:tools="http://schemas.android.com/tools">
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/sceneFragmentView">
 
     <fragment
         android:id="@+id/sceneFragmentView"
@@ -28,6 +30,9 @@
             app:destination="@id/sceneFragmentView"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_hierarchyFragmentView_to_inspectorFragmentView2"
+            app:destination="@id/inspectorFragmentView" />
     </fragment>
     <fragment
         android:id="@+id/inspectorFragmentView"

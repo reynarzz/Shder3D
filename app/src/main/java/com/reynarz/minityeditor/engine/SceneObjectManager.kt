@@ -13,13 +13,7 @@ class SceneObjectManager(
 
     fun testLoadObject(sceneEntityData: SceneEntityData) {
 
-        val dataBase = ModelsDataBase()
-        val modelData = dataBase.getModel(sceneEntityData.entityModelPath)
-
-        var objData = modelData
-        val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs, objData.mNormals)
-
-//        val mat = Utils.getDefaultMaterial()
+        //        val mat = Utils.getDefaultMaterial()
 //        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
 
         // val renderer = MeshRenderer(mesh, null)
@@ -34,7 +28,20 @@ class SceneObjectManager(
         addedRenderer.transform.eulerAngles = sceneEntityData.transformData.eulerAngles
         addedRenderer.transform.scale = sceneEntityData.transformData.scale
 
-        addedRenderer!!.mesh = mesh
+
+        if (!sceneEntityData.entityModelPath.isEmpty()) {
+            val dataBase = ModelsDataBase()
+            val modelData = dataBase.getModel(sceneEntityData.entityModelPath)
+
+            var objData = modelData
+            val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs, objData.mNormals)
+            addedRenderer!!.mesh = mesh
+        } else {
+            //empty mesh testing
+            addedRenderer!!.mesh = Mesh(FloatArray(1), IntArray(1), FloatArray(1), FloatArray(1))
+        }
+
+
         //addedRenderer!!.material = mat
 
 //        val bounding = boundingBoxTest(objData.bounds)
@@ -83,5 +90,19 @@ class SceneObjectManager(
     fun removeMaterial(sceneEntityData: SceneEntityData) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
         entity?.getComponent(MeshRenderer::class.java)!!.material = null
+    }
+
+    fun recreateCameraEntity(sceneEntityData: SceneEntityData) {
+        val cameraEntity = SceneEntity()
+        val meshRenderer = cameraEntity.addComponent(MeshRenderer::class.java)
+        meshRenderer.mesh = Utils.getScreenSizeQuad()
+
+        for (materialData in sceneEntityData.meshRendererData.materialsData) {
+
+            val material = Material(Shader(materialData.shaderData.vertexShader, materialData.shaderData.fragmentShader))
+            meshRenderer.materials.add(material)
+        }
+
+        openGLRenderer.cameraEntity = cameraEntity
     }
 }

@@ -284,8 +284,8 @@ varying vec4 pos;
 
 void main() 
 {
-   _uv = _UV_;
-   gl_Position = vec4( _VERTEX_.x,  _VERTEX_.y, 0, 1);
+_uv = _UV_;
+gl_Position = vec4( _VERTEX_.x,  _VERTEX_.y, 0, 1);
 }"""
             var screenFragTex = """
             
@@ -294,26 +294,11 @@ varying vec4 pos;
 
 varying vec2 _uv;
 
-uniform sampler2D sTexture;
-uniform sampler2D _CameraDepthTexture;
-
-float LinearizeDepth(float depth)
-{
-    float far = 1000.0;
-    float near = 0.1f;
-    
-    float z = (depth * 2.0 - 1.0); 
-    return (2.0 * near * far) / (far + near - z * (far - near));
-}
+uniform sampler2D _MainTex;
 
 void main()
 {
-    float far = 1000.0;
-
-    float depth = LinearizeDepth(texture2D(_CameraDepthTexture, _uv ).r)/(far-900.);
-    gl_FragColor = vec4(depth);
-    
-    gl_FragColor = texture2D(sTexture, _uv);
+    gl_FragColor = texture2D(_MainTex, _uv);
 }
 """
             return Pair(screenQuadVertexCode, screenFragTex)

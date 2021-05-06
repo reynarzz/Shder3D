@@ -3,9 +3,9 @@ package com.reynarz.minityeditor.files
 import android.os.Environment
 import android.util.Log
 import com.reynarz.minityeditor.MinityProjectRepository
+import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.engine.data.ShaderDataBase
-import com.reynarz.minityeditor.models.ProjectData
-import com.reynarz.minityeditor.models.SceneEntityData
+import com.reynarz.minityeditor.models.*
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
@@ -124,14 +124,43 @@ class FileManager {
         Log.d("loadproject", "load")
 
         return if (file.exists()) {
-            Json.decodeFromString(file.readText())
+            val project = Json.decodeFromString<ProjectData>(file.readText())
 
+
+            var cameraSceneEntity = SceneEntityData("Camera", TransformComponentData(), MeshRendererComponentData().also {
+                val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
+                val shaderData = get<ShaderData>(ShaderData::class.java)
+
+                shaderData.vertexShader = screenQuadShaderCode.first
+                shaderData.fragmentShader = screenQuadShaderCode.second
+
+                it.materialsData.add(MaterialData("Screen Material", shaderData))
+            })
+
+            var directionalLightEntity = SceneEntityData("DirectionalLight", TransformComponentData(), MeshRendererComponentData())
+            project.defaultSceneEntities.add(cameraSceneEntity)
+            project.defaultSceneEntities.add(directionalLightEntity)
+            return project
             //  Log.d("Matfound", obj[0].meshRendererData.materialsData.size.toString())
 
         } else {
             ProjectData("randomName").also {
-                it.sceneEntities = mutableListOf()
+                var cameraSceneEntity = SceneEntityData("Camera", TransformComponentData(), MeshRendererComponentData().also {
+                    val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
+                    val shaderData = get<ShaderData>(ShaderData::class.java)
+
+                    shaderData.vertexShader = screenQuadShaderCode.first
+                    shaderData.fragmentShader = screenQuadShaderCode.second
+
+                    it.materialsData.add(MaterialData("Screen Material", shaderData))
+                })
+                var directionalLightEntity = SceneEntityData("DirectionalLight", TransformComponentData(), MeshRendererComponentData())
+
+
+                it.defaultSceneEntities.add(cameraSceneEntity)
+                it.defaultSceneEntities.add(directionalLightEntity)
             }
         }
+
     }
 }

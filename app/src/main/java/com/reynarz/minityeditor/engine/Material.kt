@@ -31,7 +31,7 @@ class Material(val shader: Shader) {
         textures = mutableListOf()
     }
 
-    fun bind(model: FloatArray, view: FloatArray, projection: FloatArray) {
+    fun bind(model: FloatArray?, view: FloatArray?, projection: FloatArray?) {
         shader.bind()
         setUniforms(model, view, projection)
 
@@ -40,7 +40,7 @@ class Material(val shader: Shader) {
 
 
     // for shadow mapping,
-    fun bind(model: FloatArray, view: FloatArray, projection: FloatArray, lightViewM: FloatArray) {
+    fun bind(model: FloatArray?, view: FloatArray?, projection: FloatArray?, lightViewM: FloatArray?) {
         shader.bind()
         setUniforms(model, view, projection)
         set("_LIGHT", lightViewM)
@@ -58,7 +58,7 @@ class Material(val shader: Shader) {
         }
     }
 
-    private fun setUniforms(model: FloatArray, view: FloatArray, projection: FloatArray) {
+    private fun setUniforms(model: FloatArray?, view: FloatArray?, projection: FloatArray?) {
 
 //        var UNITY_MATRIX_T_MV = glGetUniformLocation(program, "UNITY_MATRIX_T_MV")
 //        var UNITY_MATRIX_IT_MV = glGetUniformLocation(program, "UNITY_MATRIX_IT_MV")
@@ -87,7 +87,9 @@ class Material(val shader: Shader) {
         set("unity_WorldToObject", InvModel)
         set("unity_ObjectToWorld", model)
         set("_ScreenParams", vec4(MainActivity.width.toFloat(), MainActivity.height.toFloat(), 1f + 1f / MainActivity.width.toFloat(), 1f + 1f / MainActivity.height.toFloat()))
-        set("_WorldSpaceCameraPos", vec3(view[3], view[7], view[11]))
+
+
+
         set("_ZBufferParams", vec4(1f - farPlane / nearPlane, farPlane / nearPlane, (1f - farPlane / nearPlane) / farPlane, (farPlane / nearPlane) / farPlane))
         set("_ProjectionParams", vec4(1f, nearPlane, farPlane, 1f / farPlane))
         set("_LightColor0", vec4())
@@ -95,11 +97,12 @@ class Material(val shader: Shader) {
         set("_Time", vec4(t / 20f, t, t * 2, t * 3))
         set("unity_DeltaTime", vec4(deltaTime, 1f / deltaTime, 0f/*smoothDt*/, 0f/*1/smoothDt*/))
 
-
+        if (view != null)
+            set("_WorldSpaceCameraPos", vec3(view[3], view[7], view[11]))
     }
 
 
-    fun set(uniformName: String, matrix: FloatArray) {
+    fun set(uniformName: String, matrix: FloatArray?) {
         val uniformLocation = glGetUniformLocation(shader.program, uniformName)
         glUniformMatrix4fv(uniformLocation, 1, false, matrix, 0)
     }

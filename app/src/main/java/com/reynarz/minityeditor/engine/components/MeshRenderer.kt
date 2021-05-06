@@ -7,6 +7,7 @@ class MeshRenderer() : Component() {
 
     lateinit var mesh: Mesh //Mesh(FloatArray(1), IntArray(1), FloatArray(1))
     var material: Material? = null
+    var materials = mutableListOf<Material?>()
 
 //    val indexBuffer = mesh?.indexBuffer
 //    val indicesCount = mesh?.indicesCount
@@ -17,9 +18,14 @@ class MeshRenderer() : Component() {
         this.material = material
     }
 
-    fun bind(view: FloatArray, projection: FloatArray, default: Material) {
+    fun bind(view: FloatArray?, projection: FloatArray?, default: Material?) {
 
-        val mat = if (material != null && material!!.shader.compiledCorrectly) material else default
+        var mat = if (material != null && material!!.shader.compiledCorrectly) material else default
+
+        // test, use the materials list instead.
+        if(materials.size != 0){
+            mat = materials[0]
+        }
 
         mat!!.bind(transform!!.modelM!!, view, projection)
         mesh.bind(mat!!.program)

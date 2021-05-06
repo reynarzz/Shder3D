@@ -6,7 +6,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.DefaultNavigator
@@ -14,9 +13,6 @@ import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.SceneObjectManager
-import com.reynarz.minityeditor.engine.data.ShaderDataBase
-import com.reynarz.minityeditor.files.FileManager
-import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.SceneEntityData
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -97,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            loadEntity(entity)
+            loadCustomEntity(entity)
         }
     }
 
@@ -117,15 +113,27 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun loadAllData() {
-        val project: MinityProjectRepository = get()
-        val entities = project.getProjectData().sceneEntities
+        val repository: MinityProjectRepository = get()
+        val project = repository.getProjectData()
 
-        for (entity in entities) {
-            loadEntity(entity)
+        loadCameraEntity(project.defaultSceneEntities[0])
+
+//        for(defEntities in project.defaultSceneEntities){
+//        }
+
+        for (entity in project.sceneEntities) {
+            loadCustomEntity(entity)
         }
     }
 
-    private fun loadEntity(entity: SceneEntityData) {
+    private fun loadCameraEntity(entity: SceneEntityData) {
+        openGLView.renderer.addRenderCommand {
+
+            sceneObjectManager.recreateCameraEntity(entity)
+        }
+    }
+
+    private fun loadCustomEntity(entity: SceneEntityData) {
 
         openGLView.renderer.addRenderCommand {
 

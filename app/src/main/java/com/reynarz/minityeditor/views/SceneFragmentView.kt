@@ -56,7 +56,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         binding.clEditSelectedEntityContainer.visibility = if(repository.selectedSceneEntity == null) View.GONE else View.VISIBLE
 
-        val hierarchy = HierarchyFragmentView()
+      //  val hierarchy = HierarchyFragmentView()
 
 //        view!!.findViewById<Button>(R.id.btn_openHierarchy).setOnClickListener {
 //            activity!!.supportFragmentManager.beginTransaction().apply {

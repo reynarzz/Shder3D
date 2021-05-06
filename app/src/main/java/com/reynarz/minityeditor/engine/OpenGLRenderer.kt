@@ -3,6 +3,7 @@ package com.reynarz.minityeditor.engine
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.opengl.Matrix
 import android.util.Log
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
@@ -26,6 +27,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var rot = vec3(0f, 0f, 0f)
     var zoom = 1f
     var initialized = false
+    lateinit var cameraEntity: SceneEntity
 
     private val rendererCommands = mutableListOf<() -> Unit>()
     private lateinit var errorMaterial: Material
@@ -35,8 +37,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var mainFrameBuffer: FrameBuffer
     lateinit var shadowMapFrameBuffer: FrameBuffer
-    private var quadShader: Shader? = null
-    var screenQuadMesh: Mesh? = null
     private lateinit var lightTransform: Transform
 
     private lateinit var lightObj: MeshRenderer
@@ -49,6 +49,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             return entity
         }
     private lateinit var outlineMaterial: Material
+
+    init {
+
+    }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
     }
@@ -80,12 +84,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
             shadowMapFrameBuffer.genBufferForDepth()
 
-            val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
-
-            quadShader = Shader(screenQuadShaderCode.first, screenQuadShaderCode.second)
-
             initialized = true
-            screenQuadMesh = Utils.getScreenSizeQuad()
 
             touchPointer = TouchPointer(scene!!.editorCamera!!)
 
@@ -205,7 +204,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         shadowPass()
 
-        //Log.d("time", MainActivity.time.toString())
         mainFrameBuffer.bind()
 
         glDisable(GL_STENCIL_TEST)
@@ -313,38 +311,41 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         mainFrameBuffer.unBind()
 
+        editorRendering()
+
+    }
+
+    val identityM = FloatArray(16).also {
+        Matrix.setIdentityM(it, 0)
+    }
+
+    fun editorRendering() {
 
         // Screen Quad
         glDisable(GL_DEPTH_TEST)
         glClear(GL_COLOR_BUFFER_BIT)
 
-        val prog = quadShader!!.bind()
+        val meshRenderer = cameraEntity.getComponent(MeshRenderer::class.java)
 
-        screenQuadMesh!!.bind(prog)
+        meshRenderer?.bind(identityM, identityM, errorMaterial)
 
         glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.colorTexture)
 
-        glActiveTexture(GL_TEXTURE1)
-        glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.depthTexture)
+//        glActiveTexture(GL_TEXTURE1)
+//        glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.depthTexture)
 
 
-        val grabPass = glGetUniformLocation(prog, "_BackgroundTexture")
+        val grabPass = glGetUniformLocation(meshRenderer!!.materials[0]!!.program, "_BackgroundTexture")
         glUniform1i(grabPass, 0)
-
-        val depthUniform = glGetUniformLocation(prog, "_CameraDepthTexture")
-        glUniform1i(depthUniform, 1)
+//
+//        val depthUniform = glGetUniformLocation(prog, "_CameraDepthTexture")
+//        glUniform1i(depthUniform, 1)
 
 
 
         glViewport(0, 0, MainActivity.width, MainActivity.height)
 
-        glDrawElements(
-            GL_TRIANGLES,
-            screenQuadMesh!!.indicesCount,
-            GL_UNSIGNED_INT,
-            screenQuadMesh!!.indexBuffer
-        )
+        glDrawElements(GL_TRIANGLES, meshRenderer?.mesh!!.indicesCount, GL_UNSIGNED_INT, meshRenderer?.mesh!!.indexBuffer)
     }
-
 }
