@@ -54,6 +54,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             } else if (entityData?.entityType == EntityType.Editor) {
                 entity = cameraEntity
             }
+            if (entityData != null)
+                entity?.isActive = entityData.active
 
             return entity
         }
@@ -100,16 +102,14 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             println("Current Opengl thread: " + Thread.currentThread().name)
             getEditorStuff_Test()
 
-            var lightEntity = SceneEntity()
-            val meshRenderer = lightEntity.addComponent(MeshRenderer::class.java)
-            meshRenderer.mesh = Utils.getQuad(2f)
-            meshRenderer.materials.add(Utils.getErrorMaterial())
-            meshRenderer.transform.modelM = scene.directionalLight.getLightViewMatrix()
-
-            lightTransform = meshRenderer.transform
-            //scene.editorCamera!!.transform.modelM = scene.directionalLight.getLightViewMatrix()
-
-            scene.entities.add(lightEntity)
+//            var lightEntity = SceneEntity()
+//            val meshRenderer = lightEntity.addComponent(MeshRenderer::class.java)
+//            meshRenderer.mesh = Utils.getQuad(2f)
+//            meshRenderer.materials.add(Utils.getErrorMaterial())
+//            meshRenderer.transform.modelM = scene.directionalLight.getLightViewMatrix()
+//
+//            lightTransform = meshRenderer.transform
+//            scene.entities.add(lightEntity)
         }
     }
 
@@ -194,18 +194,27 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (entity in scene!!.entities) {
 
+            if (entity.isActive) {
+                val renderer = entity.getComponent(MeshRenderer::class.java)
 
-            val renderer = entity.getComponent(MeshRenderer::class.java)
-
-            renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial)
-            glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
-
+                renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial)
+                glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
+            }
         }
+
         shadowMapFrameBuffer.unBind()
 
         glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
-
     }
+
+    companion object {
+        var fakeTimeScale = 0f
+            private set
+
+        var fakeDeltaTime = 0f
+            private set
+    }
+
 
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
@@ -213,6 +222,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         shadowPass()
 
         mainFrameBuffer.bind()
+
+        fakeTimeScale += 1 * 0.01f
 
         glDisable(GL_STENCIL_TEST)
         glClear(GL_STENCIL_BUFFER_BIT)
@@ -256,22 +267,22 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
                 renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight())
 //Shadow Map test
-                glActiveTexture(GL_TEXTURE2)
+                glActiveTexture(GL_TEXTURE0)
                 glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
 
                 if (renderer?.materials?.getOrNull(0) != null) {
                     val depthUniform = glGetUniformLocation(renderer!!.materials[0]!!.shader.program, "_SHADOWMAP")
-                    glUniform1i(depthUniform, 2)
+                    glUniform1i(depthUniform, 0)
                 }
 
 
-                if (selectedEntity != null && entity === selectedEntity) {
-                    // glDisable(GL_DEPTH_TEST)
-                    glEnable(GL_STENCIL_TEST)
-                    glStencilFunc(GL_ALWAYS, 1, 0xff)
-                    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
-                    glStencilMask(0xff)
-                }
+//                if (selectedEntity != null && entity === selectedEntity) {
+//                    // glDisable(GL_DEPTH_TEST)
+//                    glEnable(GL_STENCIL_TEST)
+//                    glStencilFunc(GL_ALWAYS, 1, 0xff)
+//                    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
+//                    glStencilMask(0xff)
+//                }
 
                 glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
 
@@ -280,12 +291,12 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
                     // glDisable(GL_DEPTH_TEST)
                     if (selectedEntity != null && entity === selectedEntity) {
-                        glEnable(GL_STENCIL_TEST)
-                        //glDisable(GL_DEPTH_TEST)
-
-                        glStencilFunc(GL_NOTEQUAL, 1, 0xff); // Pass test if stencil value is 1
-                        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-                        glStencilMask(0x00)
+//                        glEnable(GL_STENCIL_TEST)
+//                        //glDisable(GL_DEPTH_TEST)
+//
+//                        glStencilFunc(GL_NOTEQUAL, 1, 0xff); // Pass test if stencil value is 1
+//                        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+//                        glStencilMask(0x00)
 
                         val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
 //                        val scale = vec3(renderer!!.transform.scale.x, renderer!!.transform.scale.y, renderer!!.transform.scale.z)
@@ -347,18 +358,18 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         meshRenderer?.bind(identityM, identityM, errorMaterial)
 
         // this should be binded differently
-        glActiveTexture(GL_TEXTURE20)
+        glActiveTexture(GL_TEXTURE7)
         glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.colorTexture)
 
-        glActiveTexture(GL_TEXTURE21)
+        glActiveTexture(GL_TEXTURE8)
         glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.depthTexture)
 
 
         val grabPass = glGetUniformLocation(meshRenderer!!.materials[0]!!.program, "_MainTex")
-        glUniform1i(grabPass, 20)
+        glUniform1i(grabPass, 7)
 
         val depthUniform = glGetUniformLocation(meshRenderer!!.materials[0]!!.program, "_CameraDepthTexture")
-        glUniform1i(depthUniform, 21)
+        glUniform1i(depthUniform, 8)
 
 
 

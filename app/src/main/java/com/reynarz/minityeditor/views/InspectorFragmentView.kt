@@ -54,6 +54,7 @@ class InspectorFragmentView : Fragment() {
 
         viewModel.active.observe(viewLifecycleOwner, {
             entityData.active = it
+            println("Entity Active: $it");
         })
 
         val adapter = InspectorRecycleViewAdapter(viewModel, navigator)

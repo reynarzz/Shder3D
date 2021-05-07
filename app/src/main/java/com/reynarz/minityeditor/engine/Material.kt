@@ -2,8 +2,18 @@ package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20.*
 import android.opengl.Matrix
-import android.util.Log
 import com.reynarz.minityeditor.views.MainActivity
+import kotlinx.serialization.Serializable
+
+@Serializable
+class MaterialConfig {
+    // Queue {Background, }                                 // ver2
+    // Blend {SRCALPHA/OneMinusSRCAlpha, etc..}
+    // ZWrite/DepthTesting {ON/Off} (Depth testing)         // ver2
+    // Cull {Front/Back/Off} (Cull)                         // ver2
+    // ZTest/Depth func {LEQUAL/etc..} // Depth func        // ver2
+    //Stencil
+}
 
 class Material(val shader: Shader) {
     //val materialData = MaterialData()
@@ -12,6 +22,7 @@ class Material(val shader: Shader) {
 
     val MVP = FloatArray(16)
     val MV = FloatArray(16)
+    val materialConfig = MaterialConfig()
 
     val InvModel = FloatArray(16)
 
@@ -48,13 +59,15 @@ class Material(val shader: Shader) {
         bindTextures()
     }
 
-
+    private val minValidSlot = 2
     private fun bindTextures() {
 
         for (slot in textures!!.indices) {
-            textures!![slot].bind(slot)
 
-            set("_tex$slot", slot)
+            val offsetSlot = slot+minValidSlot
+            textures!![slot].bind(offsetSlot)
+
+            set("_tex${slot}", offsetSlot)
         }
     }
 
@@ -74,9 +87,8 @@ class Material(val shader: Shader) {
 
         val nearPlane = 1f
         val farPlane = 500f
-        val t = 1f // need the current time of the app.
-        val deltaTime = 1f // need current delta time of the app.
-
+        val t = OpenGLRenderer.fakeTimeScale // need the current time of the app.
+        val deltaTime = OpenGLRenderer.fakeDeltaTime // need current delta time of the app.
 
         set("UNITY_MATRIX_MVP", MVP)
         set("UNITY_MATRIX_MV", MV)

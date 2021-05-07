@@ -7,7 +7,6 @@ class SceneEntity : Entity() {
     private var _transform: Transform? = null
 
     var isActive = true
-        private set
 
 //    val transform: Transform
 //        get() {

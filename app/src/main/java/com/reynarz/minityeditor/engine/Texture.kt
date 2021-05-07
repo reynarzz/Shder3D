@@ -109,6 +109,7 @@ class Texture {
         return stream.toByteArray()
     }
 
+    //other things are using the texture slot 0 and 1 (shadow map etc..)
     fun bind(textureIndex: Int) {
         glActiveTexture(GL_TEXTURE0 + textureIndex)
         glBindTexture(GL_TEXTURE_2D, textureID)

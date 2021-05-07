@@ -25,10 +25,7 @@ class FrameBuffer(val width: Int, val height: Int) {
             GL_TEXTURE_2D, colorTexture, 0
         );
 
-        glFramebufferTexture2D(
-            GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-            GL_TEXTURE_2D, depthTexture, 0
-        );
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
 
         // Check FBO status.
         val status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

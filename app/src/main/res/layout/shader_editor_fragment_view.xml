@@ -109,7 +109,8 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/rounded" />
+                        android:background="@drawable/rounded"
+                        android:backgroundTint="@color/semi_black"/>
 
                     <Button
                         android:id="@+id/buttonCompile"
@@ -117,6 +118,7 @@
                         android:layout_height="match_parent"
                         android:background="@color/transparent"
                         android:foreground="@drawable/procesor1"
+
                         android:foregroundTint="@color/white"
                         android:onClick="@{() -> viewmodel.onCompile()}"
                         android:scaleX="0.6"
@@ -139,7 +141,8 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/rounded" />
+                        android:background="@drawable/rounded"
+                        android:backgroundTint="@color/semi_black"/>
 
                     <ToggleButton
                         android:id="@+id/btn_switchShaderView"
@@ -162,7 +165,8 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/rounded" />
+                        android:background="@drawable/rounded"
+                        android:backgroundTint="@color/semi_black"/>
 
                     <ToggleButton
                         android:id="@+id/btn_showHide"
@@ -194,7 +198,8 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/rounded" />
+                    android:background="@drawable/rounded"
+                    android:backgroundTint="@color/semi_black"/>
 
                 <Button
                     android:id="@+id/btn_closeShaderWindow"

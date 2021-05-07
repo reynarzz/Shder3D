@@ -129,6 +129,7 @@ class FileManager {
         } else {
             ProjectData("randomName").also {
                 var cameraSceneEntity = SceneEntityData("Camera", TransformComponentData(), MeshRendererComponentData().also {
+                    it.name = "Image Effects"
                     val screenQuadShaderCode = Utils.getScreenQuadShaderCode()
                     val shaderData = get<ShaderData>(ShaderData::class.java)
 

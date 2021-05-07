@@ -8,14 +8,14 @@ uniform mat4 unity_ObjectToWorld; //done
 uniform mat4 unity_WorldToObject;//done
 uniform vec4 _ScreenParams; //done
 uniform vec3 _WorldSpaceCameraPos;//done
-uniform vec4 _ProjectionParams;
-uniform vec4 _ZBufferParams;
+uniform vec4 _ProjectionParams;//done
+uniform vec4 _ZBufferParams;//done
 
 uniform vec4 _WorldSpaceLightPos0;
 uniform vec4 _LightColor0;
 
 uniform vec4 _Time;
-uniform vec4 unity_DeltaTime; //done
+uniform vec4 unity_DeltaTime;
 
 #define float4 vec4
 #define float3 vec3
@@ -60,5 +60,21 @@ vec4 tex2D(sampler2D tex, vec2 uv) {
      return texture2D(tex, uv);
 }
 
+vec3 lerp(vec3 a, vec3 b, float t)
+{
+	if(t > 1.)
+	{
+		t = 1.;
+	}
 
+	return  vec3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
+}
 
+float linearD(float d)
+{
+float zNear=1.;
+float zFar = 500.;
+
+    float z_n = 2.0 * d - 1.0;
+    return 2.0 * zNear * zFar / (zFar + zNear - z_n * (zFar - zNear));
+}
