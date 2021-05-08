@@ -20,6 +20,7 @@ class SceneObjectManager(
 
         val sceneEntity = SceneEntity()
 
+        sceneEntity.isActive =sceneEntityData.active
         sceneEntity.entityID = sceneEntityData.entityID
         sceneEntity.name = sceneEntityData.name
         val addedRenderer = sceneEntity.addComponent(MeshRenderer::class.java)
@@ -27,7 +28,6 @@ class SceneObjectManager(
         addedRenderer.transform.position = sceneEntityData.transformData.position
         addedRenderer.transform.eulerAngles = sceneEntityData.transformData.eulerAngles
         addedRenderer.transform.scale = sceneEntityData.transformData.scale
-// create a mesh per model and use sub mesh concept
 
         if (!sceneEntityData.entityModelPath.isEmpty()) {
             val dataBase = ModelsDataBase()

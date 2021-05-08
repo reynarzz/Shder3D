@@ -191,6 +191,7 @@ class CustomObjParser {
             })
         }
 
+        println("""${modelPath}: ${models.size}""")
         return models
     }
 

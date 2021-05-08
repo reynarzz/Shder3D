@@ -5,8 +5,21 @@ import com.reynarz.minityeditor.engine.Mesh
 
 class MeshRenderer() : Component() {
 
-    lateinit var meshes: List<Mesh> //Mesh(FloatArray(1), IntArray(1), FloatArray(1))
+    private var _meshes = listOf<Mesh>()
+
+    var meshes: List<Mesh>
+        get() {
+            return _meshes
+        }
+        set(value) {
+            _meshes = value
+
+            meshCount = value.size
+        }
+
     var materials = mutableListOf<Material?>()
+    var meshCount = 0
+        private set
 
 //    val indexBuffer = mesh?.indexBuffer
 //    val indicesCount = mesh?.indicesCount

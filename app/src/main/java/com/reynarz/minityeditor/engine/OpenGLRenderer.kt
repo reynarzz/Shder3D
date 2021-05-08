@@ -185,7 +185,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         shadowMapFrameBuffer.bind()
 
         glEnable(GL_DEPTH_TEST)
-        glDisable(GL_STENCIL_TEST)
         glClear(GL_STENCIL_BUFFER_BIT)
 
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
@@ -197,7 +196,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             if (entity.isActive) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                for (meshIndex in renderer!!.meshes.indices) {
+                for (meshIndex in 0 until renderer!!.meshCount) {
 
 
                     renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial, meshIndex)
@@ -241,11 +240,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glClearColor(0.2f, 0.2f, 0.2f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        val lEndTime = System.currentTimeMillis().toFloat()
-
-        val output = (lEndTime - lStartTime).toFloat()
-
-        lStartTime = lEndTime
         //shader.setDeltaTimeTest(lEndTime.toFloat(), output)
 
         scene!!.editorCamera!!.transform.position = vec3(0f, 0f, -100f)
@@ -267,22 +261,17 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             if (entity.isActive) {
 
-//            if (entity.testMeshRenderer != null) {
-//                entity.testMeshRenderer!!.bind(viewM, projM, errorMaterial)
-//            }
-
-                val renderer = entity.getComponent(MeshRenderer::class.java)
-
                 for (entity in scene!!.entities) {
 
                     if (entity.isActive) {
                         val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                        for (meshIndex in renderer!!.meshes.indices) {
+                        for (meshIndex in 0 until renderer!!.meshCount) {
+
 
                             renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
-                            val mesh = renderer.meshes[meshIndex]
+                            val mesh = renderer!!.meshes[meshIndex]
 
                             if (renderer?.materials?.getOrNull(meshIndex) != null) {
                                 val depthUniform = glGetUniformLocation(renderer!!.materials[0]!!.shader.program, "_SHADOWMAP")
@@ -304,11 +293,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
                     glLineWidth(5f)
                     glDisable(GL_DEPTH_TEST)
-                    for (meshIndex in renderer!!.meshes.indices) {
+
+                    for (meshIndex in 0 until renderer!!.meshCount) {
                         val mesh = renderer.meshes[meshIndex]
                         renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, 0)
                         glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                     }
+
                     glEnable(GL_DEPTH_TEST)
                 }
             }
@@ -332,8 +323,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (obj in editorObjs!!) {
 
-            for (meshIndex in obj.meshes.indices) {
-
+            for (meshIndex in 0 until obj!!.meshCount) {
                 obj.bind(viewM, projM, errorMaterial, meshIndex)
 
                 if (obj.meshes[meshIndex].indicesCount > 0)
