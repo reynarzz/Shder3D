@@ -4,16 +4,18 @@ import com.reynarz.minityeditor.engine.ModelData
 import com.reynarz.minityeditor.engine.CustomObjParser
 
 class ModelsDataBase {
-    var modelsMap : Map<String, ModelData>
+    var modelsMap: Map<String, ModelData>
 
     init {
         modelsMap = mapOf()
 
     }
 
-    fun getModels(modelPath: String) : List<ModelData> {
-      // return ObjParser(modelPath).getModelData()
+    private val parser = CustomObjParser()
 
-        return CustomObjParser().getModels(modelPath)
+    fun getModels(modelPath: String): List<ModelData> {
+        // return ObjParser(modelPath).getModelData()
+
+        return parser.getModels(modelPath)
     }
 }

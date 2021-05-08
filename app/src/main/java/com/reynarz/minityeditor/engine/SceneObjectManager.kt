@@ -23,7 +23,10 @@ class SceneObjectManager(
         sceneEntity.isActive = sceneEntityData.active
         sceneEntity.entityID = sceneEntityData.entityID
         sceneEntity.name = sceneEntityData.name
+
         val addedRenderer = sceneEntity.addComponent(MeshRenderer::class.java)
+
+        sceneEntity.meshRenderer_Test = addedRenderer
 
         addedRenderer.transform.position = sceneEntityData.transformData.position
         addedRenderer.transform.eulerAngles = sceneEntityData.transformData.eulerAngles

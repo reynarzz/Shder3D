@@ -194,7 +194,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         for (entity in scene!!.entities) {
 
             if (entity.isActive) {
-                val renderer = entity.getComponent(MeshRenderer::class.java)
+                val renderer =entity.meshRenderer_Test// entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshCount) {
 
@@ -264,22 +264,21 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 for (entity in scene!!.entities) {
 
                     if (entity.isActive) {
-                        val renderer = entity.getComponent(MeshRenderer::class.java)
+                        val renderer =entity.meshRenderer_Test// entity.getComponent(MeshRenderer::class.java)
 
                         for (meshIndex in 0 until renderer!!.meshCount) {
-
 
                             renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
                             val mesh = renderer!!.meshes[meshIndex]
 
-                            if (renderer?.materials?.getOrNull(meshIndex) != null) {
-                                val depthUniform = glGetUniformLocation(renderer!!.materials[0]!!.shader.program, "_SHADOWMAP")
-                                glUniform1i(depthUniform, 0)
-                            }
-
                             glActiveTexture(GL_TEXTURE0)
                             glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
+
+//                            if (renderer?.materials?.getOrNull(meshIndex) != null) {
+//                                val depthUniform = glGetUniformLocation(renderer!!.materials[0]!!.shader.program, "_SHADOWMAP")
+//                                glUniform1i(depthUniform, 0)
+//                            }
 
                             glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                         }

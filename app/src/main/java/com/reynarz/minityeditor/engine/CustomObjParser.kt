@@ -23,19 +23,26 @@ class CustomObjParser {
     }
 
     val fullVerticesData = mutableListOf<MutableList<Vertex>>()
+    val models = mutableListOf<ModelData>()
+    val vPositions = mutableListOf<vec3>()
+    val normals = mutableListOf<vec3>()
+    val uv = mutableListOf<vec2>()
+    val indices = mutableListOf<Int>()
+    val currentVertices = mutableListOf<Vertex>()
+    val triangulatedVertex = mutableListOf<Vertex>()
+
 
     fun getModels(modelPath: String): List<ModelData> {
-
-
-
-        val vPositions = mutableListOf<vec3>()
-        val normals = mutableListOf<vec3>()
-        val uv = mutableListOf<vec2>()
-        val indices = mutableListOf<Int>()
-        val currentVertices = mutableListOf<Vertex>()
-        val triangulatedVertex = mutableListOf<Vertex>()
-
         val modelFile = FileManager().readFile(modelPath)
+
+        fullVerticesData.clear()
+        models.clear()
+        vPositions.clear()
+        normals.clear()
+        uv.clear()
+        indices.clear()
+        currentVertices.clear()
+        triangulatedVertex.clear()
 
         // Log.d("Total lines", modelFile)
 
@@ -55,27 +62,21 @@ class CustomObjParser {
                 //Log.d("position", "(${position.x}, ${position.y}, ${position.z})")
                 vPositions.add(position)
 
-            }
-
-            if (it.startsWith("vt ")) {
+            } else if (it.startsWith("vt ")) {
                 var splitted = it.split(" ")
 
                 val uvCoord = vec2(splitted[1].toFloat(), splitted[2].toFloat())
                 //Log.d("UV", "(${uvCoord.x}, ${uvCoord.y})")
 
                 uv.add(uvCoord)
-            }
-
-            if (it.startsWith("vn ")) {
+            } else if (it.startsWith("vn ")) {
                 var splitted = it.split(" ")
                 val normal = vec3(splitted[1].toFloat(), splitted[2].toFloat(), splitted[3].toFloat())
 
                 //Log.d("normals", "(${normal.x}, ${normal.y}, ${normal.z})")
 
                 normals.add(normal)
-            }
-
-            if (it.startsWith("usemtl ")) {
+            } else if (it.startsWith("usemtl ")) {
                 val matName = it.split(" ")[1]
 
                 if (currentMatName != matName) {
@@ -83,18 +84,15 @@ class CustomObjParser {
 
                     fullVerticesData.add(mutableListOf())
                 }
-            }
+            } else if (it.startsWith("f ")) {
 
-            if (it.startsWith("f ")) {
-
-                val faces = it.split(" ").toMutableList()
-                faces.removeAt(0)
+                val faces = it.split(" ")
                 currentVertices.clear()
                 triangulatedVertex.clear()
 
-                for (face in faces) {
+                for (i in 1 until faces.size) {
 
-                    var value = face.split("/")
+                    var value = faces[i].split("/")
 
                     val vertexIndex = value[0].toInt() - 1
                     val uvIndex = value[1].toInt() - 1
@@ -160,7 +158,6 @@ class CustomObjParser {
             }
         }
 
-        val models = mutableListOf<ModelData>()
         // triangulate here!
         for (verticesGroup in fullVerticesData) {
 
