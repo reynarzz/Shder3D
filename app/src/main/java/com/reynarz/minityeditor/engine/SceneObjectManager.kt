@@ -1,6 +1,5 @@
 package com.reynarz.minityeditor.engine
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
@@ -28,20 +27,22 @@ class SceneObjectManager(
         addedRenderer.transform.position = sceneEntityData.transformData.position
         addedRenderer.transform.eulerAngles = sceneEntityData.transformData.eulerAngles
         addedRenderer.transform.scale = sceneEntityData.transformData.scale
-
+// create a mesh per model and use sub mesh concept
 
         if (!sceneEntityData.entityModelPath.isEmpty()) {
             val dataBase = ModelsDataBase()
-            val modelData = dataBase.getModel(sceneEntityData.entityModelPath)
+            val modelsData = dataBase.getModels(sceneEntityData.entityModelPath)
+            val meshes = mutableListOf<Mesh>()
 
-            var objData = modelData
-            val mesh = Mesh(objData.mVertices, objData.mIndices, objData.mUVs, objData.mNormals)
-            addedRenderer!!.mesh = mesh
+            for (model in modelsData) {
+                meshes.add(Mesh(model.mVertices, model.mIndices, model.mUVs, model.mNormals))
+            }
+
+            addedRenderer!!.meshes = meshes
         } else {
             //empty mesh testing
-            addedRenderer!!.mesh = Mesh(FloatArray(1), IntArray(1), FloatArray(1), FloatArray(1))
+            addedRenderer!!.meshes = mutableListOf(Mesh(FloatArray(1), IntArray(1), FloatArray(1), FloatArray(1)))
         }
-
 
         //addedRenderer!!.material = mat
 
@@ -55,39 +56,40 @@ class SceneObjectManager(
         openGLRenderer.scene.entities.add(sceneEntity)
     }
 
-    fun boundingBoxTest(bounds: Bounds): MeshRenderer {
-
-        var cube = ObjParser(activity!!.baseContext!!, "models/cube.obj").getModelData()
-
-        val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1), FloatArray(1))
-        //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
-
-        return MeshRenderer(mesh, Utils.getUnlitMaterial(0.75f))
-    }
+//    fun boundingBoxTest(bounds: Bounds): MeshRenderer {
+//
+//        var cube = ObjParser(activity!!.baseContext!!, "models/cube.obj").getModelData()
+//
+//        val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1), FloatArray(1))
+//        //val mesh2 = Mesh(cube.mVertices, cube.mIndices, cube.mUVs)
+//
+//        return MeshRenderer(mesh, Utils.getUnlitMaterial(0.75f))
+//    }
 
     fun addMaterial(sceneEntityData: SceneEntityData) {
 
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
-        val materialData = sceneEntityData.meshRendererData.materialsData.getOrNull(0)
 
-        if (materialData != null && entity != null) {
-            val shaderData = materialData.shaderData
+        for (materialData in sceneEntityData.meshRendererData.materialsData){
+            if (materialData != null && entity != null) {
+                val shaderData = materialData.shaderData
 
-            val vertex = Utils.processMinityInclude(activity!!,shaderData.vertexShader)
-            val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
+                val vertex = Utils.processMinityInclude(activity!!, shaderData.vertexShader)
+                val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
 
 
-            val material = Material(Shader(vertex, fragment))
+                val material = Material(Shader(vertex, fragment))
 
-            entity.getComponent(MeshRenderer::class.java)!!.materials.add(material)
+                entity.getComponent(MeshRenderer::class.java)!!.materials.add(material)
 
-            for (textureData in materialData.texturesData) {
+                for (textureData in materialData.texturesData) {
 
-                if (textureData.path != null) {
-                    val bitmap = Utils.getBitmapFromPath(textureData.path!!)
-                    material.textures?.add(Texture(bitmap))
+                    if (textureData.path != null) {
+                        val bitmap = Utils.getBitmapFromPath(textureData.path!!)
+                        material.textures?.add(Texture(bitmap))
 
-                    textureData.previewBitmap = bitmap
+                        textureData.previewBitmap = bitmap
+                    }
                 }
             }
         }
@@ -102,7 +104,7 @@ class SceneObjectManager(
     fun recreateCameraEntity(sceneEntityData: SceneEntityData) {
         val cameraEntity = SceneEntity()
         val meshRenderer = cameraEntity.addComponent(MeshRenderer::class.java)
-        meshRenderer.mesh = Utils.getScreenSizeQuad()
+        meshRenderer.meshes = mutableListOf(Utils.getScreenSizeQuad())
 
         for (materialData in sceneEntityData.meshRendererData.materialsData) {
             val vertex = Utils.processMinityInclude(activity!!, materialData.shaderData.vertexShader)

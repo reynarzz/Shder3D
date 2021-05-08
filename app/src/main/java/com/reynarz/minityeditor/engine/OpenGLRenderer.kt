@@ -120,7 +120,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         val plane = Utils.getPlane(2000f)
         //plane.bind(material.program)
-        val meshRenderer = MeshRenderer(plane, material)
+        val meshRenderer = MeshRenderer(mutableListOf(plane), material)
 
         editorObjs!!.add(meshRenderer)
     }
@@ -197,8 +197,15 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             if (entity.isActive) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial)
-                glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
+                for (meshIndex in renderer!!.meshes.indices) {
+
+
+                    renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial, meshIndex)
+
+                    val mesh = renderer.meshes[meshIndex]
+
+                    glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+                }
             }
         }
 
@@ -220,6 +227,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         runCommands()
 
         shadowPass()
+
 
         mainFrameBuffer.bind()
 
@@ -265,67 +273,49 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight())
-//Shadow Map test
-                glActiveTexture(GL_TEXTURE0)
-                glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
+                for (entity in scene!!.entities) {
 
-                if (renderer?.materials?.getOrNull(0) != null) {
-                    val depthUniform = glGetUniformLocation(renderer!!.materials[0]!!.shader.program, "_SHADOWMAP")
-                    glUniform1i(depthUniform, 0)
+                    if (entity.isActive) {
+                        val renderer = entity.getComponent(MeshRenderer::class.java)
+
+                        for (meshIndex in renderer!!.meshes.indices) {
+
+                            renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
+
+                            val mesh = renderer.meshes[meshIndex]
+
+                            if (renderer?.materials?.getOrNull(meshIndex) != null) {
+                                val depthUniform = glGetUniformLocation(renderer!!.materials[0]!!.shader.program, "_SHADOWMAP")
+                                glUniform1i(depthUniform, 0)
+                            }
+
+                            glActiveTexture(GL_TEXTURE0)
+                            glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
+
+                            glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+                        }
+                    }
                 }
 
+                //selected entity outline.
 
-//                if (selectedEntity != null && entity === selectedEntity) {
-//                    // glDisable(GL_DEPTH_TEST)
-//                    glEnable(GL_STENCIL_TEST)
-//                    glStencilFunc(GL_ALWAYS, 1, 0xff)
-//                    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
-//                    glStencilMask(0xff)
-//                }
+                if (selectedEntity != null && entity === selectedEntity) {
 
-                glDrawElements(GL_TRIANGLES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer!!.mesh.indexBuffer)
-
-                if (entity.name != "Bounds") {
-                    //glDrawElements(GL_TRIANGLES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer)
-
-                    // glDisable(GL_DEPTH_TEST)
-                    if (selectedEntity != null && entity === selectedEntity) {
-//                        glEnable(GL_STENCIL_TEST)
-//                        //glDisable(GL_DEPTH_TEST)
-//
-//                        glStencilFunc(GL_NOTEQUAL, 1, 0xff); // Pass test if stencil value is 1
-//                        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-//                        glStencilMask(0x00)
-
-                        val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-//                        val scale = vec3(renderer!!.transform.scale.x, renderer!!.transform.scale.y, renderer!!.transform.scale.z)
-//
-//                        renderer!!.transform.scale = vec3(scale.x + 0.02f, scale.y + 0.02f, scale.z + 0.02f)
-                        //renderer!!.bind(viewM, projM, outlineMaterial)
-                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial)
-
-                        glDrawElements(GL_LINES, renderer!!.mesh.indicesCount, GL_UNSIGNED_INT, renderer.mesh.indexBuffer)
-
-                        //renderer.transform.scale = scale
-
-                        glDisable(GL_STENCIL_TEST)
-                        glEnable(GL_DEPTH_TEST)
+                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
+                    glLineWidth(5f)
+                    glDisable(GL_DEPTH_TEST)
+                    for (meshIndex in renderer!!.meshes.indices) {
+                        val mesh = renderer.meshes[meshIndex]
+                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, 0)
+                        glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                     }
-
-                } else {
-//                glDrawElements(
-//                    GL_LINES, entity.testMeshRenderer!!.indicesCount, GL_UNSIGNED_INT, entity.testMeshRenderer!!.indexBuffer
-//                )
+                    glEnable(GL_DEPTH_TEST)
                 }
             }
         }
         mainFrameBuffer.unBind()
 
-
-
-
-        editorRendering()
+        screenQuad()
 
     }
 
@@ -333,8 +323,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         Matrix.setIdentityM(it, 0)
     }
 
-    fun editorRendering() {
-
+    fun editorRenderingBack(){
         // Editor Axis Plane
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
@@ -342,12 +331,22 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         mainFrameBuffer.bind()
 
         for (obj in editorObjs!!) {
-            obj.bind(viewM, projM, errorMaterial)
 
-            if (obj.mesh.indicesCount > 0)
-                glDrawElements(GL_TRIANGLES, obj.mesh.indicesCount, GL_UNSIGNED_INT, obj.mesh.indexBuffer)
+            for (meshIndex in obj.meshes.indices) {
+
+                obj.bind(viewM, projM, errorMaterial, meshIndex)
+
+                if (obj.meshes[meshIndex].indicesCount > 0)
+                    glDrawElements(GL_TRIANGLES, obj.meshes[meshIndex].indicesCount, GL_UNSIGNED_INT, obj.meshes[meshIndex].indexBuffer)
+            }
         }
         mainFrameBuffer.unBind()
+
+    }
+
+    fun screenQuad() {
+
+        editorRenderingBack()
 
         // Screen Quad
         glDisable(GL_DEPTH_TEST)
@@ -355,7 +354,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         val meshRenderer = cameraEntity.getComponent(MeshRenderer::class.java)
 
-        meshRenderer?.bind(identityM, identityM, errorMaterial)
+        meshRenderer?.bind(identityM, identityM, errorMaterial, 0)
 
         // this should be binded differently
         glActiveTexture(GL_TEXTURE7)
@@ -372,9 +371,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glUniform1i(depthUniform, 8)
 
 
-
         glViewport(0, 0, MainActivity.width, MainActivity.height)
 
-        glDrawElements(GL_TRIANGLES, meshRenderer?.mesh!!.indicesCount, GL_UNSIGNED_INT, meshRenderer?.mesh!!.indexBuffer)
+        glDrawElements(GL_TRIANGLES, meshRenderer?.meshes!![0].indicesCount, GL_UNSIGNED_INT, meshRenderer?.meshes!![0].indexBuffer)
     }
 }

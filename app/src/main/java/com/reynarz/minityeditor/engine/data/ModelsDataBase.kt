@@ -1,8 +1,7 @@
 package com.reynarz.minityeditor.engine.data
 
 import com.reynarz.minityeditor.engine.ModelData
-import com.reynarz.minityeditor.engine.ObjParser
-import com.reynarz.minityeditor.files.CustomObjParser
+import com.reynarz.minityeditor.engine.CustomObjParser
 
 class ModelsDataBase {
     var modelsMap : Map<String, ModelData>
@@ -12,9 +11,9 @@ class ModelsDataBase {
 
     }
 
-    fun getModel(modelPath: String) : ModelData {
+    fun getModels(modelPath: String) : List<ModelData> {
       // return ObjParser(modelPath).getModelData()
 
-        return CustomObjParser().getModel(modelPath)
+        return CustomObjParser().getModels(modelPath)
     }
 }

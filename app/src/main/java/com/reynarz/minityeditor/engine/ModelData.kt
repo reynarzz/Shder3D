@@ -14,5 +14,6 @@ data class ModelData(
     var mSpecularColour: FloatArray,
     var mSpecularExponent: FloatArray,
     var mDissolve: FloatArray,*/
+    var materialName = ""
     var modelName = ""
 }
