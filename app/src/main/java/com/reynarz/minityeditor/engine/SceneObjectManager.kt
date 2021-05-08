@@ -20,7 +20,7 @@ class SceneObjectManager(
 
         val sceneEntity = SceneEntity()
 
-        sceneEntity.isActive =sceneEntityData.active
+        sceneEntity.isActive = sceneEntityData.active
         sceneEntity.entityID = sceneEntityData.entityID
         sceneEntity.name = sceneEntityData.name
         val addedRenderer = sceneEntity.addComponent(MeshRenderer::class.java)
@@ -29,7 +29,7 @@ class SceneObjectManager(
         addedRenderer.transform.eulerAngles = sceneEntityData.transformData.eulerAngles
         addedRenderer.transform.scale = sceneEntityData.transformData.scale
 
-        if (!sceneEntityData.entityModelPath.isEmpty()) {
+        if (sceneEntityData.entityModelPath.isNotEmpty()) {
             val dataBase = ModelsDataBase()
             val modelsData = dataBase.getModels(sceneEntityData.entityModelPath)
             val meshes = mutableListOf<Mesh>()
@@ -70,8 +70,8 @@ class SceneObjectManager(
 
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
 
-        for (materialData in sceneEntityData.meshRendererData.materialsData){
-            if (materialData != null && entity != null) {
+        for (materialData in sceneEntityData.meshRendererData.materialsData) {
+            if (entity != null) {
                 val shaderData = materialData.shaderData
 
                 val vertex = Utils.processMinityInclude(activity!!, shaderData.vertexShader)
@@ -95,9 +95,10 @@ class SceneObjectManager(
         }
     }
 
-    fun removeMaterial(sceneEntityData: SceneEntityData) {
+    fun removeMaterial(sceneEntityData: SceneEntityData, index: Int) {
+
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
-        entity?.getComponent(MeshRenderer::class.java)!!.materials.clear()
+        entity?.getComponent(MeshRenderer::class.java)!!.materials.removeAt(index)
     }
 
     // this contains duplicated code
