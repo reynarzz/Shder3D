@@ -286,21 +286,20 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 }
 
                 //selected entity outline.
+                if (selectedEntity != null && entity === selectedEntity) {
 
-//                if (selectedEntity != null && entity === selectedEntity) {
-//
-//                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-//                    glLineWidth(5f)
-//                    glDisable(GL_DEPTH_TEST)
-//
-//                    for (meshIndex in 0 until renderer!!.meshCount) {
-//                        val mesh = renderer.meshes[meshIndex]
-//                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, 0)
-//                        glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-//                    }
-//
-//                    glEnable(GL_DEPTH_TEST)
-//                }
+                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
+                    glLineWidth(5f)
+                    glDisable(GL_DEPTH_TEST)
+
+                    for (meshIndex in 0 until renderer!!.meshCount) {
+                        val mesh = renderer.meshes[meshIndex]
+                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, 0)
+                        glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+                    }
+
+                    glEnable(GL_DEPTH_TEST)
+                }
             }
         }
         mainFrameBuffer.unBind()
