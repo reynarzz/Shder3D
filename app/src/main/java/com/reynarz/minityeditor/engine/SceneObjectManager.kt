@@ -1,5 +1,6 @@
 package com.reynarz.minityeditor.engine
 
+import android.opengl.GLES20
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
@@ -105,7 +106,7 @@ class SceneObjectManager(
 
                 if (textureData.path != null) {
                     val bitmap = Utils.getBitmapFromPath(textureData.path!!)
-                    material.textures?.add(Texture(bitmap))
+                    material.textures?.add(Texture(bitmap, GLES20.GL_REPEAT))
 
                     textureData.previewBitmap = bitmap
                 }
@@ -137,12 +138,13 @@ class SceneObjectManager(
             val fragment = Utils.processMinityInclude(activity!!, materialData.shaderData.fragmentShader)
 
             val material = Material(Shader(vertex, fragment))
+            material.nameTest = materialData.name
             meshRenderer.materials.add(material)
 
             for (textureData in materialData.texturesData) {
                 if (textureData.path != null) {
                     val bitmap = Utils.getBitmapFromPath(textureData.path!!)
-                    material.textures?.add(Texture(bitmap))
+                    material.textures?.add(Texture(bitmap, GLES20.GL_REPEAT))
 
                     textureData.previewBitmap = bitmap
                 }

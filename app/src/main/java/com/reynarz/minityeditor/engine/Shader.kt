@@ -34,9 +34,6 @@ class Shader(vertexSource: String, fragmentSource: String) {
         if (glIsProgram(program)) {
             glDetachShader(program, fragmentShader)
             glDetachShader(program, vertexShader)
-
-            // camera image effect stop working after this.
-            //glDeleteProgram(program)
         }
 
         glDeleteShader(vertexShader)

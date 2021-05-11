@@ -90,7 +90,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             zoom = cameraTransformData.scale.x
 
             mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-            mainFrameBuffer.genNormalFrameBuffer()
+            mainFrameBuffer.genNormalFrameBuffer(GL_REPEAT)
 
             shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
             shadowMapFrameBuffer.genBufferForDepth()
@@ -146,7 +146,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
     }
 
-    private fun getSelectedMat() : Material?{
+    private fun getSelectedMat(): Material? {
         val meshRenderer = selectedEntity!!.getComponent(MeshRenderer::class.java)!!
 
         var selectedMaterial: Material? = null
@@ -170,9 +170,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             val mat = getSelectedMat()
 
             if (mat?.textures!!.size > repository.selectedTextureSlot) {
-                mat?.textures!![repository.selectedTextureSlot] = Texture(bitmap)
+                mat?.textures!![repository.selectedTextureSlot] = Texture(bitmap, GL_REPEAT)
             } else {
-                mat?.textures?.add(Texture(bitmap))
+                mat?.textures?.add(Texture(bitmap, GL_REPEAT))
             }
 
             textureData.previewBitmap = bitmap
@@ -249,7 +249,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
-       shadowPass()
+        shadowPass()
 
 
         mainFrameBuffer.bind()

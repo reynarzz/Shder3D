@@ -10,12 +10,12 @@ class FrameBuffer(val width: Int, val height: Int) {
     var depthTexture = 0
     var stencilTexture = -1
 
-    fun genNormalFrameBuffer() {
+    fun genNormalFrameBuffer(clampParams: Int) {
         // Create a frame buffer
         glGenFramebuffers(1, frameBuffer, 0);
 
-        colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, width, height, GL_NEAREST).textureID
-        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, width, height, GL_NEAREST).textureID
+        colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, width, height, GL_NEAREST, clampParams).textureID
+        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, width, height, GL_NEAREST, clampParams).textureID
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
 
@@ -39,7 +39,7 @@ class FrameBuffer(val width: Int, val height: Int) {
     fun genBufferForDepth() {
 
         glGenFramebuffers(1, frameBuffer, 0)
-        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, width, height, GL_LINEAR).textureID
+        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, width, height, GL_LINEAR, GL_CLAMP_TO_EDGE).textureID
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)

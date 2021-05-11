@@ -21,7 +21,7 @@ class Texture {
 //
 //    }
 
-    constructor(internalFormat: Int, format: Int, type: Int, width: Int, height: Int, filter: Int) {
+    constructor(internalFormat: Int, format: Int, type: Int, width: Int, height: Int, filter: Int, clampParams: Int) {
         // Generate a texture to hold the colour buffer
 
         _textureID = IntArray(1)
@@ -36,8 +36,8 @@ class Texture {
             0, format, type, null
         );
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampParams)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clampParams)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
     }
@@ -46,14 +46,14 @@ class Texture {
 
         var bitmap = doInBackground(context, path)
 
-        loadTexture(bitmap)
+        loadTexture(bitmap, GL_CLAMP_TO_EDGE)
     }
 
-    constructor(bitmap: Bitmap) {
-        loadTexture(bitmap)
+    constructor(bitmap: Bitmap, clampingGLParam: Int) {
+        loadTexture(bitmap, clampingGLParam)
     }
 
-    private fun loadTexture(bitmap: Bitmap) {
+    private fun loadTexture(bitmap: Bitmap, clampingGLParam: Int) {
         var editableBitmap = bitmap
 
         val imageArray = bitmapToImageArray(editableBitmap)
@@ -68,8 +68,8 @@ class Texture {
         glBindTexture(GL_TEXTURE_2D, _textureID!![0])
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampingGLParam)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clampingGLParam)
 
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, editableBitmap, 0)
     }
