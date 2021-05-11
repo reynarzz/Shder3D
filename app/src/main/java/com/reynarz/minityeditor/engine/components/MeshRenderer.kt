@@ -16,7 +16,7 @@ class MeshRenderer() : Component() {
         }
 
     var materials = mutableListOf<Material?>()
-
+    private var lastSelectedMat: Material? = null
 
 
     constructor(mesh: List<Mesh>, material: Material?) : this() {
@@ -26,30 +26,24 @@ class MeshRenderer() : Component() {
 
     fun bind(view: FloatArray?, projection: FloatArray?, default: Material?, meshIndex: Int) {
 
-        val selectedMat = materials.elementAtOrNull(meshIndex)
+        lastSelectedMat = materials.elementAtOrNull(meshIndex)
 
-        var mat = if (selectedMat != null && selectedMat!!.shader.compiledCorrectly) selectedMat else default
-
-        mat!!.bind(transform!!.modelM!!, view, projection)
-        meshes[meshIndex].bind(mat!!.program)
-    }
-
-    fun bindWithMaterial(view: FloatArray, projection: FloatArray, mat: Material, meshIndex: Int) {
+        var mat = if (lastSelectedMat != null && lastSelectedMat!!.shader.compiledCorrectly) lastSelectedMat else default
 
         mat!!.bind(transform!!.modelM!!, view, projection)
         meshes[meshIndex].bind(mat!!.program)
     }
 
     fun bindShadow(view: FloatArray, projection: FloatArray, default: Material, lightViewM: FloatArray, meshIndex: Int) {
-        val selectedMat = materials.elementAtOrNull(meshIndex)
+        lastSelectedMat = materials.elementAtOrNull(meshIndex)
 
-        val mat = if (selectedMat != null && selectedMat!!.shader.compiledCorrectly) selectedMat else default
+        val mat = if (lastSelectedMat != null && lastSelectedMat!!.shader.compiledCorrectly) lastSelectedMat else default
 
         mat!!.bind(transform!!.modelM!!, view, projection, lightViewM)
         meshes[meshIndex].bind(mat!!.program)
     }
 
     fun unBind() {
-
+        lastSelectedMat?.unBind()
     }
 }

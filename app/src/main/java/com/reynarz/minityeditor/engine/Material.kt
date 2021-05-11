@@ -73,6 +73,14 @@ class Material(val shader: Shader) {
         }
     }
 
+    private fun unbindTextures(){
+        for (slot in textures!!.indices) {
+
+            glActiveTexture(GL_TEXTURE0 +slot)
+            glBindTexture(GL_TEXTURE_2D, 0)
+        }
+    }
+
     private fun setUniforms(model: FloatArray?, view: FloatArray?, projection: FloatArray?) {
 
 //        var UNITY_MATRIX_T_MV = glGetUniformLocation(program, "UNITY_MATRIX_T_MV")
@@ -139,5 +147,10 @@ class Material(val shader: Shader) {
     fun set(uniformName: String, int: Int) {
         val uniformLocation = glGetUniformLocation(shader.program, uniformName)
         glUniform1i(uniformLocation, int)
+    }
+
+    fun unBind() {
+        unbindTextures()
+        glUseProgram(0)
     }
 }
