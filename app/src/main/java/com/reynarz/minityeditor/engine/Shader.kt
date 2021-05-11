@@ -61,7 +61,7 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
             glAttachShader(program, vertexShader)
             glAttachShader(program, fragmentShader)
-
+            Log.d("Shader compile", "succesfull")
             glLinkProgram(program)
         } else {
 
@@ -74,8 +74,6 @@ class Shader(vertexSource: String, fragmentSource: String) {
                 val log = glGetShaderInfoLog(fragmentShader)
                 Log.d("Fragment Shader", log)
             }
-
-
         }
     }
 

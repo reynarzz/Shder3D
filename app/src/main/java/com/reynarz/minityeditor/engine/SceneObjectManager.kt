@@ -16,11 +16,6 @@ class SceneObjectManager(
 
     fun testLoadObject(sceneEntityData: SceneEntityData) {
 
-        //        val mat = Utils.getDefaultMaterial()
-//        mat.addTexture(Texture(context!!, "textures/girltex_small.jpg"))
-
-        // val renderer = MeshRenderer(mesh, null)
-
         val sceneEntity = SceneEntity()
 
         sceneEntity.name = sceneEntityData.name
@@ -75,7 +70,7 @@ class SceneObjectManager(
     fun addMaterials(sceneEntityData: SceneEntityData) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
-
+        println("addn")
         for (materialData in sceneEntityData.meshRendererData.materialsData) {
             addMaterial(meshRenderer, materialData)
         }
@@ -84,7 +79,7 @@ class SceneObjectManager(
     fun addMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData!!.entityID)
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
-
+        println("add1")
         val material = sceneEntityData.meshRendererData.materialsData[matIndex]
         addMaterial(meshRenderer, material)
     }
@@ -98,7 +93,7 @@ class SceneObjectManager(
             val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
 
             val material = Material(Shader(vertex, fragment))
-            material.nameTest = materialData.name
+            material.id = materialData.materialDataId
 
             meshRenderer!!.materials.add(material)
 
@@ -122,7 +117,7 @@ class SceneObjectManager(
 
         for (i in entity?.getComponent(MeshRenderer::class.java)!!.materials)
         {
-            println("materials left: " + i!!.nameTest)
+            println("materials left: " + i!!.id)
 
         }
     }
@@ -138,7 +133,7 @@ class SceneObjectManager(
             val fragment = Utils.processMinityInclude(activity!!, materialData.shaderData.fragmentShader)
 
             val material = Material(Shader(vertex, fragment))
-            material.nameTest = materialData.name
+            material.id = materialData.materialDataId
             meshRenderer.materials.add(material)
 
             for (textureData in materialData.texturesData) {

@@ -23,7 +23,7 @@ class FrameBuffer(val width: Int, val height: Int) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
             GL_TEXTURE_2D, colorTexture, 0
-        );
+        )
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
 
@@ -33,6 +33,7 @@ class FrameBuffer(val width: Int, val height: Int) {
         if (status == GL_FRAMEBUFFER_COMPLETE) {
             // Success
         }
+
         unBind()
     }
 

@@ -134,7 +134,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             for (i in meshRenderer.materials) {
 
-                if (i!!.nameTest == repository.selectedMaterial.name) {
+                if (i!!.id == repository.selectedMaterial.materialDataId) {
                     selectedMaterial = i
                 }
             }
@@ -153,7 +153,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (i in meshRenderer.materials) {
 
-            if (i!!.nameTest == repository.selectedMaterial.name) {
+            if (i!!.id == repository.selectedMaterial.name) {
                 selectedMaterial = i
             }
         }
@@ -249,7 +249,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
-        shadowPass()
+        //shadowPass()
 
 
         mainFrameBuffer.bind()
@@ -283,7 +283,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (entity in scene!!.entities) {
 
-            if (entity.isActive) {
 
                 for (entity in scene!!.entities) {
 
@@ -326,7 +325,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //
 //                    glEnable(GL_DEPTH_TEST)
 //                }
-            }
         }
         mainFrameBuffer.unBind()
 

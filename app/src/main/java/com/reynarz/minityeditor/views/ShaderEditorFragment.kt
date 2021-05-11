@@ -71,41 +71,6 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             binding.etVertexCode.visibility = if (checked) View.VISIBLE else View.GONE
             binding.etFragmentCode.visibility = if (!checked) View.VISIBLE else View.GONE
         }
-//        var fragShaderFocused = true
-//
-//        switchShaderType.setOnClickListener {
-//            fragShaderFocused = !fragShaderFocused
-//
-//            if (fragShaderFocused) {
-//                codeEditTex.setText(shaderData.fragmentShader)
-//            } else {
-//                codeEditTex.setText(shaderData.vertexShader)
-//            }
-//        }
-////
-//        binding.btnShowHide.setOnClickListener {
-//            binding.codeContainer.visibility = View.INVISIBLE
-//        }
-//
-//        compileButton.setOnClickListener {
-//
-//            if (fragShaderFocused) {
-//                shaderData.fragmentShader = codeEditTex.editableText.toString()
-//            } else {
-//                shaderData.vertexShader = codeEditTex.editableText.toString()
-//            }
-//
-//            renderer.setReplaceShadersCommand(
-//                Utils.ShaderFileUtils.processInclude(include1, shaderData.vertexShader),
-//                Utils.ShaderFileUtils.processInclude(include1, shaderData.fragmentShader)
-//            )
-//
-//            var compilationMessageCallback = { message: String ->
-//                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-//            }
-//
-//            compilationMessageCallback("Compiled!")
-//        }
     }
 
 
@@ -117,7 +82,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         val compileContainer = requireView().findViewById<ConstraintLayout>(R.id.cl_compileShaderContainer)
         val closeShaderWindowContainer = requireView().findViewById<ConstraintLayout>(R.id.cl_closeShaderWindowContainer)
 
-        background.visibility = if (background.visibility === View.VISIBLE) View.INVISIBLE else View.VISIBLE
+        background.visibility = if (background.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
 
         codeContainer.visibility = background.visibility
         switchShaderTypeContainer.visibility = background.visibility

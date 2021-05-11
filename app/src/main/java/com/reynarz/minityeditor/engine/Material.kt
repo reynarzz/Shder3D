@@ -18,7 +18,7 @@ class MaterialConfig {
 class Material(val shader: Shader) {
     //val materialData = MaterialData()
 
-    var nameTest = ""
+    var id = ""
 
     val program = shader.program
 

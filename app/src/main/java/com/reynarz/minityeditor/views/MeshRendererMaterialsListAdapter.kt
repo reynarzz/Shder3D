@@ -35,6 +35,7 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
 
             // Add Texture Slot
             val addTextureSlotButton = findViewById<Button>(R.id.btn_addTextureSlot)
+
             addTextureSlotButton.setOnClickListener {
 
                 if (materialData.texturesData.size < GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS) {
