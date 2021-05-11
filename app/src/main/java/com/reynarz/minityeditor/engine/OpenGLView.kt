@@ -91,8 +91,6 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
 
 
             MotionEvent.ACTION_MOVE -> {
-
-
                 if (event.pointerCount == 1) {
                     val dx = event!!.x - prevX
                     val dy = event!!.y - prevY

@@ -194,9 +194,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         for (entity in scene!!.entities) {
 
             if (entity.isActive) {
-                val renderer =entity.meshRenderer_Test// entity.getComponent(MeshRenderer::class.java)
+                val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                for (meshIndex in 0 until renderer!!.meshCount) {
+                for (meshIndex in 0 until renderer!!.meshes.size) {
 
 
                     renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial, meshIndex)
@@ -264,9 +264,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 for (entity in scene!!.entities) {
 
                     if (entity.isActive) {
-                        val renderer =entity.meshRenderer_Test// entity.getComponent(MeshRenderer::class.java)
+                        val renderer = entity.getComponent(MeshRenderer::class.java)
 
-                        for (meshIndex in 0 until renderer!!.meshCount) {
+                        for (meshIndex in 0 until renderer!!.meshes.size) {
 
                             renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
@@ -281,25 +281,27 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //                            }
 
                             glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+
+                            //renderer.unBind()
                         }
                     }
                 }
 
                 //selected entity outline.
-                if (selectedEntity != null && entity === selectedEntity) {
-
-                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-                    glLineWidth(5f)
-                    glDisable(GL_DEPTH_TEST)
-
-                    for (meshIndex in 0 until renderer!!.meshCount) {
-                        val mesh = renderer.meshes[meshIndex]
-                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, 0)
-                        glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-                    }
-
-                    glEnable(GL_DEPTH_TEST)
-                }
+//                if (selectedEntity != null && entity === selectedEntity) {
+//
+//                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
+//                    glLineWidth(5f)
+//                    glDisable(GL_DEPTH_TEST)
+//
+//                    for (meshIndex in 0 until renderer!!.meshCount) {
+//                        val mesh = renderer.meshes[meshIndex]
+//                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, 0)
+//                        glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+//                    }
+//
+//                    glEnable(GL_DEPTH_TEST)
+//                }
             }
         }
         mainFrameBuffer.unBind()
@@ -321,7 +323,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (obj in editorObjs!!) {
 
-            for (meshIndex in 0 until obj!!.meshCount) {
+            for (meshIndex in 0 until obj!!.meshes.size) {
                 obj.bind(viewM, projM, errorMaterial, meshIndex)
 
                 if (obj.meshes[meshIndex].indicesCount > 0)
@@ -362,5 +364,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glViewport(0, 0, MainActivity.width, MainActivity.height)
 
         glDrawElements(GL_TRIANGLES, meshRenderer?.meshes!![0].indicesCount, GL_UNSIGNED_INT, meshRenderer?.meshes!![0].indexBuffer)
+
+
     }
 }

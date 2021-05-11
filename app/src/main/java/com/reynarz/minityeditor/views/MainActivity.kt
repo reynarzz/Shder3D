@@ -138,18 +138,29 @@ class MainActivity : AppCompatActivity() {
         openGLView.renderer.addRenderCommand {
 
             sceneObjectManager.testLoadObject(entity)
-            sceneObjectManager.addMaterial(entity)
         }
     }
 
     fun updateMaterials(sceneEntityData: SceneEntityData?) {
         openGLView.renderer.addRenderCommand {
-            sceneObjectManager.addMaterial(sceneEntityData!!)
+            sceneObjectManager.addMaterials(sceneEntityData!!)
+        }
+    }
+
+    fun updateMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
+        openGLView.renderer.addRenderCommand {
+            sceneObjectManager.addMaterial(sceneEntityData!!, matIndex)
         }
     }
 
     fun updateTransform(sceneEntityData: SceneEntityData?) {
         openGLView.renderer.setTransform(sceneEntityData!!)
+    }
+
+    fun removeMaterial(sceneEntityData: SceneEntityData?, matIndex : Int) {
+        openGLView.renderer.addRenderCommand {
+            sceneObjectManager.removeMaterial(sceneEntityData, matIndex)
+        }
     }
 
     override fun onResume() {

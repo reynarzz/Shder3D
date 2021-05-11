@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.DefaultNavigator
+import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.models.*
@@ -57,20 +58,27 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, pri
                     val addMaterialButton = findViewById<Button>(R.id.btn_addToComponentList)
                     addMaterialButton.visibility = View.VISIBLE
 
+
                     addMaterialButton.setOnClickListener {
 
                         val mat: MaterialData = get(MaterialData::class.java)
 
                         // Add to the view model data, //bad.
-                        (value!![position] as MeshRendererComponentData).materialsData.add(mat)
+                                val materialsData = (value!![position] as MeshRendererComponentData).materialsData
+                        mat.name = "Material " + (materialsData.size+1)
+                        materialsData.add(mat)
 
+                        val repo = get<MinityProjectRepository>(MinityProjectRepository::class.java)
+
+                        println("materials-add count:" + materialsData.size.toString())
                         //apply the data to view model first to notify.
                         viewModel.componentsData.value = value
+
+                        MainActivity.instance.updateMaterial(repo.selectedSceneEntity, materialsData.size-1)
 
                         //update the adapter list.
                         adapter.notifyDataSetChanged()
                     }
-
                     val rvMaterials = findViewById<RecyclerView>(R.id.rv_meshRendererMaterials)
 
                     rvMaterials.adapter = adapter

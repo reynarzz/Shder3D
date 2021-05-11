@@ -22,14 +22,18 @@ class CustomObjParser {
         var index = 0
     }
 
-    val fullVerticesData = mutableListOf<MutableList<Vertex>>()
-    val models = mutableListOf<ModelData>()
-    val vPositions = mutableListOf<vec3>()
-    val normals = mutableListOf<vec3>()
-    val uv = mutableListOf<vec2>()
-    val indices = mutableListOf<Int>()
-    val currentVertices = mutableListOf<Vertex>()
-    val triangulatedVertex = mutableListOf<Vertex>()
+    private val fullVerticesData = mutableListOf<MutableList<Vertex>>()
+    private val models = mutableListOf<ModelData>()
+    private val vPositions = mutableListOf<vec3>()
+    private val normals = mutableListOf<vec3>()
+    private val uv = mutableListOf<vec2>()
+    private val indices = mutableListOf<Int>()
+    private val currentVertices = mutableListOf<Vertex>()
+    private val triangulatedVertex = mutableListOf<Vertex>()
+
+    private val verticesFinal = mutableListOf<Float>()
+    private val normalsFinal = mutableListOf<Float>()
+    private val uvFinal = mutableListOf<Float>()
 
 
     fun getModels(modelPath: String): List<ModelData> {
@@ -97,8 +101,6 @@ class CustomObjParser {
                     val vertexIndex = value[0].toInt() - 1
                     val uvIndex = value[1].toInt() - 1
 
-                    //Log.d("Indexes ${value.size}", "vertex: ${vertexIndex + 1}, uv: ${uvIndex + 1}")
-
                     val vertex = Vertex()
 
                     vertex.position = vPositions[vertexIndex]
@@ -158,13 +160,14 @@ class CustomObjParser {
             }
         }
 
+
+
         // triangulate here!
         for (verticesGroup in fullVerticesData) {
-
-            val verticesFinal = mutableListOf<Float>()
-            val normalsFinal = mutableListOf<Float>()
-            val uvFinal = mutableListOf<Float>()
             //val indicesFinal = mutableListOf<Int>()
+            verticesFinal.clear()
+            normalsFinal.clear()
+            uvFinal.clear()
 
             for (vertex in verticesGroup) {
                 verticesFinal.add(vertex.position.x)

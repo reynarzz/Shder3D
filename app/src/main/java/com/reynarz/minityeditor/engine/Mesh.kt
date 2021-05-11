@@ -66,11 +66,11 @@ class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray, 
 
         val uvAttrib = glGetAttribLocation(program, "_UV_")
 
-        glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, true, 2 * 4, uvBuffer)
+        glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, false, 2 * 4, uvBuffer)
         glEnableVertexAttribArray(uvAttrib)
 
         val normalsAttrib = glGetAttribLocation(program, "_NORMAL_")
-        glVertexAttribPointer(normalsAttrib, 3, GL_FLOAT, true, 3 * 4, normalsBuffer)
+        glVertexAttribPointer(normalsAttrib, 3, GL_FLOAT, false, 3 * 4, normalsBuffer)
         glEnableVertexAttribArray(normalsAttrib)
     }
 }

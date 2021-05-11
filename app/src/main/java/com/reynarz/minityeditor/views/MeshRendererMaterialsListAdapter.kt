@@ -58,8 +58,10 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
             val editMatButton = findViewById<Button>(R.id.btn_editMaterialShaderFromInspector)
             val removeMatButton = findViewById<Button>(R.id.btn_removeMaterial)
 
+            val minityRepository: MinityProjectRepository = get(MinityProjectRepository::class.java)
+
+
             editMatButton.setOnClickListener {
-                val minityRepository: MinityProjectRepository = get(MinityProjectRepository::class.java)
                 minityRepository.selectedMaterial = materialData
 
                 navigator.goToShaderEditor()
@@ -70,8 +72,9 @@ class MeshRendererMaterialsListAdapter(private val meshRendererComponentData: Me
             }
 
             removeMatButton.setOnClickListener {
-                Log.d("Delete mat", position.toString())
                 meshRendererComponentData.materialsData.removeAt(position)
+
+                MainActivity.instance.removeMaterial(minityRepository.selectedSceneEntity, position)
                 notifyDataSetChanged()
             }
         }

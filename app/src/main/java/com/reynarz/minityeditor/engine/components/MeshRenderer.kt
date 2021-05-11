@@ -13,17 +13,11 @@ class MeshRenderer() : Component() {
         }
         set(value) {
             _meshes = value
-
-            meshCount = value.size
         }
 
     var materials = mutableListOf<Material?>()
-    var meshCount = 0
-        private set
 
-//    val indexBuffer = mesh?.indexBuffer
-//    val indicesCount = mesh?.indicesCount
-//    val vertexCount = mesh?.vertexCount
+
 
     constructor(mesh: List<Mesh>, material: Material?) : this() {
         this.meshes = mesh
@@ -35,7 +29,6 @@ class MeshRenderer() : Component() {
         val selectedMat = materials.getOrNull(meshIndex)
 
         var mat = if (selectedMat != null && selectedMat!!.shader.compiledCorrectly) selectedMat else default
-
 
         mat!!.bind(transform!!.modelM!!, view, projection)
         meshes[meshIndex].bind(mat!!.program)
@@ -49,9 +42,15 @@ class MeshRenderer() : Component() {
 
     fun bindShadow(view: FloatArray, projection: FloatArray, default: Material, lightViewM: FloatArray, meshIndex: Int) {
 
-        val mat = if (materials.getOrNull(meshIndex) != null && materials.getOrNull(meshIndex)!!.shader.compiledCorrectly) materials.getOrNull(meshIndex) else default
+        val selectedMat = materials.getOrNull(meshIndex)
+
+        val mat = if (selectedMat != null && selectedMat!!.shader.compiledCorrectly) selectedMat else default
 
         mat!!.bind(transform!!.modelM!!, view, projection, lightViewM)
         meshes[meshIndex].bind(mat!!.program)
+    }
+
+    fun unBind() {
+
     }
 }

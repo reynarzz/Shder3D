@@ -17,7 +17,7 @@ class SceneEntity : Entity() {
         components = mutableListOf()
         _transform = Transform()
     }
-    lateinit var meshRenderer_Test:MeshRenderer
+
     /*
     * Get a component attached to this scene entity.
     * */

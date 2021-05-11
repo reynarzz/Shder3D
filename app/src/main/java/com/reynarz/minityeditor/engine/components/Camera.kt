@@ -15,6 +15,7 @@ class Camera : Component() {
         Matrix.setIdentityM(projectionM, 0)
         Matrix.setIdentityM(projectionMInv, 0)
 
+
         //eye = camera pos
         //center
         //Matrix.setLookAtM()

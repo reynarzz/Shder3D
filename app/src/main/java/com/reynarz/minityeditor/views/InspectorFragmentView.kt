@@ -81,7 +81,7 @@ class InspectorFragmentView : Fragment() {
 
                         entityData.meshRendererData = meshRendererData
 
-                        MainActivity.instance.updateMaterials(entityData)
+
                     }
                 }
             }
