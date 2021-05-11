@@ -26,7 +26,7 @@ class MeshRenderer() : Component() {
 
     fun bind(view: FloatArray?, projection: FloatArray?, default: Material?, meshIndex: Int) {
 
-        val selectedMat = materials.getOrNull(meshIndex)
+        val selectedMat = materials.elementAtOrNull(meshIndex)
 
         var mat = if (selectedMat != null && selectedMat!!.shader.compiledCorrectly) selectedMat else default
 
@@ -41,8 +41,7 @@ class MeshRenderer() : Component() {
     }
 
     fun bindShadow(view: FloatArray, projection: FloatArray, default: Material, lightViewM: FloatArray, meshIndex: Int) {
-
-        val selectedMat = materials.getOrNull(meshIndex)
+        val selectedMat = materials.elementAtOrNull(meshIndex)
 
         val mat = if (selectedMat != null && selectedMat!!.shader.compiledCorrectly) selectedMat else default
 

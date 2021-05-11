@@ -73,31 +73,33 @@ class SceneObjectManager(
 
     fun addMaterials(sceneEntityData: SceneEntityData) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
+        val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
 
         for (materialData in sceneEntityData.meshRendererData.materialsData) {
-            addMaterial(entity, materialData)
+            addMaterial(meshRenderer, materialData)
         }
     }
 
     fun addMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData!!.entityID)
+        val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
 
         val material = sceneEntityData.meshRendererData.materialsData[matIndex]
-        addMaterial(entity, material)
+        addMaterial(meshRenderer, material)
     }
 
-    private fun addMaterial(entity: SceneEntity?, materialData: MaterialData) {
+    private fun addMaterial(meshRenderer: MeshRenderer?, materialData: MaterialData) {
 
-        if (entity != null) {
+        if (meshRenderer != null) {
             val shaderData = materialData.shaderData
 
             val vertex = Utils.processMinityInclude(activity!!, shaderData.vertexShader)
             val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
 
-
             val material = Material(Shader(vertex, fragment))
+            material.nameTest = materialData.name
 
-            entity.getComponent(MeshRenderer::class.java)!!.materials.add(material)
+            meshRenderer!!.materials.add(material)
 
             for (textureData in materialData.texturesData) {
 
@@ -112,16 +114,19 @@ class SceneObjectManager(
     }
 
     fun removeMaterial(sceneEntityData: SceneEntityData?, index: Int) {
-
         Log.d("materials-deleteAt: ", index.toString())
 
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData?.entityID)
         entity?.getComponent(MeshRenderer::class.java)!!.materials.removeAt(index)
 
-        println("materials: " + entity?.getComponent(MeshRenderer::class.java)!!.materials.size)
+        for (i in entity?.getComponent(MeshRenderer::class.java)!!.materials)
+        {
+            println("materials left: " + i!!.nameTest)
+
+        }
     }
 
-    // this contains duplicated code
+    // This contains duplicated code
     fun recreateCameraEntity(sceneEntityData: SceneEntityData) {
         val cameraEntity = SceneEntity()
         val meshRenderer = cameraEntity.addComponent(MeshRenderer::class.java)
@@ -135,7 +140,6 @@ class SceneObjectManager(
             meshRenderer.materials.add(material)
 
             for (textureData in materialData.texturesData) {
-
                 if (textureData.path != null) {
                     val bitmap = Utils.getBitmapFromPath(textureData.path!!)
                     material.textures?.add(Texture(bitmap))

@@ -18,6 +18,8 @@ class MaterialConfig {
 class Material(val shader: Shader) {
     //val materialData = MaterialData()
 
+    var nameTest = ""
+
     val program = shader.program
 
     val MVP = FloatArray(16)

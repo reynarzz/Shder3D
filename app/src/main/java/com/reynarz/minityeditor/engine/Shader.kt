@@ -29,13 +29,18 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
     fun replaceShaders(vertex: String, fragment: String) {
 
-        glDetachShader(program, fragmentShader)
-        glDetachShader(program, vertexShader)
+        unBind()
+
+        if (glIsProgram(program)) {
+            glDetachShader(program, fragmentShader)
+            glDetachShader(program, vertexShader)
+
+            // camera image effect stop working after this.
+            //glDeleteProgram(program)
+        }
 
         glDeleteShader(vertexShader)
         glDeleteShader(fragmentShader)
-
-        //glDeleteProgram(program)
 
         createShaders(vertex, fragment)
     }
@@ -50,10 +55,18 @@ class Shader(vertexSource: String, fragmentSource: String) {
         val couldVertexShaderCompile = vertexResult.second
         val couldFragmentShaderCompile = fragmentResult.second
 
-        val anErrorhappened = !couldVertexShaderCompile || !couldFragmentShaderCompile
+        compiledCorrectly = couldVertexShaderCompile && couldFragmentShaderCompile
 
-        if (anErrorhappened) {
-            compiledCorrectly = false
+        if (compiledCorrectly) {
+
+            if (!glIsProgram(program))
+                program = glCreateProgram()
+
+            glAttachShader(program, vertexShader)
+            glAttachShader(program, fragmentShader)
+
+            glLinkProgram(program)
+        } else {
 
             if (!couldVertexShaderCompile) {
                 val log = glGetShaderInfoLog(vertexShader)
@@ -65,20 +78,7 @@ class Shader(vertexSource: String, fragmentSource: String) {
                 Log.d("Fragment Shader", log)
             }
 
-        } else {
-            compiledCorrectly = true
 
-            vertexResult.second
-            fragmentResult.second
-
-            if(!glIsProgram(program)){
-                program = glCreateProgram()
-            }
-
-            glAttachShader(program, vertexShader)
-            glAttachShader(program, fragmentShader)
-
-            glLinkProgram(program)
         }
     }
 

@@ -128,24 +128,51 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     fun setReplaceShadersCommand(vertexCode: String, fragmentCode: String) {
         addRenderCommand {
 
-            val material = selectedEntity!!.getComponent(MeshRenderer::class.java)!!.materials[0]
-            Log.d("replace shader", (material != null).toString())
+            val meshRenderer = selectedEntity!!.getComponent(MeshRenderer::class.java)!!
 
-            material!!.shader.replaceShaders(vertexCode, fragmentCode)
+            var selectedMaterial: Material? = null
+
+            for (i in meshRenderer.materials) {
+
+                if (i!!.nameTest == repository.selectedMaterial.name) {
+                    selectedMaterial = i
+                }
+            }
+
+            Log.d("replace shader", (selectedMaterial != null).toString())
+
+
+            selectedMaterial!!.shader.replaceShaders(vertexCode, fragmentCode)
         }
+    }
+
+    private fun getSelectedMat() : Material?{
+        val meshRenderer = selectedEntity!!.getComponent(MeshRenderer::class.java)!!
+
+        var selectedMaterial: Material? = null
+
+        for (i in meshRenderer.materials) {
+
+            if (i!!.nameTest == repository.selectedMaterial.name) {
+                selectedMaterial = i
+            }
+        }
+
+        return selectedMaterial
     }
 
     fun setTextureCommand(textureData: TextureData) {
 
         addRenderCommand {
 
-            val meshRenderer = selectedEntity?.getComponent(MeshRenderer::class.java)
-
             val bitmap = Utils.getBitmapFromPath(textureData.path!!)
-            if (meshRenderer?.materials!![0]?.textures!!.size > repository.selectedTextureSlot) {
-                meshRenderer?.materials[0]?.textures!![repository.selectedTextureSlot] = Texture(bitmap)
+
+            val mat = getSelectedMat()
+
+            if (mat?.textures!!.size > repository.selectedTextureSlot) {
+                mat?.textures!![repository.selectedTextureSlot] = Texture(bitmap)
             } else {
-                meshRenderer?.materials!![0]?.textures?.add(Texture(bitmap))
+                mat?.textures?.add(Texture(bitmap))
             }
 
             textureData.previewBitmap = bitmap
@@ -190,14 +217,12 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-
         for (entity in scene!!.entities) {
 
             if (entity.isActive) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
-
 
                     renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial, meshIndex)
 
@@ -221,11 +246,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             private set
     }
 
-
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
-        shadowPass()
+       shadowPass()
 
 
         mainFrameBuffer.bind()
@@ -314,7 +338,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         Matrix.setIdentityM(it, 0)
     }
 
-    fun editorRenderingBack(){
+    fun editorRenderingBack() {
         // Editor Axis Plane
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
