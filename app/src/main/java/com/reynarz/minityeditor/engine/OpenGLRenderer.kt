@@ -123,7 +123,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     fun setReplaceShadersCommand(vertexCode: String, fragmentCode: String) {
         addRenderCommand {
-
+            println(fragmentCode)
             val meshRenderer = selectedEntity!!.getComponent(MeshRenderer::class.java)!!
 
             var selectedMaterial: Material? = null
@@ -345,6 +345,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 glDepthFunc(materialConfig.gl_depthFunc)
             } else {
                 glDisable(GL_DEPTH_TEST)
+                glDepthFunc(GL_LEQUAL)
             }
 
             // Culling

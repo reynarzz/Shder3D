@@ -417,10 +417,11 @@ vec4 color = vec4(vec3(shadow), 1.);
 
                     if (lowerCase.contains("minity")) {
 
-                        shader = shaderCode.replace(it, include)
+                        shader = shader.replace(it, include)
                     } else {
                         // remove the entire line.
-                        shader = shaderCode.replace(it, "")
+                        println("to Remove: " + it)
+                        shader = shader.replace(it, "")
                     }
                 }
             }
@@ -443,30 +444,53 @@ vec4 color = vec4(vec3(shadow), 1.);
 
                     val lower = removeExeciveWhiteSpace(line.toLowerCase())
                     println("procesed: " + lower)
+
+                    val code = lower.split(" ")
+
                     if (lower.contains("blend")) {
-                        matConfig.gl_blendingEnabled = true
-
-                        val code = lower.split(" ")
-                        var currentFactor = 0
-
-                        for (i in code) {
-                            val gl_factor = blendStringCodeToInt(i)
-                            if (gl_factor != -1 && currentFactor < 2) {
-
-                                if (currentFactor == 0) {
-                                    matConfig.gl_srcFactor = gl_factor
-                                    currentFactor++
-                                } else if (currentFactor == 1) {
-                                    matConfig.gl_dstFactor = gl_factor
-                                    break
-                                }
-                            }
-                        }
+                        blendOptions(code, matConfig)
+                    } else if (lower.contains("zwrite")) {
+                        depthOptions(code, matConfig)
                     }
                 }
             }
 
             return matConfig
+        }
+
+        private fun blendOptions(code: List<String>, matConfig: MaterialConfig) {
+
+            matConfig.gl_blendingEnabled = true
+
+
+            var currentFactor = 0
+
+            for (i in code) {
+                val gl_factor = blendStringCodeToInt(i)
+                if (gl_factor != -1 && currentFactor < 2) {
+
+                    if (currentFactor == 0) {
+                        matConfig.gl_srcFactor = gl_factor
+                        currentFactor++
+                    } else if (currentFactor == 1) {
+                        matConfig.gl_dstFactor = gl_factor
+                        break
+                    }
+                }
+            }
+        }
+
+        private fun depthOptions(code: List<String>, matConfig: MaterialConfig) {
+            matConfig.gl_depthTestEnabled = true
+
+            for (i in code) {
+                val glDepthFunc = depthTestFuncCodeToInt(i)
+
+                if (glDepthFunc != -1) {
+                    matConfig.gl_depthFunc = glDepthFunc
+                    break
+                }
+            }
         }
 
         private fun blendStringCodeToInt(code: String): Int {
@@ -486,6 +510,20 @@ vec4 color = vec4(vec3(shadow), 1.);
                 "constantalpha" -> GLES20.GL_CONSTANT_ALPHA
                 "oneminusconstantalpha" -> GLES20.GL_ONE_MINUS_CONSTANT_ALPHA
 
+                else -> -1
+            }
+        }
+
+        private fun depthTestFuncCodeToInt(code: String): Int {
+            return when (code) {
+                "never" -> GLES20.GL_NEVER
+                "less" -> GLES20.GL_LESS
+                "lequal" -> GLES20.GL_LEQUAL
+                "equal" -> GLES20.GL_EQUAL
+                "greater" -> GLES20.GL_GREATER
+                "notequal" -> GLES20.GL_NOTEQUAL
+                "gequal" -> GLES20.GL_GEQUAL
+                "always" -> GLES20.GL_ALWAYS
                 else -> -1
             }
         }
