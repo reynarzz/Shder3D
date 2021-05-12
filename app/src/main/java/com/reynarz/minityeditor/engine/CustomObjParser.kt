@@ -48,7 +48,9 @@ class CustomObjParser {
         currentVertices.clear()
         triangulatedVertex.clear()
 
-        // Log.d("Total lines", modelFile)
+        verticesFinal.clear()
+        normalsFinal.clear()
+        uvFinal.clear()
 
         var indice = 0
         var currentMatName = ""
@@ -165,9 +167,6 @@ class CustomObjParser {
         // triangulate here!
         for (verticesGroup in fullVerticesData) {
             //val indicesFinal = mutableListOf<Int>()
-            verticesFinal.clear()
-            normalsFinal.clear()
-            uvFinal.clear()
 
             for (vertex in verticesGroup) {
                 verticesFinal.add(vertex.position.x)
@@ -189,6 +188,11 @@ class CustomObjParser {
             models.add(ModelData(verticesFinal.toFloatArray(), normalsFinal.toFloatArray(), uvFinal.toFloatArray(), indices.toIntArray(), Bounds(minX, minY, minZ, maxX, maxY, maxZ)).also {
                 it.materialName = verticesGroup[0].materialName
             })
+
+            verticesFinal.clear()
+            normalsFinal.clear()
+            uvFinal.clear()
+            //indices.clear()
         }
 
         println("""${modelPath}: ${models.size}""")

@@ -23,6 +23,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var cameraTransformData: TransformComponentData
     lateinit var touchPointer: TouchPointer
+    private var sceneEntities: List<SceneEntityData>? = null
 
     val scene: Scene = Scene()
     var rot = vec3(0f, 0f, 0f)
@@ -59,6 +60,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             return entity
         }
+
     private lateinit var outlineMaterial: Material
 
     init {
@@ -98,6 +100,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             initialized = true
 
             touchPointer = TouchPointer(scene!!.editorCamera!!)
+            sceneEntities = repository.getProjectData().sceneEntities
 
             println("Current Opengl thread: " + Thread.currentThread().name)
             getEditorStuff_Test()
@@ -134,7 +137,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             for (i in meshRenderer.materials) {
 
-                if (i != null && repository.selectedMaterial != null &&  i!!.id == repository.selectedMaterial?.materialDataId) {
+                if (i != null && repository.selectedMaterial != null && i!!.id == repository.selectedMaterial?.materialDataId) {
                     selectedMaterial = i
                 }
             }
@@ -219,9 +222,11 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        for (entity in scene!!.entities) {
+        for (i in 0 until scene!!.entities.size) {
 
-            if (entity.isActive) {
+            val entity = scene.entities[i]
+
+            if (sceneEntities!![i].active) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
@@ -275,9 +280,11 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         val viewM = scene!!.editorCamera!!.viewM
         val projM = scene!!.editorCamera!!.projectionM
 
-        for (entity in scene!!.entities) {
+        for (i in 0 until scene!!.entities.size) {
 
-            if (entity.isActive) {
+            val entity = scene.entities[i]
+
+            if (sceneEntities!![i].active) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
@@ -289,10 +296,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                         val depthUniform = glGetUniformLocation(renderer!!.materials[meshIndex]!!.shader.program, "_SHADOWMAP")
                         glUniform1i(depthUniform, 0)
                     }
-                    renderer?.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
-                    val mesh = renderer!!.meshes[meshIndex]
+                    renderer.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
+                    val mesh = renderer.meshes[meshIndex]
 
                     glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                     renderer.unBind()

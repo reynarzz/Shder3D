@@ -37,7 +37,7 @@ class SceneObjectManager(
             for (model in modelsData) {
                 meshes.add(Mesh(model.mVertices, model.mIndices, model.mUVs, model.mNormals))
 
-                if (sceneEntityData.meshRendererData.materialsData.size < index)
+                if (sceneEntityData.meshRendererData.materialsData.size-1 < index)
                     sceneEntityData.meshRendererData.materialsData.add(null)
 
                 index++
