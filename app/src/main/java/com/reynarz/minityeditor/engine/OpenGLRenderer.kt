@@ -210,6 +210,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         shadowMapFrameBuffer.bind()
 
         glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LEQUAL)
         glClear(GL_STENCIL_BUFFER_BIT)
 
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
@@ -293,12 +294,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                         glUniform1i(depthUniform, 0)
                     }
 
+                    setApplyMaterialConfig(materialsData.getOrNull(meshIndex)?.materialConfig)
+
                     renderer.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
                     val mesh = renderer.meshes[meshIndex]
 
 
-                    setApplyMaterialConfig(materialsData.getOrNull(meshIndex)?.materialConfig)
 
                     glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                     renderer.unBind()

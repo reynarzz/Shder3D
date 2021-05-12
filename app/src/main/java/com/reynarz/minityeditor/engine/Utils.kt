@@ -449,8 +449,10 @@ vec4 color = vec4(vec3(shadow), 1.);
 
                     if (lower.contains("blend")) {
                         blendOptions(code, matConfig)
+                    } else if (lower.contains("ztest")) {
+                        zTestOptions(code, matConfig)
                     } else if (lower.contains("zwrite")) {
-                        depthOptions(code, matConfig)
+                        zwriteOptions(code, matConfig)
                     }
                 }
             }
@@ -480,8 +482,22 @@ vec4 color = vec4(vec3(shadow), 1.);
             }
         }
 
-        private fun depthOptions(code: List<String>, matConfig: MaterialConfig) {
-            matConfig.gl_depthTestEnabled = true
+        private fun zwriteOptions(code: List<String>, matConfig: MaterialConfig) {
+            for (i in code) {
+
+                val glDepthFunc = zwriteCodeToInt(i)
+
+                if (glDepthFunc == 0) {
+                    matConfig.gl_depthTestEnabled = false
+                    break
+                } else if (glDepthFunc == 1) {
+                    matConfig.gl_depthTestEnabled = true
+                    break
+                }
+            }
+        }
+
+        private fun zTestOptions(code: List<String>, matConfig: MaterialConfig) {
 
             for (i in code) {
                 val glDepthFunc = depthTestFuncCodeToInt(i)
@@ -524,6 +540,14 @@ vec4 color = vec4(vec3(shadow), 1.);
                 "notequal" -> GLES20.GL_NOTEQUAL
                 "gequal" -> GLES20.GL_GEQUAL
                 "always" -> GLES20.GL_ALWAYS
+                else -> -1
+            }
+        }
+
+        private fun zwriteCodeToInt(code: String): Int {
+            return when (code) {
+                "off" -> 0
+                "on" -> 1
                 else -> -1
             }
         }

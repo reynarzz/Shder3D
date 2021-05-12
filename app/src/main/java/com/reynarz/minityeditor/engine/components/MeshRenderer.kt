@@ -1,5 +1,6 @@
 package com.reynarz.minityeditor.engine.components
 
+import android.opengl.GLES20
 import com.reynarz.minityeditor.engine.Material
 import com.reynarz.minityeditor.engine.Mesh
 
@@ -44,6 +45,10 @@ class MeshRenderer() : Component() {
         lastSelectedMat = materials.elementAtOrNull(meshIndex)
 
         val mat = if (lastSelectedMat != null && lastSelectedMat!!.shader.compiledCorrectly) lastSelectedMat else default
+
+        if(mat == default) {
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST)
+        }
 
         mat!!.bind(transform!!.modelM!!, view, projection, lightViewM)
         meshes[meshIndex].bind(mat!!.program)
