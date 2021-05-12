@@ -10,7 +10,7 @@ import org.koin.java.KoinJavaComponent.get
 class MinityProjectRepository() {
 
     private var projectData: ProjectData? = null
-    lateinit var selectedMaterial: MaterialData
+    var selectedMaterial: MaterialData? = null
     var selectedTextureSlot = 0
 
     var selectedSceneEntity: SceneEntityData? = null

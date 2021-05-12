@@ -103,14 +103,13 @@ class MainActivity : AppCompatActivity() {
         val textureMedia = files?.get(0)
 
         val repository: MinityProjectRepository = get()
-        val currentTextureSlot = repository.selectedMaterial.texturesData[repository.selectedTextureSlot]
+        val currentTextureSlot = repository.selectedMaterial?.texturesData!![repository.selectedTextureSlot]
 
         currentTextureSlot.path = textureMedia?.path!!
         openGLView.renderer.setTextureCommand(currentTextureSlot)
 
         Log.d("texture selected ${repository.selectedTextureSlot}", textureMedia?.path?.toString()!!)
     }
-
 
     private fun loadAllData() {
         val repository: MinityProjectRepository = get()
@@ -141,12 +140,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun updateMaterials(sceneEntityData: SceneEntityData?) {
-        openGLView.renderer.addRenderCommand {
-            sceneObjectManager.addMaterials(sceneEntityData!!)
-        }
-    }
-
     fun updateMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
         openGLView.renderer.addRenderCommand {
             sceneObjectManager.addMaterial(sceneEntityData!!, matIndex)
@@ -157,7 +150,7 @@ class MainActivity : AppCompatActivity() {
         openGLView.renderer.setTransform(sceneEntityData!!)
     }
 
-    fun removeMaterial(sceneEntityData: SceneEntityData?, matIndex : Int) {
+    fun removeMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
         openGLView.renderer.addRenderCommand {
             sceneObjectManager.removeMaterial(sceneEntityData, matIndex)
         }

@@ -34,7 +34,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         binding = DataBindingUtil.inflate(inflater, R.layout.shader_editor_fragment_view, null, false)
 
         val minityRepository: MinityProjectRepository = get()
-        shaderData = minityRepository.selectedMaterial.shaderData
+        shaderData = minityRepository.selectedMaterial?.shaderData!!
 
         shaderViewModel.setData(shaderData)
 

@@ -33,8 +33,14 @@ class SceneObjectManager(
             val modelsData = dataBase.getModels(sceneEntityData.entityModelPath)
             val meshes = mutableListOf<Mesh>()
 
+            var index = 0
             for (model in modelsData) {
                 meshes.add(Mesh(model.mVertices, model.mIndices, model.mUVs, model.mNormals))
+
+                if (sceneEntityData.meshRendererData.materialsData.size < index)
+                    sceneEntityData.meshRendererData.materialsData.add(null)
+
+                index++
             }
 
             addedRenderer!!.meshes = meshes
@@ -67,12 +73,12 @@ class SceneObjectManager(
 //        return MeshRenderer(mesh, Utils.getUnlitMaterial(0.75f))
 //    }
 
-    fun addMaterials(sceneEntityData: SceneEntityData) {
+    private fun addMaterials(sceneEntityData: SceneEntityData) {
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
-        println("addn")
-        for (materialData in sceneEntityData.meshRendererData.materialsData) {
-            addMaterial(meshRenderer, materialData)
+
+        for ((index, materialData) in sceneEntityData.meshRendererData.materialsData.withIndex()) {
+            addMaterial(meshRenderer, materialData, index)
         }
     }
 
@@ -81,29 +87,40 @@ class SceneObjectManager(
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
         println("add1")
         val material = sceneEntityData.meshRendererData.materialsData[matIndex]
-        addMaterial(meshRenderer, material)
+        addMaterial(meshRenderer, material, matIndex)
     }
 
-    private fun addMaterial(meshRenderer: MeshRenderer?, materialData: MaterialData) {
-
+    private fun addMaterial(meshRenderer: MeshRenderer?, materialData: MaterialData?, matIndex: Int) {
         if (meshRenderer != null) {
-            val shaderData = materialData.shaderData
+            if (materialData != null) {
+                val shaderData = materialData?.shaderData
 
-            val vertex = Utils.processMinityInclude(activity!!, shaderData.vertexShader)
-            val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
+                val vertex = Utils.processMinityInclude(activity!!, shaderData.vertexShader)
+                val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
 
-            val material = Material(Shader(vertex, fragment))
-            material.id = materialData.materialDataId
+                val material = Material(Shader(vertex, fragment))
+                material.id = materialData.materialDataId
 
-            meshRenderer!!.materials.add(material)
+                if (meshRenderer!!.materials.size - 1 < matIndex) {
+                    meshRenderer!!.materials.add(material)
+                } else {
+                    meshRenderer!!.materials[matIndex] = material
+                }
 
-            for (textureData in materialData.texturesData) {
+                for (textureData in materialData.texturesData) {
 
-                if (textureData.path != null) {
-                    val bitmap = Utils.getBitmapFromPath(textureData.path!!)
-                    material.textures?.add(Texture(bitmap, GLES20.GL_REPEAT))
+                    if (textureData.path != null) {
+                        val bitmap = Utils.getBitmapFromPath(textureData.path!!)
+                        material.textures?.add(Texture(bitmap, GLES20.GL_REPEAT))
 
-                    textureData.previewBitmap = bitmap
+                        textureData.previewBitmap = bitmap
+                    }
+                }
+            } else {
+                if (meshRenderer!!.materials.size - 1 < matIndex) {
+                    meshRenderer!!.materials.add(null)
+                } else {
+                    meshRenderer!!.materials[matIndex] = null
                 }
             }
         }
@@ -113,13 +130,7 @@ class SceneObjectManager(
         Log.d("materials-deleteAt: ", index.toString())
 
         val entity = openGLRenderer.scene.getEntityById(sceneEntityData?.entityID)
-        entity?.getComponent(MeshRenderer::class.java)!!.materials.removeAt(index)
-
-        for (i in entity?.getComponent(MeshRenderer::class.java)!!.materials)
-        {
-            println("materials left: " + i!!.id)
-
-        }
+        entity?.getComponent(MeshRenderer::class.java)!!.materials[index] = null
     }
 
     // This contains duplicated code
@@ -129,11 +140,11 @@ class SceneObjectManager(
         meshRenderer.meshes = mutableListOf(Utils.getScreenSizeQuad())
 
         for (materialData in sceneEntityData.meshRendererData.materialsData) {
-            val vertex = Utils.processMinityInclude(activity!!, materialData.shaderData.vertexShader)
-            val fragment = Utils.processMinityInclude(activity!!, materialData.shaderData.fragmentShader)
+            val vertex = Utils.processMinityInclude(activity!!, materialData?.shaderData?.vertexShader!!)
+            val fragment = Utils.processMinityInclude(activity!!, materialData?.shaderData?.fragmentShader!!)
 
             val material = Material(Shader(vertex, fragment))
-            material.id = materialData.materialDataId
+            material.id = materialData?.materialDataId!!
             meshRenderer.materials.add(material)
 
             for (textureData in materialData.texturesData) {

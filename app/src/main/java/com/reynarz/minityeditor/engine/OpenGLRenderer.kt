@@ -134,7 +134,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             for (i in meshRenderer.materials) {
 
-                if (i!!.id == repository.selectedMaterial.materialDataId) {
+                if (i != null && repository.selectedMaterial != null &&  i!!.id == repository.selectedMaterial?.materialDataId) {
                     selectedMaterial = i
                 }
             }
@@ -153,7 +153,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         for (i in meshRenderer.materials) {
 
-            if (i!!.id == repository.selectedMaterial.materialDataId) {
+            if (i != null && repository.selectedMaterial != null && i!!.id == repository.selectedMaterial?.materialDataId) {
                 selectedMaterial = i
             }
         }
@@ -316,11 +316,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //                }
         }
 
-
         mainFrameBuffer.unBind()
 
         screenQuad()
-
     }
 
     val identityM = FloatArray(16).also {

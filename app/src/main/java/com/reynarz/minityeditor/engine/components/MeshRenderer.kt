@@ -33,6 +33,12 @@ class MeshRenderer() : Component() {
         mat!!.bind(transform!!.modelM!!, view, projection)
         meshes[meshIndex].bind(mat!!.program)
     }
+//
+//    fun bindWithMaterial(view: FloatArray, projection: FloatArray, mat: Material, meshIndex: Int) {
+//
+//        mat!!.bind(transform!!.modelM!!, view, projection)
+//        meshes[meshIndex].bind(mat!!.program)
+//    }
 
     fun bindShadow(view: FloatArray, projection: FloatArray, default: Material, lightViewM: FloatArray, meshIndex: Int) {
         lastSelectedMat = materials.elementAtOrNull(meshIndex)
