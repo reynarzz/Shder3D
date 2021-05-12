@@ -8,6 +8,7 @@ import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.data.ModelsDataBase
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.SceneEntityData
+import org.koin.java.KoinJavaComponent.get
 
 class SceneObjectManager(
     private val activity: AppCompatActivity?,
@@ -37,8 +38,12 @@ class SceneObjectManager(
             for (model in modelsData) {
                 meshes.add(Mesh(model.mVertices, model.mIndices, model.mUVs, model.mNormals))
 
-                if (sceneEntityData.meshRendererData.materialsData.size-1 < index)
+                if (sceneEntityData.meshRendererData.materialsData.size - 1 < index) {
+
+                    val materialData = get<MaterialData>(MaterialData::class.java)
+                    //materialData.name = model.modelName
                     sceneEntityData.meshRendererData.materialsData.add(null)
+                }
 
                 index++
             }

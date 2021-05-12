@@ -88,6 +88,7 @@ class CustomObjParser {
                 if (currentMatName != matName) {
                     currentMatName = matName
 
+                    indice = 0
                     fullVerticesData.add(mutableListOf())
                 }
             } else if (it.startsWith("f ")) {
@@ -192,7 +193,7 @@ class CustomObjParser {
             verticesFinal.clear()
             normalsFinal.clear()
             uvFinal.clear()
-            //indices.clear()
+            indices.clear()
         }
 
         println("""${modelPath}: ${models.size}""")

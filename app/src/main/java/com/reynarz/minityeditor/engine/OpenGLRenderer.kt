@@ -63,10 +63,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var outlineMaterial: Material
 
-    init {
-
-    }
-
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
     }
 
@@ -236,6 +232,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     val mesh = renderer.meshes[meshIndex]
 
                     glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+
+                    renderer.unBind()
                 }
             }
         }
