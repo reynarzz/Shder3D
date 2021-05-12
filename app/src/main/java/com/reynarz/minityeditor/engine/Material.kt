@@ -5,15 +5,7 @@ import android.opengl.Matrix
 import com.reynarz.minityeditor.views.MainActivity
 import kotlinx.serialization.Serializable
 
-@Serializable
-class MaterialConfig {
-    // Queue {Background, }                                 // ver2
-    // Blend {SRCALPHA/OneMinusSRCAlpha, etc..}
-    // ZWrite/DepthTesting {ON/Off} (Depth testing)         // ver2
-    // Cull {Front/Back/Off} (Cull)                         // ver2
-    // ZTest/Depth func {LEQUAL/etc..} // Depth func        // ver2
-    //Stencil
-}
+
 
 class Material(val shader: Shader) {
     //val materialData = MaterialData()
@@ -24,7 +16,6 @@ class Material(val shader: Shader) {
 
     val MVP = FloatArray(16)
     val MV = FloatArray(16)
-    val materialConfig = MaterialConfig()
 
     val InvModel = FloatArray(16)
 
@@ -39,6 +30,7 @@ class Material(val shader: Shader) {
 //        }
 
     var textures: MutableList<Texture>? = null
+
 
     init {
         textures = mutableListOf()

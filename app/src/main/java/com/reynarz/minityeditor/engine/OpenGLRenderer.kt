@@ -9,10 +9,7 @@ import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.components.Transform
-import com.reynarz.minityeditor.models.EntityType
-import com.reynarz.minityeditor.models.SceneEntityData
-import com.reynarz.minityeditor.models.TextureData
-import com.reynarz.minityeditor.models.TransformComponentData
+import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
 import javax.microedition.khronos.egl.EGLConfig
@@ -23,7 +20,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var cameraTransformData: TransformComponentData
     lateinit var touchPointer: TouchPointer
-    private var sceneEntities: List<SceneEntityData>? = null
+    private var sceneEntitiesData: List<SceneEntityData>? = null
 
     val scene: Scene = Scene()
     var rot = vec3(0f, 0f, 0f)
@@ -96,7 +93,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             initialized = true
 
             touchPointer = TouchPointer(scene!!.editorCamera!!)
-            sceneEntities = repository.getProjectData().sceneEntities
+            sceneEntitiesData = repository.getProjectData().sceneEntities
 
             println("Current Opengl thread: " + Thread.currentThread().name)
             getEditorStuff_Test()
@@ -222,7 +219,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             val entity = scene.entities[i]
 
-            if (sceneEntities!![i].active) {
+            if (sceneEntitiesData!![i].active) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
@@ -282,8 +279,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             val entity = scene.entities[i]
 
-            if (sceneEntities!![i].active) {
+            if (sceneEntitiesData!![i].active) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
+                val materialsData = sceneEntitiesData!![i].meshRendererData.materialsData
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
 
@@ -298,6 +296,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     renderer.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
                     val mesh = renderer.meshes[meshIndex]
+
+
+                    setApplyMaterialConfig(materialsData.getOrNull(meshIndex)?.materialConfig)
 
                     glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                     renderer.unBind()
@@ -324,6 +325,36 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         mainFrameBuffer.unBind()
 
         screenQuad()
+    }
+
+
+    private fun setApplyMaterialConfig(materialConfig: MaterialConfig?) {
+
+        if (materialConfig != null) {
+            // Blending
+            if (materialConfig.gl_blendingEnabled) {
+                glEnable(GL_BLEND)
+                glBlendFunc(materialConfig.gl_srcFactor, materialConfig.gl_dstFactor)
+            } else {
+                glDisable(GL_BLEND)
+            }
+
+            // Depth test
+            if (materialConfig.gl_depthTestEnabled) {
+                glEnable(GL_DEPTH_TEST)
+                glDepthFunc(materialConfig.gl_depthFunc)
+            } else {
+                glDisable(GL_DEPTH_TEST)
+            }
+
+            // Culling
+            if (materialConfig.gl_cullEnabled) {
+                glEnable(GL_CULL_FACE)
+                glCullFace(materialConfig.gl_cullFace)
+            } else {
+                glDisable(GL_CULL_FACE)
+            }
+        }
     }
 
     val identityM = FloatArray(16).also {

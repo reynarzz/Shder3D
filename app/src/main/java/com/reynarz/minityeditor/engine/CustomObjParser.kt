@@ -163,26 +163,26 @@ class CustomObjParser {
             }
         }
 
-
-
         // triangulate here!
         for (verticesGroup in fullVerticesData) {
             //val indicesFinal = mutableListOf<Int>()
 
             for (vertex in verticesGroup) {
+                // vertices.
                 verticesFinal.add(vertex.position.x)
                 verticesFinal.add(vertex.position.y)
                 verticesFinal.add(vertex.position.z)
 
+                // uv.
                 uvFinal.add(vertex.uv.x)
                 uvFinal.add(vertex.uv.y)
 
-                //normals
+                // normals.
                 normalsFinal.add(vertex.normal.x)
                 normalsFinal.add(vertex.normal.y)
                 normalsFinal.add(vertex.normal.z)
 
-                //indices
+                // indices.
                 indices.add(vertex.index)
             }
 
@@ -195,6 +195,11 @@ class CustomObjParser {
             uvFinal.clear()
             indices.clear()
         }
+
+        vPositions.clear()
+        normals.clear()
+        uv.clear()
+        fullVerticesData.clear()
 
         println("""${modelPath}: ${models.size}""")
         return models

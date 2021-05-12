@@ -15,6 +15,7 @@ import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.databinding.ShaderEditorFragmentViewBinding
 import com.reynarz.minityeditor.engine.Utils
+import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.ShaderData
 import com.reynarz.minityeditor.viewmodels.ShaderEditorViewModel
 import java.io.BufferedReader
@@ -27,6 +28,8 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
     private lateinit var binding: ShaderEditorFragmentViewBinding
     private val shaderViewModel: ShaderEditorViewModel by viewModel()
     private lateinit var shaderData: ShaderData
+    private var materialData: MaterialData? = null
+
     // lateinit var renderer: OpenGLRenderer
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,7 +37,8 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         binding = DataBindingUtil.inflate(inflater, R.layout.shader_editor_fragment_view, null, false)
 
         val minityRepository: MinityProjectRepository = get()
-        shaderData = minityRepository.selectedMaterial?.shaderData!!
+        materialData = minityRepository.selectedMaterial
+        shaderData = materialData?.shaderData!!
 
         shaderViewModel.setData(shaderData)
 
@@ -60,6 +64,9 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
                 Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
             }
 
+            val materialConfig = Utils.processMaterialConfig(shaderData.fragmentShader)
+            materialData?.materialConfig = materialConfig
+
             compilationMessageCallback("Compiled and saved")
             MainActivity.instance.openGLView.renderer.setReplaceShadersCommand(
                 Utils.processInclude(include1, shaderData.vertexShader),
@@ -72,7 +79,6 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             binding.etFragmentCode.visibility = if (!checked) View.VISIBLE else View.GONE
         }
     }
-
 
 
     private fun setPreviewMode() {

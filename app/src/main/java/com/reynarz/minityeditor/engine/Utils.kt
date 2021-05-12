@@ -4,10 +4,13 @@ import android.content.res.AssetManager
 import com.reynarz.minityeditor.models.ComponentType
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.opengl.GLES20
 import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.R
+import com.reynarz.minityeditor.models.MaterialConfig
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.StringBuilder
 
 
 class Utils {
@@ -415,17 +418,89 @@ vec4 color = vec4(vec3(shadow), 1.);
                     if (lowerCase.contains("minity")) {
 
                         shader = shaderCode.replace(it, include)
+                    } else {
+                        // remove the entire line.
+                        shader = shaderCode.replace(it, "")
                     }
                 }
             }
 
-            return shader;
+            return shader
         }
 
         fun processMinityInclude(activity: AppCompatActivity, shaderCode: String): String {
             val include = getInclude(activity.assets, "includes/minity.h")
 
             return processInclude(include, shaderCode)
+        }
+
+        fun processMaterialConfig(shader: String): MaterialConfig {
+            val matConfig = MaterialConfig()
+
+            shader.reader().forEachLine { line ->
+
+                if (line.contains("#")) {
+
+                    val lower = removeExeciveWhiteSpace(line.toLowerCase())
+                    println("procesed: " + lower)
+                    if (lower.contains("blend")) {
+                        matConfig.gl_blendingEnabled = true
+
+                        val code = lower.split(" ")
+                        var currentFactor = 0
+
+                        for (i in code) {
+                            val gl_factor = blendStringCodeToInt(i)
+                            if (gl_factor != -1 && currentFactor < 2) {
+
+                                if (currentFactor == 0) {
+                                    matConfig.gl_srcFactor = gl_factor
+                                    currentFactor++
+                                } else if (currentFactor == 1) {
+                                    matConfig.gl_dstFactor = gl_factor
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return matConfig
+        }
+
+        private fun blendStringCodeToInt(code: String): Int {
+
+            return when (code) {
+                "zero" -> GLES20.GL_ZERO
+                "one" -> GLES20.GL_ONE
+                "srccolor" -> GLES20.GL_SRC_COLOR
+                "oneminussrccolor" -> GLES20.GL_ONE_MINUS_SRC_COLOR
+                "dstcolor" -> GLES20.GL_DST_COLOR
+                "oneminusdstcolor" -> GLES20.GL_ONE_MINUS_DST_COLOR
+                "srcalpha" -> GLES20.GL_SRC_ALPHA
+                "oneminussrcalpha" -> GLES20.GL_ONE_MINUS_SRC_ALPHA
+                "dstalpha" -> GLES20.GL_DST_ALPHA
+                "constantcolor" -> GLES20.GL_CONSTANT_COLOR
+                "oneminusconstantcolor" -> GLES20.GL_ONE_MINUS_CONSTANT_COLOR
+                "constantalpha" -> GLES20.GL_CONSTANT_ALPHA
+                "oneminusconstantalpha" -> GLES20.GL_ONE_MINUS_CONSTANT_ALPHA
+
+                else -> -1
+            }
+        }
+
+        private fun removeExeciveWhiteSpace(string: String): String {
+            val final = StringBuilder()
+
+            for (i in 0 until string.length) {
+
+                if (string[i] != ' ' || (string[i] == ' ' && string.getOrNull(i - 1) != ' ')) {
+                    final.append(string[i])
+                }
+            }
+
+            return final.toString()
         }
 
         fun getInclude(assets: AssetManager, include: String): String {
