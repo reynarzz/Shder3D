@@ -33,21 +33,32 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
         //renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
     }
 
-    private var prevX = 0f
-    private var prevY = 0f
-    private var prevZoomDist = 0.0f
+    private var startX = 0f
+    private var startY = 0f
+
+    private var unchangedStartX = 0f
+    private var unchangedStartY = 0f
+
+    private var startZoomDist = 0.0f
 
     fun dot(a: vec3, b: vec3): Float {
         return a.x * b.x + a.y * b.y + a.z + b.z
     }
 
     fun getDistance(a: vec3, b: vec3): Float {
-        val diff = vec3(b.x - a.x, b.y - a.y, b.z - a.z)
 
+        val diff = getDiff(a, b)
         return sqrt(dot(diff, diff))
     }
 
+    fun getDiff(a: vec3, b: vec3): vec3 {
+        return vec3(b.x - a.x, b.y - a.y, b.z - a.z)
+    }
+
     private var moved = false
+    private var usingTwoFingers = false
+    private var deltaTwo = vec3
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
 
@@ -55,37 +66,52 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
         when (action) {
             MotionEvent.ACTION_DOWN -> {
                 // prevents weird jumping
-                prevX = event!!.x
-                prevY = event!!.y
+                startX = event!!.x
+                startY = event!!.y
 
+                unchangedStartX = event!!.x
+                unchangedStartY = event!!.y
 
+                renderer.twoFingersNormalizedDir = vec3()
             }
 
             MotionEvent.ACTION_POINTER_UP -> {
-                prevX = event!!.x
-                prevY = event!!.y
+                startX = event!!.x
+                startY = event!!.y
+
+                unchangedStartX = 0f
+                unchangedStartY = 0f
+
+                renderer.twoFingersDir = vec3()
+                renderer.twoFingersNormalizedDir = vec3()
+                renderer.twoFingersNormalizedDirPrev = vec3()
+
                 Log.d("two fingers", "Up")
             }
 
             MotionEvent.ACTION_UP -> {
-                prevX = event!!.x
-                prevY = event!!.y
 
-                if(!moved)
-                renderer.addRenderCommand {
-                    renderer.pickUpPass(round(prevX).toInt(), round(prevY).toInt())
-                }
+//                startX = event!!.x
+//                startY = event!!.y
+
+
+                if (!moved)
+                    renderer.addRenderCommand {
+                        renderer.pickUpPass(round(startX).toInt(), round(startY).toInt())
+                    }
                 moved = false
             }
 
             MotionEvent.ACTION_POINTER_DOWN -> {
                 event.getPointerId(0)
+
                 val finger1 = vec3(
 
                     (event.getX(0) / MainActivity.width.toFloat() - 0.5f) * 2f,
                     (event.getY(0) / MainActivity.height.toFloat() - 0.5f) * 2f,
                     0f
                 )
+
                 val finger2 = vec3(
                     (event.getX(1) / MainActivity.width.toFloat() - 0.5f) * 2f,
                     (event.getY(1) / MainActivity.height.toFloat() - 0.5f) * 2f,
@@ -96,25 +122,42 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
 
                 Log.d("two fingers", "(${finger1.x}), (${finger2.x})")
 
-                prevZoomDist = getDistance(finger1, finger2)
+                startZoomDist = getDistance(finger1, finger2)
             }
 
 
             MotionEvent.ACTION_MOVE -> {
                 if (event.pointerCount == 1) {
-                    val dx = event!!.x - prevX
-                    val dy = event!!.y - prevY
+                    val dx = event.getX(0) - startX
+                    val dy = event.getY(0) - startY
 
-                    renderer.rot = vec3(renderer.rot.x + dx, renderer.rot.y + dy, 0f)
+                    if (!usingTwoFingers)
+                        renderer.rot = vec3(renderer.rot.x + dx, renderer.rot.y + dy, 0f)
 
-                    prevX = event!!.x
-                    prevY = event!!.y
+                    startX = event!!.x
+                    startY = event!!.y
                     moved = true
                 }
 
+                usingTwoFingers = event.pointerCount > 1
                 //--Log.d("moving", dx.toString())
 
-                if (event.pointerCount > 1) {
+                val currentPointer = vec3(event.getX(0), event.getY(0), 0f)
+                val startPointerPos = vec3(unchangedStartX, unchangedStartY, 0f)
+                //val dist = getDistance(currentPointer, startPointerPos)
+
+                if (usingTwoFingers) {
+                    var direction = getDiff(currentPointer, startPointerPos)
+
+                    direction.x = -direction.x
+                    renderer.twoFingersDir = vec3(direction.x, direction.y, 0f)
+                    renderer.twoFingersNormalizedDir = direction.normalize()
+
+                    //println("Finger1Dist: " + dist)
+                    println("dir: " + direction.toString())
+                }
+
+                if (usingTwoFingers) {
 
                     val finger1 = vec3(
                         (event.getX(0) / MainActivity.width.toFloat() - 0.5f) * 2f,
@@ -127,7 +170,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                         0f
                     )
                     moved = true
-                    renderer.zoom += (getDistance(finger1, finger2) - prevZoomDist) * 0.01f
+                    renderer.zoom += (getDistance(finger1, finger2) - startZoomDist) * 0.1f
                 }
             }
         }

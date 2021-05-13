@@ -21,6 +21,7 @@ import kotlin.math.abs
 
 class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
+    var twoFingersDir = vec3()
     private lateinit var cameraTransformData: TransformComponentData
     lateinit var touchPointer: TouchPointer
     private var sceneEntitiesData: List<SceneEntityData>? = null
@@ -28,6 +29,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     val scene: Scene = Scene()
     var rot = vec3(0f, 0f, 0f)
     var zoom = 1f
+    var twoFingersNormalizedDir = vec3()
+    var twoFingersNormalizedDirPrev = vec3()
+
     var initialized = false
     lateinit var cameraEntity: SceneEntity
 
@@ -49,6 +53,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
     private val rendersMap = mutableMapOf<Int, MutableList<SceneEntity?>>()
+    private val moveMultiplier = 0.2f
+    private val rotateMultiplier = 0.4f
 
     private val selectedEntity: SceneEntity?
         get() {
@@ -336,7 +342,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     ) {
                         sceneEntitiesData!![i].isSelected = true
 
-                        if(repository.selectedSceneEntity != null){
+                        if (repository.selectedSceneEntity != null) {
                             repository.selectedSceneEntity?.isSelected = false
                         }
 
@@ -425,9 +431,19 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glClearColor(0.2f, 0.2f, 0.2f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        scene!!.editorCamera!!.transform.position = vec3(0f, 0f, -100f)
-        scene!!.editorCamera!!.transform.eulerAngles = vec3(rot.y, rot.x, rot.z)
-        scene!!.editorCamera!!.transform.scale = vec3(zoom, zoom, zoom)
+        val delta = vec3(twoFingersDir.x - twoFingersNormalizedDirPrev.x, twoFingersDir.y - twoFingersNormalizedDirPrev.y, 0f)
+
+        twoFingersNormalizedDirPrev = vec3(twoFingersDir.x, twoFingersDir.y, 0f)
+
+        val pos = scene!!.editorCamera!!.transform.position
+        scene!!.editorCamera!!.transform.position = vec3(
+            pos.x + delta.x * moveMultiplier,
+            pos.y + delta.y * moveMultiplier, -100f
+        )
+
+        scene!!.editorCamera!!.transform.eulerAngles = vec3(rot.y * rotateMultiplier, rot.x* rotateMultiplier, rot.z* rotateMultiplier)
+        println(delta)
+        scene!!.editorCamera!!.transform.scale = vec3(zoom * moveMultiplier, zoom* moveMultiplier, zoom* moveMultiplier)
 
         cameraTransformData.position = scene!!.editorCamera!!.transform.position
         cameraTransformData.eulerAngles = rot
@@ -469,20 +485,20 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             }
 
             //selected entity outline.
-                if (selectedEntity != null && entity === selectedEntity && selectedEntity?.isActive!!) {
+            if (selectedEntity != null && entity === selectedEntity && selectedEntity?.isActive!!) {
 
-                    val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-                    glLineWidth(1.3f)
+                val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
+                glLineWidth(1.3f)
 
-                    glEnable(GL_DEPTH_TEST)
-                    for (meshIndex in 0 until renderer!!.meshes.size) {
-                        val mesh = renderer.meshes[meshIndex]
-                        renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, meshIndex)
-                        glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-                    }
-
-
+                glEnable(GL_DEPTH_TEST)
+                for (meshIndex in 0 until renderer!!.meshes.size) {
+                    val mesh = renderer.meshes[meshIndex]
+                    renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, meshIndex)
+                    glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                 }
+
+
+            }
         }
 
         mainFrameBuffer.unBind()

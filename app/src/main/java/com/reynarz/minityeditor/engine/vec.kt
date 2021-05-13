@@ -47,10 +47,12 @@ class vec3 {
 
     fun normalize(): vec3 {
         val dist = getDistance(vec3(), this)
-        x /= dist
-        y /= dist
-        z /= dist
 
+        if(dist != 0f){
+            x /= dist
+            y /= dist
+            z /= dist
+        }
         return this
     }
 
