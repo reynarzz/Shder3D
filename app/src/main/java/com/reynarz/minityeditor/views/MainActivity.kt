@@ -13,6 +13,7 @@ import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.engine.OpenGLView
 import com.reynarz.minityeditor.engine.SceneObjectManager
+import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.models.SceneEntityData
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -56,6 +57,8 @@ class MainActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         initAllData()
+
+
     }
 
     private fun initAllData() {
@@ -115,7 +118,12 @@ class MainActivity : AppCompatActivity() {
         val repository: MinityProjectRepository = get()
         val project = repository.getProjectData()
 
+        repository.colorsPickupTableRBG = Utils.getPickingRGBLookUpTable(200)
+
         loadCameraEntity(project.defaultSceneEntities[0])
+
+        // revisit this in case pick up crash.
+
 
 //        for(defEntities in project.defaultSceneEntities){
 //        }

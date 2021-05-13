@@ -6,7 +6,6 @@ import com.reynarz.minityeditor.views.MainActivity
 import kotlinx.serialization.Serializable
 
 
-
 class Material(val shader: Shader) {
     //val materialData = MaterialData()
 
@@ -58,17 +57,17 @@ class Material(val shader: Shader) {
 
         for (slot in textures!!.indices) {
 
-            val offsetSlot = slot+minValidSlot
+            val offsetSlot = slot + minValidSlot
             textures!![slot].bind(offsetSlot)
 
             set("_tex${slot}", offsetSlot)
         }
     }
 
-    private fun unbindTextures(){
+    private fun unbindTextures() {
         for (slot in textures!!.indices) {
 
-            glActiveTexture(GL_TEXTURE0 +slot)
+            glActiveTexture(GL_TEXTURE0 + slot)
             glBindTexture(GL_TEXTURE_2D, 0)
         }
     }
@@ -139,6 +138,11 @@ class Material(val shader: Shader) {
     fun set(uniformName: String, int: Int) {
         val uniformLocation = glGetUniformLocation(shader.program, uniformName)
         glUniform1i(uniformLocation, int)
+    }
+
+    fun set(uniformName: String, x: Float, y: Float, z: Float, w: Float) {
+        val uniformLocation = glGetUniformLocation(shader.program, uniformName)
+        glUniform4f(uniformLocation, x, y, z, w)
     }
 
     fun unBind() {

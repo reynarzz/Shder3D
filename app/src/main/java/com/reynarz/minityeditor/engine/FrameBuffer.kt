@@ -20,10 +20,7 @@ class FrameBuffer(val width: Int, val height: Int) {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
 
         // Associate the textures with the FBO.
-        glFramebufferTexture2D(
-            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_2D, colorTexture, 0
-        )
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0)
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
 
@@ -65,5 +62,16 @@ class FrameBuffer(val width: Int, val height: Int) {
 
     fun unBind() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    }
+
+    fun genBufferForColor() {
+
+        glGenFramebuffers(1, frameBuffer, 0)
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
+
+        colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, width, height, GL_NEAREST, GL_CLAMP_TO_EDGE).textureID
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0)
+        unBind()
     }
 }

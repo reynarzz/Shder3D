@@ -36,9 +36,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     lateinit var mainFrameBuffer: FrameBuffer
     lateinit var shadowMapFrameBuffer: FrameBuffer
+    lateinit var colorPickerFrameBuffer: FrameBuffer
+
     private lateinit var lightTransform: Transform
 
     private lateinit var lightObj: MeshRenderer
+
+    private lateinit var pickupMaterial : Material
 
     private val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
     private val rendersMap = mutableMapOf<Int, MutableList<SceneEntity?>>()
@@ -72,6 +76,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             outlineMaterial = Utils.getUnlitMaterial(1f)
             errorMaterial = Utils.getErrorMaterial()
+            pickupMaterial =  Material(Utils.getPickupShader().run {
+                Shader(first, second)
+            })
 
             glEnable(GL_DEPTH_TEST)
             glDepthFunc(GL_LEQUAL)
@@ -90,6 +97,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
             shadowMapFrameBuffer.genBufferForDepth()
+
+
+            colorPickerFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
+            colorPickerFrameBuffer.genNormalFrameBuffer(GL_CLAMP_TO_EDGE)
 
             initialized = true
 
@@ -123,7 +134,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         removeRendererOfQueue(sceneEntity, oldRenderQueue)
 
-        // add to the new queuewa.
+        // add to the new queue.
         if (!rendersMap.containsKey(newRenderQueue)) {
             rendersMap.set(newRenderQueue, mutableListOf())
         }
@@ -235,6 +246,54 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
     }
 
+    private fun pickUpPass() {
+        glViewport(0, 0, colorPickerFrameBuffer.width, colorPickerFrameBuffer.height)
+
+        colorPickerFrameBuffer.bind()
+
+        glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LEQUAL)
+        glClear(GL_STENCIL_BUFFER_BIT)
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1f)
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+
+        val viewM = scene!!.editorCamera!!.viewM
+        val projM = scene!!.editorCamera!!.projectionM
+
+        var pickUpColorIndex = 0
+
+        for (i in 0 until scene!!.entities.size) {
+
+            val entity = scene.entities[i]
+
+            if (sceneEntitiesData!![i].active) {
+                val renderer = entity.getComponent(MeshRenderer::class.java)
+
+                for (meshIndex in 0 until renderer!!.meshes.size) {
+
+                    renderer?.bindWithMaterial(viewM, projM, pickupMaterial, meshIndex)
+
+                    val r = repository.colorsPickupTableRBG[pickUpColorIndex + 0]
+                    val g = repository.colorsPickupTableRBG[pickUpColorIndex + 1]
+                    val b = repository.colorsPickupTableRBG[pickUpColorIndex + 2]
+
+                    pickupMaterial.set("_pickUpColor_", r, g, b, 1f)
+
+                    val mesh = renderer.meshes[meshIndex]
+
+                    glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+
+                    renderer.unBind()
+                }
+            }
+
+            pickUpColorIndex += 3
+        }
+
+        colorPickerFrameBuffer.unBind()
+    }
+
     private fun shadowPass() {
 
         glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
@@ -248,6 +307,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
+        val viewM = scene!!.editorCamera!!.viewM
+        val projM = scene!!.editorCamera!!.projectionM
+
         for (i in 0 until scene!!.entities.size) {
 
             val entity = scene.entities[i]
@@ -257,7 +319,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
 
-                    renderer?.bind(scene.directionalLight.getLightViewMatrix(), scene.directionalLight.getProjectionM(), errorMaterial, meshIndex)
+                    renderer?.bind(viewM, projM, errorMaterial, meshIndex)
 
                     val mesh = renderer.meshes[meshIndex]
 
@@ -285,7 +347,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         runCommands()
 
         shadowPass()
-
+        pickUpPass()
 
         mainFrameBuffer.bind()
         glViewport(0, 0, MainActivity.width, MainActivity.height)
@@ -430,7 +492,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         // this should be binded differently
         glActiveTexture(GL_TEXTURE7)
-        glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.colorTexture)
+        //glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.colorTexture)
+        glBindTexture(GL_TEXTURE_2D, colorPickerFrameBuffer.colorTexture)
 
         glActiveTexture(GL_TEXTURE8)
         glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.depthTexture)

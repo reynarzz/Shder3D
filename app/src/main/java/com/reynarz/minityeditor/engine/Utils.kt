@@ -12,6 +12,7 @@ import com.reynarz.minityeditor.models.RenderQueue
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.StringBuilder
+import java.util.*
 
 
 class Utils {
@@ -127,6 +128,29 @@ uniform sampler2D _tex0;
 void main()
 {
     gl_FragColor = vec4(${unlitAmount}, ${unlitAmount}, ${unlitAmount}, 1.);
+}"""
+            return Pair(vertexTex, fragTex)
+        }
+
+        fun getPickupShader(): Pair<String, String> {
+            var vertexTex = """ 
+            
+attribute vec4 _VERTEX_; 
+uniform mat4 UNITY_MATRIX_MVP;
+
+void main() 
+{
+   gl_Position = UNITY_MATRIX_MVP * _VERTEX_;
+}"""
+
+            var fragTex = """
+            
+precision mediump float; 
+uniform vec4 _pickUpColor_;
+
+void main()
+{
+    gl_FragColor = _pickUpColor_;
 }"""
             return Pair(vertexTex, fragTex)
         }
@@ -595,6 +619,12 @@ vec4 color = vec4(vec3(shadow), 1.);
             val inStream = assets.open(include)
             val reader = BufferedReader(InputStreamReader(inStream))
             return reader.readText()
+        }
+
+        fun getPickingRGBLookUpTable(size: Int): Array<Float> {
+            return Array(size * 3) {
+                Random().nextFloat()
+            }
         }
     }
 }

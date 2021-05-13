@@ -40,11 +40,12 @@ class vec3 {
         this.y = def
         this.z = def
     }
+
     constructor() {
 
     }
 
-    fun normalize() : vec3 {
+    fun normalize(): vec3 {
         val dist = getDistance(vec3(), this)
         x /= dist
         y /= dist
@@ -63,6 +64,9 @@ class vec3 {
         return sqrt(dot(diff, diff))
     }
 
+    override fun toString(): String {
+        return "(${x}, ${y}, ${z})"
+    }
 }
 
 @Serializable
@@ -85,5 +89,9 @@ class vec2 {
     constructor(v: Float) {
         this.x = v
         this.y = v
+    }
+
+    override fun toString(): String {
+        return "(${x}, ${y})"
     }
 }
