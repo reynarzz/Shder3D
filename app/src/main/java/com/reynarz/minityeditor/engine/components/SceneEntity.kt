@@ -1,10 +1,13 @@
 package com.reynarz.minityeditor.engine.components
 
+import com.reynarz.minityeditor.engine.vec3
+
 
 class SceneEntity : Entity() {
 
     private var components: MutableList<Component>? = null
     private var _transform: Transform? = null
+    val colorID = vec3()
 
     var isActive = true
 

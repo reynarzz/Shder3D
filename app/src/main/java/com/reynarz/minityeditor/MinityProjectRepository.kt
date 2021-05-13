@@ -9,7 +9,7 @@ import org.koin.java.KoinJavaComponent.get
 // This will be between the data source and the viewmodel
 class MinityProjectRepository() {
 
-    lateinit var colorsPickupTableRBG: Array<Float>
+    lateinit var colorsPickupTableRBG: Array<Int>
     private var projectData: ProjectData? = null
     var selectedMaterial: MaterialData? = null
     var selectedTextureSlot = 0

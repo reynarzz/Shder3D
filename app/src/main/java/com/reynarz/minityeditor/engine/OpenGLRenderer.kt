@@ -14,9 +14,9 @@ import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.abs
 
 
 class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
@@ -283,9 +283,16 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
                     renderer?.bindWithMaterial(viewM, projM, pickupMaterial, meshIndex)
 
-                    val r = repository.colorsPickupTableRBG[pickUpColorIndex + 0]
-                    val g = repository.colorsPickupTableRBG[pickUpColorIndex + 1]
-                    val b = repository.colorsPickupTableRBG[pickUpColorIndex + 2]
+                    entity.colorID.x = repository.colorsPickupTableRBG[pickUpColorIndex + 0].toFloat()
+                    entity.colorID.y = repository.colorsPickupTableRBG[pickUpColorIndex + 1].toFloat()
+                    entity.colorID.z = repository.colorsPickupTableRBG[pickUpColorIndex + 2].toFloat()
+
+                    if(!test)
+                    println(entity.colorID)
+
+                    val r = entity.colorID.x / 255f
+                    val g = entity.colorID.y / 255f
+                    val b = entity.colorID.z / 255f
 
                     pickupMaterial.set("_pickUpColor_", r, g, b, 1f)
 
@@ -303,6 +310,41 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         if (!test)
             glReadPixels(xPixel, flipedY, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, colorPickerPixelBuffer)
+
+        var r = colorPickerPixelBuffer.get(0).toInt()
+        var g = colorPickerPixelBuffer.get(1).toInt()
+        var b = colorPickerPixelBuffer.get(2).toInt()
+
+        if(r < 0){
+            r = (255 + r)
+        }
+
+        if(g < 0){
+            g = (255 + g)
+        }
+
+        if(b < 0){
+            b = (255 + b)
+        }
+
+        if(!test){
+            println("final: " + r + ", " + g + ", " + b)
+            for (i in 0 until scene.entities.size) {
+                val entity = scene.entities[i]
+
+                if(entity.isActive)
+                if (abs(entity.colorID.x - r) <= 3
+                    && abs(entity.colorID.y - g) <= 3
+                    && abs(entity.colorID.z - b) <= 3
+                ) {
+                    println("Done")
+                    repository.selectedSceneEntity = sceneEntitiesData!![i]
+                    println(repository?.selectedSceneEntity?.name)
+                }
+            }
+        }
+
+
 
         if (!test)
             println(xPixel.toString() + ", " + flipedY.toString() + "| " + colorPickerPixelBuffer.get(0).toString() + ", " + colorPickerPixelBuffer.get(1).toString() + ", " + colorPickerPixelBuffer.get(2).toString() + ", " + colorPickerPixelBuffer.get(3).toString())

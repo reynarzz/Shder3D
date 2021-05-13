@@ -621,9 +621,9 @@ vec4 color = vec4(vec3(shadow), 1.);
             return reader.readText()
         }
 
-        fun getPickingRGBLookUpTable(size: Int): Array<Float> {
+        fun getPickingRGBLookUpTable(size: Int): Array<Int> {
             return Array(size * 3) {
-                Random().nextFloat()
+                (Random().nextFloat() * 255).toInt()
             }
         }
     }
