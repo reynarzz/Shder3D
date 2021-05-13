@@ -47,6 +47,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
         return sqrt(dot(diff, diff))
     }
 
+    private var moved = false
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
 
@@ -57,9 +58,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                 prevX = event!!.x
                 prevY = event!!.y
 
-                renderer.addRenderCommand {
-                    renderer.pickUpPass(round(prevX).toInt(), round(prevY).toInt())
-                }
+
             }
 
             MotionEvent.ACTION_POINTER_UP -> {
@@ -71,6 +70,12 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
             MotionEvent.ACTION_UP -> {
                 prevX = event!!.x
                 prevY = event!!.y
+
+                if(!moved)
+                renderer.addRenderCommand {
+                    renderer.pickUpPass(round(prevX).toInt(), round(prevY).toInt())
+                }
+                moved = false
             }
 
             MotionEvent.ACTION_POINTER_DOWN -> {
@@ -104,6 +109,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
 
                     prevX = event!!.x
                     prevY = event!!.y
+                    moved = true
                 }
 
                 //--Log.d("moving", dx.toString())
@@ -120,7 +126,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                         (event.getY(1) / MainActivity.height.toFloat() - 0.5f) * 2f,
                         0f
                     )
-
+                    moved = true
                     renderer.zoom += (getDistance(finger1, finger2) - prevZoomDist) * 0.01f
                 }
             }

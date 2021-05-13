@@ -475,16 +475,16 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                 if (selectedEntity != null && entity === selectedEntity && selectedEntity?.isActive!!) {
 
                     val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-                    glLineWidth(5f)
-                    glDisable(GL_DEPTH_TEST)
+                    glLineWidth(1.3f)
 
+                    glEnable(GL_DEPTH_TEST)
                     for (meshIndex in 0 until renderer!!.meshes.size) {
                         val mesh = renderer.meshes[meshIndex]
                         renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, meshIndex)
                         glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
                     }
 
-                    glEnable(GL_DEPTH_TEST)
+
                 }
         }
 
