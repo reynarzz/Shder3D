@@ -59,10 +59,11 @@ class CustomObjParser {
 
             if (it.startsWith("v ")) {
 
-                var splitted = it.split(" ")//.toMutableList()
-                // splitted.retainAll(){ it.toFloatOrNull() != null}
+                var splitted = it.split(" ").toMutableList()
+                splitted.retainAll() { it.toFloatOrNull() != null }
 
-                val position = vec3(splitted[1].toFloat(), splitted[2].toFloat(), splitted[3].toFloat())
+                //val position = vec3(splitted[1].toFloat(), splitted[2].toFloat(), splitted[3].toFloat())
+                val position = vec3(splitted[0].toFloat(), splitted[1].toFloat(), splitted[2].toFloat())
 
                 calcBoundingBox(position.x, position.y, position.z)
                 //Log.d("position", "(${position.x}, ${position.y}, ${position.z})")
@@ -99,20 +100,28 @@ class CustomObjParser {
 
                 for (i in 1 until faces.size) {
 
-                    var value = faces[i].split("/")
-
-                    val vertexIndex = value[0].toInt() - 1
-                    val uvIndex = value[1].toInt() - 1
+                    var value = faces[i].split("/").toMutableList()
+                    value.retainAll() { it.toIntOrNull() != null }
 
                     val vertex = Vertex()
 
-                    vertex.position = vPositions[vertexIndex]
-                    vertex.uv = uv[uvIndex]
+
+                    if (value.size > 0) {
+                        val vertexIndex = value[0].toInt() - 1
+                        vertex.position = vPositions[vertexIndex]
+                    }
+
+                    if (value.size > 1) {
+                        val uvIndex = value[1].toInt() - 1
+
+                        if(uv.size > uvIndex)
+                        vertex.uv = uv[uvIndex]
+                    }
 
                     vertex.index = indice++
                     vertex.materialName = currentMatName
 
-                    if (value.size > 2) {
+                    if (value.size > 2 || (value.size > 1 && uv.size == 0)) {
                         val normalIndex = value[2].toInt() - 1
                         vertex.normal = normals[normalIndex]
                     }
