@@ -551,22 +551,22 @@ vec4 color = vec4(vec3(shadow), 1.);
             for (i in code) {
                 val queue = queueCodeToEnum(i)
 
-                if (queue != RenderQueue.Error) {
+                if (queue != -1) {
                     matConfig.renderQueue = queue
                     break
                 }
             }
         }
 
-        private fun queueCodeToEnum(code: String): RenderQueue {
+        private fun queueCodeToEnum(code: String): Int {
             return when (code) {
-                "background" -> RenderQueue.Background
-                "geometry" -> RenderQueue.Geometry
-                "alphatest" -> RenderQueue.AlphaTest
-                "transparent" -> RenderQueue.Transparent
-                "overlay" -> RenderQueue.Overlay
+                "background" -> RenderQueue.Background.queueValue
+                "geometry" -> RenderQueue.Geometry.queueValue
+                "alphatest" -> RenderQueue.AlphaTest.queueValue
+                "transparent" -> RenderQueue.Transparent.queueValue
+                "overlay" -> RenderQueue.Overlay.queueValue
 
-                else -> RenderQueue.Error
+                else -> -1
             }
         }
 

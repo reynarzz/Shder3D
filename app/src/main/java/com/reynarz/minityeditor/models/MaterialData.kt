@@ -32,7 +32,6 @@ class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
 
 @Serializable
 enum class RenderQueue(val queueValue: Int) {
-    Error(-1),
     Background(0),
     Geometry(2000),
     AlphaTest(2450),
@@ -51,7 +50,7 @@ class MaterialConfig {
 
     var gl_cullEnabled = false
     var gl_cullFace = GLES20.GL_BACK
-    var renderQueue = RenderQueue.Geometry
+    var renderQueue = 0
 
     // Queue {Background, }                                 // ver2
     // Blend {SRCALPHA/OneMinusSRCAlpha, etc..}

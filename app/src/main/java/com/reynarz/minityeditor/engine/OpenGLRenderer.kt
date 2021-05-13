@@ -41,6 +41,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private lateinit var lightObj: MeshRenderer
 
     private val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
+    private val rendersMap = mutableMapOf<Int, MutableList<SceneEntity?>>()
 
     private val selectedEntity: SceneEntity?
         get() {
@@ -106,6 +107,37 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //
 //            lightTransform = meshRenderer.transform
 //            scene.entities.add(lightEntity)
+        }
+    }
+
+    fun addToRenderQueue(sceneEntity: SceneEntity?, renderQueue: Int) {
+
+        if (!rendersMap.containsKey(renderQueue)) {
+            rendersMap.set(renderQueue, mutableListOf())
+        }
+
+        rendersMap[renderQueue]?.add(sceneEntity)
+    }
+
+    fun replaceRenderQueue(sceneEntity: SceneEntity?, oldRenderQueue: Int, newRenderQueue: Int) {
+
+        removeRendererOfQueue(sceneEntity, oldRenderQueue)
+
+        // add to the new queuewa.
+        if (!rendersMap.containsKey(newRenderQueue)) {
+            rendersMap.set(newRenderQueue, mutableListOf())
+        }
+    }
+
+    fun removeRendererOfQueue(sceneEntity: SceneEntity?, rendererQueue: Int) {
+        if (rendersMap.containsKey(rendererQueue)) {
+            // remove from the old render queue.
+            rendersMap[rendererQueue]?.remove(sceneEntity)
+
+            // If there is not entities in this queue, clear,
+            if (rendersMap[rendererQueue]?.size == 0) {
+                rendersMap.remove(rendererQueue)
+            }
         }
     }
 
