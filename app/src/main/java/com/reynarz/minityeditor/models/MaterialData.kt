@@ -1,10 +1,7 @@
 package com.reynarz.minityeditor.models
 
-import android.graphics.Bitmap
 import android.opengl.GLES20
-import com.reynarz.minityeditor.engine.vec3
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 @Serializable
 class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
@@ -34,6 +31,16 @@ class MaterialData(var materialDataId: String, var shaderData: ShaderData) {
 }
 
 @Serializable
+enum class RenderQueue(val queueValue: Int) {
+    Error(-1),
+    Background(0),
+    Geometry(2000),
+    AlphaTest(2450),
+    Transparent(3000),
+    Overlay(4000)
+}
+
+@Serializable
 class MaterialConfig {
     var gl_blendingEnabled = false
     var gl_srcFactor = 0
@@ -44,6 +51,7 @@ class MaterialConfig {
 
     var gl_cullEnabled = false
     var gl_cullFace = GLES20.GL_BACK
+    var renderQueue = RenderQueue.Geometry
 
     // Queue {Background, }                                 // ver2
     // Blend {SRCALPHA/OneMinusSRCAlpha, etc..}

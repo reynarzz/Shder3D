@@ -8,6 +8,7 @@ import android.opengl.GLES20
 import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.MaterialConfig
+import com.reynarz.minityeditor.models.RenderQueue
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.StringBuilder
@@ -453,6 +454,8 @@ vec4 color = vec4(vec3(shadow), 1.);
                         zTestOptions(code, matConfig)
                     } else if (lower.contains("zwrite")) {
                         zwriteOptions(code, matConfig)
+                    } else if (lower.contains("queue")) {
+                        queueOptions(code, matConfig)
                     }
                 }
             }
@@ -541,6 +544,29 @@ vec4 color = vec4(vec3(shadow), 1.);
                 "gequal" -> GLES20.GL_GEQUAL
                 "always" -> GLES20.GL_ALWAYS
                 else -> -1
+            }
+        }
+
+        private fun queueOptions(code: List<String>, matConfig: MaterialConfig) {
+            for (i in code) {
+                val queue = queueCodeToEnum(i)
+
+                if (queue != RenderQueue.Error) {
+                    matConfig.renderQueue = queue
+                    break
+                }
+            }
+        }
+
+        private fun queueCodeToEnum(code: String): RenderQueue {
+            return when (code) {
+                "background" -> RenderQueue.Background
+                "geometry" -> RenderQueue.Geometry
+                "alphatest" -> RenderQueue.AlphaTest
+                "transparent" -> RenderQueue.Transparent
+                "overlay" -> RenderQueue.Overlay
+
+                else -> RenderQueue.Error
             }
         }
 
