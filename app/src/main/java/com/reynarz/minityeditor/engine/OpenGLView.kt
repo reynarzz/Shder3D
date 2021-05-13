@@ -6,6 +6,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import com.reynarz.minityeditor.views.MainActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.math.round
 import kotlin.math.sqrt
 
@@ -46,7 +49,8 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun getDistance(a: vec3, b: vec3): Float {
-
+        //--dispat
+       // GlobalScope.launch(Dispatchers.) {  }
         val diff = getDiff(a, b)
         return sqrt(dot(diff, diff))
     }

@@ -16,8 +16,6 @@ import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.databinding.SceneViewFragmentBinding
 import com.reynarz.minityeditor.files.FileManager
-import com.reynarz.minityeditor.models.SceneEntityData
-import com.reynarz.minityeditor.viewmodels.InspectorViewModel
 import com.reynarz.minityeditor.viewmodels.SceneViewModel
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,14 +31,24 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
         binding = DataBindingUtil.inflate<SceneViewFragmentBinding>(inflater, R.layout.scene_view_fragment, container, false)
 
 
+        viewModel.onAboutToDeleteEntity = {
+            binding.clEditSelectedEntityContainer.visibility = View.GONE
+
+            MainActivity.instance.openGLView.renderer.deleteEntity(it)
+        }
 
         binding.viewmodel = viewModel
+
+
+
         return binding.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         setHierarchyButton(view)
 
@@ -49,15 +57,15 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
         setEditModelButton(view)
     }
 
+
     private fun setHierarchyButton(view: View) {
 
         requireView().findViewById<Button>(R.id.btn_openHierarchy).setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_sceneTo_Hierarchy)
         }
 
-        binding.clEditSelectedEntityContainer.visibility = if(repository.selectedSceneEntity == null) View.GONE else View.VISIBLE
-
-      //  val hierarchy = HierarchyFragmentView()
+        showEditEntityView(repository.selectedSceneEntity != null)
+        //  val hierarchy = HierarchyFragmentView()
 
 //        view!!.findViewById<Button>(R.id.btn_openHierarchy).setOnClickListener {
 //            activity!!.supportFragmentManager.beginTransaction().apply {
@@ -68,12 +76,26 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 //        }
     }
 
+    fun showEditEntityView(show: Boolean) {
+        binding.clEditSelectedEntityContainer.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Test
+        MainActivity.instance.openGLView.renderer.onEntitySelected = {
+            showEditEntityView(it)
+        }
+    }
     private fun setSaveButton() {
         val saveButton = requireView()!!.findViewById<Button>(R.id.btn_saveProject)
         saveButton.setOnClickListener {
             val filemanager = get<FileManager>()
             filemanager.saveCurrentProject()
-            Toast.makeText(context, "Saved", Toast.LENGTH_LONG)
+            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+
+
         }
     }
 
@@ -105,8 +127,6 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         // use bindings
         val editModel = requireView()!!.findViewById<Button>(R.id.btn_editModelComponents)
-
-
 
         editModel.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_sceneTo_Inspector)

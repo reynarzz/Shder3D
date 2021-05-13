@@ -178,10 +178,4 @@ class MainActivity : AppCompatActivity() {
 
         super.onBackPressed()
     }
-
-    fun removeSceneEntity(entity: SceneEntityData?) {
-        openGLView.renderer.addRenderCommand {
-            openGLView.renderer.scene.removeSceneEntityByID(entity?.entityID)
-        }
-    }
 }
