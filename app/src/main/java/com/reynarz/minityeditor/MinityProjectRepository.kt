@@ -16,6 +16,7 @@ class MinityProjectRepository() {
 
     var selectedSceneEntity: SceneEntityData? = null
 
+
     fun getProjectData(): ProjectData {
 
         if (projectData == null) {
