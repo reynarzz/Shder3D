@@ -376,9 +376,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        val viewM = scene!!.editorCamera!!.viewM
-        val projM = scene!!.editorCamera!!.projectionM
-
         for (i in 0 until scene!!.entities.size) {
 
             val entity = scene.entities[i]
@@ -388,7 +385,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
 
-                    renderer?.bind(viewM, projM, errorMaterial, meshIndex)
+                    renderer?.bind(scene!!.directionalLight.getLightViewMatrix(), scene!!.directionalLight.getProjectionM(), errorMaterial, meshIndex)
 
                     val mesh = renderer.meshes[meshIndex]
 
