@@ -12,6 +12,9 @@ import com.reynarz.minityeditor.engine.components.Transform
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -42,7 +45,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var lightObj: MeshRenderer
 
-    private lateinit var pickupMaterial : Material
+    private lateinit var pickupMaterial: Material
 
     private val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
     private val rendersMap = mutableMapOf<Int, MutableList<SceneEntity?>>()
@@ -76,9 +79,13 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             outlineMaterial = Utils.getUnlitMaterial(1f)
             errorMaterial = Utils.getErrorMaterial()
-            pickupMaterial =  Material(Utils.getPickupShader().run {
+            pickupMaterial = Material(Utils.getPickupShader().run {
                 Shader(first, second)
             })
+
+            colorPickerPixelBuffer = ByteBuffer.allocateDirect(16).run {
+                order(ByteOrder.nativeOrder())
+            }
 
             glEnable(GL_DEPTH_TEST)
             glDepthFunc(GL_LEQUAL)
@@ -246,14 +253,16 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
     }
 
-    private fun pickUpPass() {
+    lateinit var colorPickerPixelBuffer: ByteBuffer
+
+    fun pickUpPass(xPixel: Int, yPixel: Int, test: Boolean = false) {
         glViewport(0, 0, colorPickerFrameBuffer.width, colorPickerFrameBuffer.height)
 
         colorPickerFrameBuffer.bind()
+        //glPixelStorei(GL_UNPACK_ALIGNMENT, 2)
 
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
-        glClear(GL_STENCIL_BUFFER_BIT)
 
         glClearColor(0.0f, 0.0f, 0.0f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
@@ -290,8 +299,18 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             pickUpColorIndex += 3
         }
+        val flipedY = MainActivity.height - yPixel
+
+        if (!test)
+            glReadPixels(xPixel, flipedY, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, colorPickerPixelBuffer)
+
+        if (!test)
+            println(xPixel.toString() + ", " + flipedY.toString() + "| " + colorPickerPixelBuffer.get(0).toString() + ", " + colorPickerPixelBuffer.get(1).toString() + ", " + colorPickerPixelBuffer.get(2).toString() + ", " + colorPickerPixelBuffer.get(3).toString())
 
         colorPickerFrameBuffer.unBind()
+        //mainFrameBuffer.bind()
+
+
     }
 
     private fun shadowPass() {
@@ -346,8 +365,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
+        pickUpPass(0, 0, true)
         shadowPass()
-        pickUpPass()
+
 
         mainFrameBuffer.bind()
         glViewport(0, 0, MainActivity.width, MainActivity.height)

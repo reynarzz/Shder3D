@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import com.reynarz.minityeditor.views.MainActivity
+import kotlin.math.round
 import kotlin.math.sqrt
 
 class OpenGLView(context: Context, attributeSet: AttributeSet) :
@@ -13,15 +14,16 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
 
     val sensibility = 0.75f
 
-    companion object{
+    companion object {
         var xPixel = 0f
         var yPixel = 0f
 
-        fun setTouchPixelPos(x : Float, y : Float){
+        fun setTouchPixelPos(x: Float, y: Float) {
             xPixel = x
             yPixel = y
         }
     }
+
     var renderer = OpenGLRenderer(context)
 
     init {
@@ -54,6 +56,10 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                 // prevents weird jumping
                 prevX = event!!.x
                 prevY = event!!.y
+
+                renderer.addRenderCommand {
+                    renderer.pickUpPass(round(prevX).toInt(), round(prevY).toInt())
+                }
             }
 
             MotionEvent.ACTION_POINTER_UP -> {
@@ -62,8 +68,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                 Log.d("two fingers", "Up")
             }
 
-            MotionEvent.ACTION_UP ->
-            {
+            MotionEvent.ACTION_UP -> {
                 prevX = event!!.x
                 prevY = event!!.y
             }
