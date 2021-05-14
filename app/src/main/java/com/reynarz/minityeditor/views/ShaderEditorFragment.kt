@@ -100,14 +100,15 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         changed = true
         spanableString.clear()
         spanableString.append(text)
-        println("Changed")
+
+        //println("Changed")
 
         val words = getWords(text)
 
         for (word in words) {
             //println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
             if (Utils.shaderColorHightlight.containsKey(word.word)) {
-                println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
+                //println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
                 val color = Utils.shaderColorHightlight[word.word]
 
                 spanableString.setSpan(ForegroundColorSpan(color!!), word.startIndex, word.endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
