@@ -8,8 +8,8 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.isDigitsOnly
 import androidx.databinding.DataBindingUtil
@@ -23,7 +23,6 @@ import com.reynarz.minityeditor.models.ShaderData
 import com.reynarz.minityeditor.viewmodels.ShaderEditorViewModel
 import org.koin.android.ext.android.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.StringBuilder
 
 
 class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
@@ -79,9 +78,16 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
         }
 
         shaderViewModel.fragmentShader.observe(viewLifecycleOwner, {
-
             if (!changed)
-                colorText(it)
+                colorText(it, binding.etFragmentCode)
+            else {
+                changed = false
+            }
+        })
+
+        shaderViewModel.vertexShader.observe(viewLifecycleOwner, {
+            if (!changed)
+                colorText(it, binding.etVertexCode)
             else {
                 changed = false
             }
@@ -90,20 +96,14 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
     private var changed = false
 
-    private class WordToHightlight {
-        var word = ""
-        var startIndex = 0
-        var endIndex = 0
-    }
-
-    private fun colorText(text: String) {
+    private fun colorText(text: String, editText: EditText) {
         changed = true
         spanableString.clear()
         spanableString.append(text)
 
         //println("Changed")
 
-        val words = getWords(text)
+        val words = Utils.getWordsFromText(text)
 
         for (word in words) {
             //println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
@@ -118,41 +118,12 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             }
         }
 
-        val cursorCurrentPos = binding.etFragmentCode.selectionEnd
-        binding.etFragmentCode.text = spanableString
-        binding.etFragmentCode.setSelection(cursorCurrentPos)
+        val cursorCurrentPos = editText.selectionEnd
+        editText.text = spanableString
+        editText.setSelection(cursorCurrentPos)
     }
 
-    private fun getWords(text: String): List<WordToHightlight> {
-        val words = mutableListOf<WordToHightlight>()
 
-        val stringBuilder = StringBuilder()
-        var startIndex = 0
-
-        for (i in 0 until text.length) {
-            if (text[i].isLetterOrDigit() && !text[i].isWhitespace() || text[i] == '_') {
-
-                val prevChar = text.getOrNull(i - 1)
-                if (prevChar != null && !prevChar.isLetterOrDigit() && prevChar != '_') {
-                    startIndex = i
-                    //println("startIndex here!")
-                }
-
-                stringBuilder.append(text[i])
-            } else {
-                if (stringBuilder.length > 0) {
-                    words.add(WordToHightlight().also {
-                        it.word = stringBuilder.toString()
-                        it.startIndex = startIndex
-                        it.endIndex = i
-                    })
-                    stringBuilder.clear()
-                }
-            }
-        }
-
-        return words
-    }
 
     private fun setPreviewMode() {
         val codeContainer = requireView().findViewById<ConstraintLayout>(R.id.codeContainer)

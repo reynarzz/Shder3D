@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.models.MaterialConfig
 import com.reynarz.minityeditor.models.RenderQueue
+import com.reynarz.minityeditor.views.ShaderEditorFragment
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.StringBuilder
@@ -628,13 +629,52 @@ vec4 color = vec4(vec3(shadow), 1.);
             }
         }
 
+        class WordToHightlight {
+            var word = ""
+            var startIndex = 0
+            var endIndex = 0
+        }
+
+         fun getWordsFromText(text: String): List<WordToHightlight> {
+            val words = mutableListOf<WordToHightlight>()
+
+            val stringBuilder = StringBuilder()
+            var startIndex = 0
+
+            for (i in 0 until text.length) {
+                if (text[i].isLetterOrDigit() && !text[i].isWhitespace() || text[i] == '_' || text[i] == '#') {
+
+                    val prevChar = text.getOrNull(i - 1)
+                    if (prevChar != null && !prevChar.isLetterOrDigit() && prevChar != '_' && prevChar != '#') {
+                        startIndex = i
+                        //println("startIndex here!")
+                    }
+
+                    stringBuilder.append(text[i])
+                } else {
+                    if (stringBuilder.length > 0) {
+                        words.add(WordToHightlight().also {
+                            it.word = stringBuilder.toString()
+                            it.startIndex = startIndex
+                            it.endIndex = i
+                        })
+                        stringBuilder.clear()
+                    }
+                }
+            }
+
+            return words
+        }
+
         private val keyword = "#9a89ff"
         private val dataType = "#9a89ff"
         private val internalVariables = "#ff6767"
-        private val functions = "#f9ca51"
+        private val functions = "#65e47a"
 
         var shaderColorHightlight = mapOf(
             "float" to Color.parseColor(dataType),
+            "#minity" to Color.parseColor(functions),
+            "#Minity" to Color.parseColor(functions),
             "samplerCube" to Color.parseColor(dataType),
             "sampler2D" to Color.parseColor(dataType),
             "bool" to Color.parseColor(dataType),
@@ -659,8 +699,10 @@ vec4 color = vec4(vec3(shadow), 1.);
             "uniform" to Color.parseColor(keyword),
             "return" to Color.parseColor(keyword),
             "gl_FragColor" to Color.parseColor(internalVariables),
+            "gl_Position" to Color.parseColor(internalVariables),
             "gl_FragCoord" to Color.parseColor(internalVariables),
-            "_uv" to Color.parseColor(internalVariables),
+            "_UV_" to Color.parseColor(internalVariables),
+            "_LIGHT" to Color.parseColor(internalVariables),
             "_SHADOWMAP" to Color.parseColor(internalVariables),
             "_tex0" to Color.parseColor(internalVariables),
             "_tex1" to Color.parseColor(internalVariables),
