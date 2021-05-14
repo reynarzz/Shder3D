@@ -3,7 +3,6 @@ package com.reynarz.minityeditor.engine
 import android.opengl.GLES20.*
 import android.opengl.Matrix
 import com.reynarz.minityeditor.views.MainActivity
-import kotlinx.serialization.Serializable
 
 
 class Material(val shader: Shader) {
@@ -88,8 +87,8 @@ class Material(val shader: Shader) {
 
         val nearPlane = 1f
         val farPlane = 500f
-        val t = OpenGLRenderer.fakeTimeScale // need the current time of the app.
-        val deltaTime = OpenGLRenderer.fakeDeltaTime // need current delta time of the app.
+        val t = OpenGLRenderer.time // need the current time of the app.
+        val deltaTime = OpenGLRenderer.deltaTime // need current delta time of the app.
 
         set("UNITY_MATRIX_MVP", MVP)
         set("UNITY_MATRIX_MV", MV)

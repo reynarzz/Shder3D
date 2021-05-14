@@ -5,7 +5,6 @@ import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
@@ -13,9 +12,6 @@ import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.components.Transform
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.views.MainActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.get
 import java.nio.ByteBuffer
@@ -141,6 +137,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //
 //            lightTransform = meshRenderer.transform
 //            scene.entities.add(lightEntity)
+
+            MainActivity.instance.lifecycleScope.launch{
+                last_time = System.nanoTime()
+            }
         }
     }
 
@@ -438,24 +438,40 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     companion object {
-        var fakeTimeScale = 0f
+        var time = 0f
             private set
 
-        var fakeDeltaTime = 0f
+        var deltaTime = 0f
             private set
     }
 
+    var last_time = System.nanoTime()
+
+    var t = 0f
+    var delta_time = 0f
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
         // pickUpPass(0, 0, true)
         shadowPass()
 
+        // this could have bad perfomance
+        MainActivity.instance.lifecycleScope.launch {
+
+            val time = System.nanoTime()
+            delta_time = ((time - last_time) / 1000000000f)
+            last_time = time
+
+            t += delta_time
+            //println("t: " + t + ", dt: " + delta_time)
+        }
 
         mainFrameBuffer.bind()
         glViewport(0, 0, MainActivity.width, MainActivity.height)
 
-        fakeTimeScale += 1 * 0.01f
+        time = t
+        deltaTime = delta_time
+
         glEnable(GL_DEPTH_TEST)
 
         glClearColor(0.2f, 0.2f, 0.2f, 1f)

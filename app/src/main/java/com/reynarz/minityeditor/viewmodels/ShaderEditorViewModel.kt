@@ -1,5 +1,6 @@
 package com.reynarz.minityeditor.viewmodels
 
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.View
 import androidx.databinding.BindingAdapter
@@ -19,6 +20,11 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
     private var showingEditor = true
     lateinit var onCompileShader: () -> Unit
     lateinit var onHideOrShowEditor: () -> Unit
+
+    private lateinit var spanableString: SpannableStringBuilder
+    init {
+        spanableString = SpannableStringBuilder()
+    }
 
     fun onCompile() {
         onCompileShader()
@@ -41,5 +47,10 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
         vertexShader.value = shaderData.vertexShader
         fragmentShader.value = shaderData.fragmentShader
         showEditor.value = true
+    }
+
+    fun onTextWriten(){
+        //spanableString.te
+        spanableString
     }
 }
