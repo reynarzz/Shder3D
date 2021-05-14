@@ -94,7 +94,9 @@ class CustomObjParser {
                 }
             } else if (it.startsWith("f ")) {
 
-                val faces = it.split(" ")
+                val faces = it.split(" ").toMutableList()
+                faces.retainAll() { it.isNotEmpty() }
+
                 currentVertices.clear()
                 triangulatedVertex.clear()
 
