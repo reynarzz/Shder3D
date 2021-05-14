@@ -21,11 +21,6 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
     lateinit var onCompileShader: () -> Unit
     lateinit var onHideOrShowEditor: () -> Unit
 
-    private lateinit var spanableString: SpannableStringBuilder
-    init {
-        spanableString = SpannableStringBuilder()
-    }
-
     fun onCompile() {
         onCompileShader()
 
@@ -35,8 +30,8 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
     fun onHideShowEditor() {
 
         onHideOrShowEditor()
-       // showEditor.value = false
-      //  Log.d("Changed", "Show editor ${showEditor.value}")
+        // showEditor.value = false
+        //  Log.d("Changed", "Show editor ${showEditor.value}")
     }
 
     fun onCloseEditor() {
@@ -47,10 +42,5 @@ class ShaderEditorViewModel(private val navigator: DefaultNavigator) : ViewModel
         vertexShader.value = shaderData.vertexShader
         fragmentShader.value = shaderData.fragmentShader
         showEditor.value = true
-    }
-
-    fun onTextWriten(){
-        //spanableString.te
-        spanableString
     }
 }

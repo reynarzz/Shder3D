@@ -2,6 +2,10 @@ package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20.*
 import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import com.reynarz.minityeditor.views.MainActivity
+import kotlinx.coroutines.launch
 
 class Shader(vertexSource: String, fragmentSource: String) {
 
@@ -15,7 +19,7 @@ class Shader(vertexSource: String, fragmentSource: String) {
         private set
 
     init {
-        createShaders(vertexSource, fragmentSource)
+        createShaders(vertexSource, fragmentSource, false)
     }
 
     fun bind(): Int {
@@ -42,7 +46,7 @@ class Shader(vertexSource: String, fragmentSource: String) {
         createShaders(vertex, fragment)
     }
 
-    private fun createShaders(vertex: String, fragment: String) {
+    private fun createShaders(vertex: String, fragment: String, showCompilationMessage: Boolean = true) {
         var vertexResult = GetCompiledShader(GL_VERTEX_SHADER, vertex);
         var fragmentResult = GetCompiledShader(GL_FRAGMENT_SHADER, fragment);
 
@@ -61,17 +65,35 @@ class Shader(vertexSource: String, fragmentSource: String) {
 
             glAttachShader(program, vertexShader)
             glAttachShader(program, fragmentShader)
-            Log.d("Shader compile", "succesfull")
             glLinkProgram(program)
+
+            if (showCompilationMessage) {
+                MainActivity.instance.lifecycleScope.launch {
+                    Toast.makeText(MainActivity.instance.baseContext, "Compiled", Toast.LENGTH_SHORT).show()
+                }
+            }
         } else {
 
             if (!couldVertexShaderCompile) {
                 val log = glGetShaderInfoLog(vertexShader)
+
+                if (showCompilationMessage) {
+                    MainActivity.instance.lifecycleScope.launch {
+                        Toast.makeText(MainActivity.instance.baseContext, log, Toast.LENGTH_LONG).show()
+                    }
+                }
                 Log.d("Vertex Shader", log)
             }
 
             if (!couldFragmentShaderCompile) {
                 val log = glGetShaderInfoLog(fragmentShader)
+
+                if (showCompilationMessage) {
+                    MainActivity.instance.lifecycleScope.launch {
+                        Toast.makeText(MainActivity.instance.baseContext, log, Toast.LENGTH_LONG).show()
+                    }
+                }
+
                 Log.d("Fragment Shader", log)
             }
         }

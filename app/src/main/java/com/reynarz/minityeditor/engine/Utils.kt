@@ -4,6 +4,7 @@ import android.content.res.AssetManager
 import com.reynarz.minityeditor.models.ComponentType
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.opengl.GLES20
 import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.R
@@ -626,5 +627,19 @@ vec4 color = vec4(vec3(shadow), 1.);
                 (Random().nextFloat() * 255).toInt()
             }
         }
+
+        var shaderColorHightlight = mapOf("uniform" to Color.parseColor("#ff5f68"),
+            "vec4" to Color.parseColor("#ff5f68"),
+            "float" to Color.parseColor("#ff5f68"),
+            "vec2" to Color.parseColor("#ff5f68"),
+            "if" to Color.parseColor("#ff5f68"),
+            "else" to Color.parseColor("#ff5f68"),
+            "uniform" to Color.parseColor("#ff5f68"),
+            "return" to Color.parseColor("#ff5f68"),
+            "gl_FragColor" to Color.parseColor("#ff5f68"),
+            "gl_FragCoord" to Color.parseColor("#ff5f68"),
+            "texture2D" to Color.parseColor("#ff5f68"),
+            "sampler2D" to Color.parseColor("#ff5f68"),
+            "void" to Color.parseColor("#ff5f68"))
     }
 }
