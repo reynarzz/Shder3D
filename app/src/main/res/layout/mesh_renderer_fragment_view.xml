@@ -12,19 +12,21 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/imageView12"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/rounded_rectangle"
-            app:tint="@color/semi_black"/>
+            app:tint="@color/semi_black" />
 
         <CheckBox
             android:id="@+id/cb_castShadows_meshRenderer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cast Shadows"
-            android:layout_margin="10dp"
             android:fontFamily="@font/roboto_bold"
+            android:text="Cast Shadows"
+            android:layout_marginLeft="10dp"
             android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
