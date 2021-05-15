@@ -31,7 +31,14 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private var sceneEntitiesData: List<SceneEntityData>? = null
     lateinit var colorPickerPixelBuffer: ByteBuffer
 
-    val scene: Scene = Scene()
+    var scene: Scene = Scene()
+        get() {
+            if (repository.scene == null) {
+                repository.scene = Scene()
+            }
+            return repository?.scene!!
+        }
+
     var rot = vec3(0f, 0f, 0f)
     var zoom = 1f
     var twoFingersNormalizedDir = vec3()
@@ -44,15 +51,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private lateinit var errorMaterial: Material
     private var editorObjs: MutableList<MeshRenderer>? = null
 
-    var lStartTime = System.currentTimeMillis().toFloat()
-
     lateinit var mainFrameBuffer: FrameBuffer
     lateinit var shadowMapFrameBuffer: FrameBuffer
     lateinit var colorPickerFrameBuffer: FrameBuffer
 
-    private lateinit var lightTransform: Transform
-
-    private lateinit var lightObj: MeshRenderer
 
     private lateinit var pickupMaterial: Material
 
@@ -86,7 +88,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
-        if (!initialized) {
+        //if (!initialized) {
+            repository.scene = scene
             editorObjs = mutableListOf()
 
             outlineMaterial = Utils.getUnlitMaterial(1f)
@@ -138,10 +141,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //            lightTransform = meshRenderer.transform
 //            scene.entities.add(lightEntity)
 
-            MainActivity.instance.lifecycleScope.launch{
+            MainActivity.instance.lifecycleScope.launch {
                 last_time = System.nanoTime()
             }
-        }
+       // }
     }
 
     fun addToRenderQueue(sceneEntity: SceneEntity?, renderQueue: Int) {
@@ -416,7 +419,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             // sometimes the user can destroy an entity in another thread!, this is a patch! but it can cause problems.
             val entity = scene.entities.getOrNull(i)
 
-            if (entity != null && sceneEntitiesData!![i].active) {
+            if (entity != null && sceneEntitiesData!![i].active && sceneEntitiesData!![i].meshRendererData.castShadows) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {

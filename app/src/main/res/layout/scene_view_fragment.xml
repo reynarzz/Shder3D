@@ -21,7 +21,6 @@
         <!--        android:layout_height="match_parent"-->
         <!--        android:src="@color/black" />-->
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_editSelectedEntityContainer"
             android:layout_width="45dp"

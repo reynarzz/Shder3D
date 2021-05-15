@@ -5,10 +5,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reynarz.minityeditor.DefaultNavigator
@@ -53,7 +50,16 @@ class InspectorRecycleViewAdapter(private val viewModel: InspectorViewModel, pri
                 }
                 ComponentType.MeshRenderer -> {
 
-                    val adapter = MeshRendererMaterialsListAdapter({ viewModel.componentsData.value = value }, componentData as MeshRendererComponentData, navigator)
+                    val meshRendererComponentData = componentData as MeshRendererComponentData
+                    val adapter = MeshRendererMaterialsListAdapter({ viewModel.componentsData.value = value }, meshRendererComponentData, navigator)
+
+                    val castShadowsCheckBox = findViewById<CheckBox>(R.id.cb_castShadows_meshRenderer)
+
+                    castShadowsCheckBox.isChecked = meshRendererComponentData.castShadows
+
+                    castShadowsCheckBox.setOnCheckedChangeListener { _, checked ->
+                        meshRendererComponentData.castShadows = checked
+                    }
 
                     // possible deprecation (add something )
 //                    val addMaterialButton = findViewById<Button>(R.id.btn_addToComponentList)

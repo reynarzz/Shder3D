@@ -56,13 +56,24 @@ class MainActivity : AppCompatActivity() {
         //Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        initAllData()
 
+        // when rotating the screen this makes to not reload all the data from scratch but it has a bug.
+        if (!get<MinityProjectRepository>().initializedData) {
+            initAllData()
+        }
+        else{
+            val repository: MinityProjectRepository = get()
+            val project = repository.getProjectData()
 
+            repository.colorsPickupTableRBG = Utils.getPickingRGBLookUpTable(200)
+
+            loadCameraEntity(project.defaultSceneEntities[0])
+        }
     }
 
     private fun initAllData() {
         loadAllData()
+        get<MinityProjectRepository>().initializedData = true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -84,7 +95,6 @@ class MainActivity : AppCompatActivity() {
         for (path in files!!) {
             val entity = get<SceneEntityData>()
             entity.entityModelPath = path.path
-
 
             val repository: MinityProjectRepository = get()
             repository.getProjectData().sceneEntities.add(entity)

@@ -467,7 +467,7 @@ vec4 color = vec4(vec3(shadow), 1.);
 
             shader.reader().forEachLine { line ->
 
-                if (line.contains("#")) {
+                if (line.contains("#") && !line.contains("//")) {
 
                     val lower = removeExeciveWhiteSpace(line.toLowerCase())
                     println("procesed: " + lower)
