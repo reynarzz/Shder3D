@@ -1,11 +1,13 @@
 package com.reynarz.minityeditor.files
 
+import android.os.Build
 import android.os.Environment
 import android.util.Log
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.engine.data.ShaderDataBase
 import com.reynarz.minityeditor.models.*
+import com.reynarz.minityeditor.views.MainActivity
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
@@ -84,18 +86,26 @@ class FileManager {
     }
 
     private fun getFile(directoy: String, file: String): File {
+
+        val root = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            File(Environment.getExternalStorageDirectory().absolutePath + File.separator, minityRootFolder)
+        } else {
+            File(Environment.getExternalStorageDirectory().absolutePath + File.separator, minityRootFolder)
+
+        }
+
+        if(!root.exists()){
+            root.mkdir()
+            println("root dir created")
+        }
+
         return File(Environment.getExternalStorageDirectory().absolutePath + File.separator + minityRootFolder + File.separator + directoy, file)
     }
 
     fun saveEntities(sceneEntitiesDataInScene: MutableList<SceneEntityData>) {
         val directory = getFile(minityRootFolder, "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
-        val root = getFile("", minityRootFolder)
 
-        if(!root.exists()){
-            println("Create folder")
-            root.mkdir()
-        }
         if (!directory.exists()) {
             directory.mkdir()
 
@@ -108,12 +118,6 @@ class FileManager {
     fun saveCurrentProject() {
         val directory = getFile("", "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
-
-        val root = File(Environment.getExternalStorageDirectory().absolutePath + File.separator, minityRootFolder)
-
-        if(!root.exists()){
-            root.mkdir()
-        }
 
         if (!directory.exists()) {
             directory.mkdir()

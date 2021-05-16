@@ -61,19 +61,19 @@ class MainActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
 
-        GlobalScope.launch(Dispatchers.Default) {
-            // when rotating the screen this makes to not reload all the data from scratch but it has a bug.
-            if (!get<MinityProjectRepository>().initializedData) {
-                initAllData()
-            } else {
-                val repository: MinityProjectRepository = get()
-                val project = repository.getProjectData()
+        // GlobalScope.launch(Dispatchers.Default) {
+        // when rotating the screen this makes to not reload all the data from scratch but it has a bug.
+        if (!get<MinityProjectRepository>().initializedData) {
+            initAllData()
+        } else {
+            val repository: MinityProjectRepository = get()
+            val project = repository.getProjectData()
 
-                repository.colorsPickupTableRBG = Utils.getPickingRGBLookUpTable(200)
+            repository.colorsPickupTableRBG = Utils.getPickingRGBLookUpTable(200)
 
-                loadCameraEntity(project.defaultSceneEntities[0])
-            }
+            loadCameraEntity(project.defaultSceneEntities[0])
         }
+        //   }
     }
 
     private fun initAllData() {
@@ -100,19 +100,24 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             for (path in files!!) {
                 val entity = get<SceneEntityData>()
-                entity.entityModelPath = path.path
 
-                val repository: MinityProjectRepository = get()
-                repository.getProjectData().sceneEntities.add(entity)
+                if (path?.path != null) {
+                    entity.entityModelPath = path?.path
 
-                Log.d("total entities count", repository.getProjectData().sceneEntities.size.toString())
+                    val repository: MinityProjectRepository = get()
+                    repository.getProjectData().sceneEntities.add(entity)
 
-                for (i in repository.getProjectData().sceneEntities) {
-                    Log.d("Patht", i.entityModelPath)
+                    Log.d("total entities count", repository.getProjectData().sceneEntities.size.toString())
 
+                    for (i in repository.getProjectData().sceneEntities) {
+                        Log.d("Patht", i.entityModelPath)
+
+                    }
+
+                    loadCustomEntity(entity)
+                } else {
+                    println("Path is null!")
                 }
-
-                loadCustomEntity(entity)
             }
         }
     }
@@ -120,15 +125,17 @@ class MainActivity : AppCompatActivity() {
     private fun onTextureSelected(files: ArrayList<MediaFile>?) {
 
         // just one texture per slot
-        val textureMedia = files?.get(0)
+        val textureMedia = files?.getOrNull(0)
 
-        val repository: MinityProjectRepository = get()
-        val currentTextureSlot = repository.selectedMaterial?.texturesData!![repository.selectedTextureSlot]
+        if (textureMedia != null) {
+            val repository: MinityProjectRepository = get()
+            val currentTextureSlot = repository.selectedMaterial?.texturesData!![repository.selectedTextureSlot]
 
-        currentTextureSlot.path = textureMedia?.path!!
-        openGLView.renderer.setTextureCommand(currentTextureSlot)
+            currentTextureSlot.path = textureMedia?.path!!
+            openGLView.renderer.setTextureCommand(currentTextureSlot)
 
-        Log.d("texture selected ${repository.selectedTextureSlot}", textureMedia?.path?.toString()!!)
+            Log.d("texture selected ${repository.selectedTextureSlot}", textureMedia?.path?.toString()!!)
+        }
     }
 
     private fun loadAllData() {
