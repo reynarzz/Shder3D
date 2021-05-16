@@ -2,8 +2,10 @@ package com.reynarz.minityeditor.views
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +23,7 @@ import com.reynarz.minityeditor.engine.Utils
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.ShaderData
 import com.reynarz.minityeditor.viewmodels.ShaderEditorViewModel
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,7 +34,6 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
     private val shaderViewModel: ShaderEditorViewModel by viewModel()
     private lateinit var shaderData: ShaderData
     private var materialData: MaterialData? = null
-    private var spanableString = SpannableStringBuilder()
 
     // lateinit var renderer: OpenGLRenderer
 
@@ -77,53 +79,104 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             binding.etFragmentCode.visibility = if (!checked) View.VISIBLE else View.GONE
         }
 
-        shaderViewModel.fragmentShader.observe(viewLifecycleOwner, {
-            if (!changed)
-                colorText(it, binding.etFragmentCode)
-            else {
-                changed = false
-            }
-        })
+//        shaderViewModel.fragmentShader.observe(viewLifecycleOwner, {
+//            if (!changed)
+//                colorText(it, binding.etFragmentCode)
+//            else {
+//                changed = false
+//            }
+//        })
 
-        shaderViewModel.vertexShader.observe(viewLifecycleOwner, {
-            if (!changed)
-                colorText(it, binding.etVertexCode)
-            else {
-                changed = false
-            }
-        })
+        val fragListener = WatchListener(this, binding.etFragmentCode)
+        val vertexListener = WatchListener(this, binding.etVertexCode)
+
+        binding.etFragmentCode.addTextChangedListener(fragListener)
+        binding.etVertexCode.addTextChangedListener(vertexListener)
+
+//        shaderViewModel.vertexShader.observe(viewLifecycleOwner, {
+//            if (!changed)
+//                colorText(it, binding.etVertexCode)
+//            else {
+//                changed = false
+//            }
+//        })
     }
 
-    private var changed = false
+    private class WatchListener(private val editor: ShaderEditorFragment, private val editText: EditText) : TextWatcher {
+        private var prevText = ""
+        private var changedText = ""
+        private var spanableString = SpannableStringBuilder()
 
-    private fun colorText(text: String, editText: EditText) {
-        changed = true
-        spanableString.clear()
-        spanableString.append(text)
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            prevText = s.toString()
 
-        //println("Changed")
-
-        val words = Utils.getWordsFromText(text)
-
-        for (word in words) {
-            //println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
-            if (Utils.shaderColorHightlight.containsKey(word.word)) {
-                //println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
-                val color = Utils.shaderColorHightlight[word.word]
-
-                spanableString.setSpan(ForegroundColorSpan(color!!), word.startIndex, word.endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-            } else if (word.word.isDigitsOnly()) {
-                spanableString.setSpan(ForegroundColorSpan(Color.parseColor("#4ac3d4")), word.startIndex, word.endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-
-            }
         }
 
-        val cursorCurrentPos = editText.selectionEnd
-        editText.text = spanableString
-        editText.setSelection(cursorCurrentPos)
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                if (!changed) {
+//                    colorText(s.toString(), start, count, binding.etFragmentCode)
+//
+//                } else {
+//                    changed = false
+//                }
+            if (!changed) {
+                editor.colorText(s.toString(), start, count, editText, spanableString)
+                changed = true
+
+            } else {
+                changed = false
+            }
+
+        }
+
+        private var changed = false
+
+        override fun afterTextChanged(s: Editable?) {
+
+        }
     }
 
 
+    // this needs optimization
+    private fun colorText(text: String, start: Int, count: Int, editText: EditText, spannableString: SpannableStringBuilder) {
+
+
+
+        fun processText(): SpannableStringBuilder {
+
+            spannableString.clear()
+            spannableString.clearSpans()
+
+            spannableString.append(text)
+
+            //val subString = text.subSequence(0, start + count)
+            val words = Utils.getWordsFromText(text)
+
+            for (word in words) {
+                // println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
+                if (Utils.shaderColorHightlight.containsKey(word.word)) {
+                    //println("w: " + word.word + ", s: " + word.startIndex + ", e: " + word.endIndex)
+                    val color = Utils.shaderColorHightlight[word.word]
+
+                    spannableString.setSpan(ForegroundColorSpan(color!!), word.startIndex, word.endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                } else if (word.word.isDigitsOnly()) {
+                    spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#4ac3d4")), word.startIndex, word.endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+
+                }
+            }
+
+            return spannableString
+        }
+
+        GlobalScope.launch(Dispatchers.Main)
+        {
+            val result = withContext(Dispatchers.Default) {
+                processText()
+            }
+
+            //--editText.text.replace(0, editText.text.length, result)
+        }
+    }
 
     private fun setPreviewMode() {
         val codeContainer = requireView().findViewById<ConstraintLayout>(R.id.codeContainer)

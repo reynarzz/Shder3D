@@ -75,7 +75,7 @@ class Utils {
 
         fun getErrorShaderCode(): Pair<String, String> {
             var vertexTex = """
-            
+            attribute vec2 _UV_;
             attribute vec4 _VERTEX_; 
             uniform mat4 UNITY_MATRIX_MVP;
             
@@ -139,7 +139,7 @@ void main()
             
 attribute vec4 _VERTEX_; 
 uniform mat4 UNITY_MATRIX_MVP;
-
+attribute vec2 _UV_;
 void main() 
 {
    gl_Position = UNITY_MATRIX_MVP * _VERTEX_;
@@ -217,7 +217,7 @@ void main()
         fun getOutlineMaterial(): Material {
 
             var vertexTex = """
-            
+            attribute vec2 _UV_;
             attribute vec4 _VERTEX_; 
             uniform mat4 UNITY_MATRIX_MVP;
             attribute vec3 _NORMAL_;
@@ -670,34 +670,40 @@ vec4 color = vec4(vec3(shadow), 1.);
         private val dataType = "#9a89ff"
         private val internalVariables = "#ff6767"
         private val functions = "#65e47a"
+        private val dataTypeColor = Color.parseColor(dataType)
+        private val functionsColor = Color.parseColor(functions)
+        private val keywordsColor = Color.parseColor(keyword)
+
 
         var shaderColorHightlight = mapOf(
-            "float" to Color.parseColor(dataType),
-            "#minity" to Color.parseColor(functions),
-            "#Minity" to Color.parseColor(functions),
-            "samplerCube" to Color.parseColor(dataType),
-            "sampler2D" to Color.parseColor(dataType),
-            "bool" to Color.parseColor(dataType),
-            "true" to Color.parseColor(dataType),
-            "false" to Color.parseColor(dataType),
-            "int" to Color.parseColor(dataType),
-            "vec2" to Color.parseColor(dataType),
-            "vec3" to Color.parseColor(dataType),
-            "vec4" to Color.parseColor(dataType),
-            "bvec2" to Color.parseColor(dataType),
-            "bvec2" to Color.parseColor(dataType),
-            "bvec3" to Color.parseColor(dataType),
-            "bvec4" to Color.parseColor(dataType),
-            "ivec2" to Color.parseColor(dataType),
-            "ivec3" to Color.parseColor(dataType),
-            "ivec4" to Color.parseColor(dataType),
-            "mat2" to Color.parseColor(dataType),
-            "mat3" to Color.parseColor(dataType),
-            "mat4" to Color.parseColor(dataType),
-            "if" to Color.parseColor(keyword),
-            "else" to Color.parseColor(keyword),
-            "uniform" to Color.parseColor(keyword),
-            "return" to Color.parseColor(keyword),
+            "float" to dataTypeColor,
+            "#minity" to functionsColor,
+            "#Minity" to functionsColor,
+            "samplerCube" to dataTypeColor,
+            "sampler2D" to dataTypeColor,
+            "bool" to dataTypeColor,
+            "true" to dataTypeColor,
+            "false" to dataTypeColor,
+            "for" to dataTypeColor,
+            "while" to dataTypeColor,
+            "int" to dataTypeColor,
+            "vec2" to dataTypeColor,
+            "vec3" to dataTypeColor,
+            "vec4" to dataTypeColor,
+            "bvec2" to dataTypeColor,
+            "bvec2" to dataTypeColor,
+            "bvec3" to dataTypeColor,
+            "bvec4" to dataTypeColor,
+            "ivec2" to dataTypeColor,
+            "ivec3" to dataTypeColor,
+            "ivec4" to dataTypeColor,
+            "mat2" to dataTypeColor,
+            "mat3" to dataTypeColor,
+            "mat4" to dataTypeColor,
+            "if" to keywordsColor,
+            "else" to keywordsColor,
+            "uniform" to keywordsColor,
+            "return" to keywordsColor,
             "gl_FragColor" to Color.parseColor(internalVariables),
             "gl_Position" to Color.parseColor(internalVariables),
             "gl_FragCoord" to Color.parseColor(internalVariables),
@@ -713,61 +719,61 @@ vec4 color = vec4(vec3(shadow), 1.);
             "_tex6" to Color.parseColor(internalVariables),
             "_tex7" to Color.parseColor(internalVariables),
             "_tex8" to Color.parseColor(internalVariables),
-            "void" to Color.parseColor(keyword),
-            "varying" to Color.parseColor(keyword),
-            "precision" to Color.parseColor(keyword),
-            "lowp" to Color.parseColor(keyword),
-            "mediump" to Color.parseColor(keyword),
-            "highp" to Color.parseColor(keyword),
-            "const" to Color.parseColor(keyword),
-            "struct" to Color.parseColor(keyword),
-            "attribute" to Color.parseColor(keyword),
-            "clamp" to Color.parseColor(functions),
-            "texture2D" to Color.parseColor(functions),
-            "radians" to Color.parseColor(functions),
-            "degrees" to Color.parseColor(functions),
-            "pow" to Color.parseColor(functions),
-            "exp" to Color.parseColor(functions),
-            "exp2" to Color.parseColor(functions),
-            "log2" to Color.parseColor(functions),
-            "sqrt" to Color.parseColor(functions),
-            "inversesqrt" to Color.parseColor(functions),
-            "mod" to Color.parseColor(functions),
-            "min" to Color.parseColor(functions),
-            "max" to Color.parseColor(functions),
-            "mix" to Color.parseColor(functions),
-            "step" to Color.parseColor(functions),
-            "smoothstep" to Color.parseColor(functions),
-            "length" to Color.parseColor(functions),
-            "distance" to Color.parseColor(functions),
-            "dot" to Color.parseColor(functions),
-            "cross" to Color.parseColor(functions),
-            "faceforward" to Color.parseColor(functions),
-            "reflect" to Color.parseColor(functions),
-            "refract" to Color.parseColor(functions),
-            "matrixCompMult" to Color.parseColor(functions),
-            "lessThan" to Color.parseColor(functions),
-            "lessThanEqual" to Color.parseColor(functions),
-            "greaterThan" to Color.parseColor(functions),
-            "greaterThanEqual" to Color.parseColor(functions),
-            "equal" to Color.parseColor(functions),
-            "notEqual" to Color.parseColor(functions),
-            "any" to Color.parseColor(functions),
-            "all" to Color.parseColor(functions),
-            "not" to Color.parseColor(functions),
-            "textureCube" to Color.parseColor(functions),
-            "normalize" to Color.parseColor(functions),
-            "fract" to Color.parseColor(functions),
-            "floor" to Color.parseColor(functions),
-            "ceil" to Color.parseColor(functions),
-            "sign" to Color.parseColor(functions),
-            "abs" to Color.parseColor(functions),
-            "log" to Color.parseColor(functions),
-            "sin" to Color.parseColor(functions),
-            "asin" to Color.parseColor(functions),
-            "cos" to Color.parseColor(functions),
-            "acos" to Color.parseColor(functions),
-            "tan" to Color.parseColor(functions),
-            "atan" to Color.parseColor(functions))
+            "void" to keywordsColor,
+            "varying" to keywordsColor,
+            "precision" to keywordsColor,
+            "lowp" to keywordsColor,
+            "mediump" to keywordsColor,
+            "highp" to keywordsColor,
+            "const" to keywordsColor,
+            "struct" to keywordsColor,
+            "attribute" to keywordsColor,
+            "clamp" to functionsColor,
+            "texture2D" to functionsColor,
+            "radians" to functionsColor,
+            "degrees" to functionsColor,
+            "pow" to functionsColor,
+            "exp" to functionsColor,
+            "exp2" to functionsColor,
+            "log2" to functionsColor,
+            "sqrt" to functionsColor,
+            "inversesqrt" to functionsColor,
+            "mod" to functionsColor,
+            "min" to functionsColor,
+            "max" to functionsColor,
+            "mix" to functionsColor,
+            "step" to functionsColor,
+            "smoothstep" to functionsColor,
+            "length" to functionsColor,
+            "distance" to functionsColor,
+            "dot" to functionsColor,
+            "cross" to functionsColor,
+            "faceforward" to functionsColor,
+            "reflect" to functionsColor,
+            "refract" to functionsColor,
+            "matrixCompMult" to functionsColor,
+            "lessThan" to functionsColor,
+            "lessThanEqual" to functionsColor,
+            "greaterThan" to functionsColor,
+            "greaterThanEqual" to functionsColor,
+            "equal" to functionsColor,
+            "notEqual" to functionsColor,
+            "any" to functionsColor,
+            "all" to functionsColor,
+            "not" to functionsColor,
+            "textureCube" to functionsColor,
+            "normalize" to functionsColor,
+            "fract" to functionsColor,
+            "floor" to functionsColor,
+            "ceil" to functionsColor,
+            "sign" to functionsColor,
+            "abs" to functionsColor,
+            "log" to functionsColor,
+            "sin" to functionsColor,
+            "asin" to functionsColor,
+            "cos" to functionsColor,
+            "acos" to functionsColor,
+            "tan" to functionsColor,
+            "atan" to functionsColor)
     }
 }

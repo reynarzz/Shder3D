@@ -17,6 +17,9 @@ import com.reynarz.minityeditor.R
 import com.reynarz.minityeditor.databinding.SceneViewFragmentBinding
 import com.reynarz.minityeditor.files.FileManager
 import com.reynarz.minityeditor.viewmodels.SceneViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -54,6 +57,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
         setAddModelButton()
         setSaveButton()
+
         setEditModelButton(view)
     }
 
@@ -88,6 +92,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
             showEditEntityView(it)
         }
     }
+
     private fun setSaveButton() {
         val saveButton = requireView()!!.findViewById<Button>(R.id.btn_saveProject)
         saveButton.setOnClickListener {

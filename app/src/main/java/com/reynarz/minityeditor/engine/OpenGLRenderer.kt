@@ -12,12 +12,16 @@ import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.components.Transform
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.views.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.get
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
 
@@ -89,48 +93,48 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         //if (!initialized) {
-            repository.scene = scene
-            editorObjs = mutableListOf()
+        repository.scene = scene
+        editorObjs = mutableListOf()
 
-            outlineMaterial = Utils.getUnlitMaterial(1f)
-            errorMaterial = Utils.getErrorMaterial()
-            pickupMaterial = Material(Utils.getPickupShader().run {
-                Shader(first, second)
-            })
+        outlineMaterial = Utils.getUnlitMaterial(1f)
+        errorMaterial = Utils.getErrorMaterial()
+        pickupMaterial = Material(Utils.getPickupShader().run {
+            Shader(first, second)
+        })
 
-            colorPickerPixelBuffer = ByteBuffer.allocateDirect(16).run {
-                order(ByteOrder.nativeOrder())
-            }
+        colorPickerPixelBuffer = ByteBuffer.allocateDirect(16).run {
+            order(ByteOrder.nativeOrder())
+        }
 
-            glEnable(GL_DEPTH_TEST)
-            glDepthFunc(GL_LEQUAL)
-            //glEnable(GL_BLEND)
-            //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LEQUAL)
+        //glEnable(GL_BLEND)
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-            cameraTransformData = repository.getProjectData().cameraTransformData
+        cameraTransformData = repository.getProjectData().cameraTransformData
 
-            scene!!.editorCamera!!.updateProjection(width, height)
-            scene!!.editorCamera?.transform?.position = cameraTransformData.position
-            rot = cameraTransformData.eulerAngles
-            zoom = cameraTransformData.scale.x
+        scene!!.editorCamera!!.updateProjection(width, height)
+        scene!!.editorCamera?.transform?.position = cameraTransformData.position
+        rot = cameraTransformData.eulerAngles
+        zoom = cameraTransformData.scale.x
 
-            mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-            mainFrameBuffer.genNormalFrameBuffer(GL_REPEAT)
+        mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
+        mainFrameBuffer.genNormalFrameBuffer(GL_REPEAT)
 
-            shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-            shadowMapFrameBuffer.genBufferForDepth()
+        shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
+        shadowMapFrameBuffer.genBufferForDepth()
 
 
-            colorPickerFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-            colorPickerFrameBuffer.genNormalFrameBuffer(GL_CLAMP_TO_EDGE)
+        colorPickerFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
+        colorPickerFrameBuffer.genNormalFrameBuffer(GL_CLAMP_TO_EDGE)
 
-            initialized = true
+        initialized = true
 
-            touchPointer = TouchPointer(scene!!.editorCamera!!)
-            sceneEntitiesData = repository.getProjectData().sceneEntities
+        touchPointer = TouchPointer(scene!!.editorCamera!!)
+        sceneEntitiesData = repository.getProjectData().sceneEntities
 
-            println("Current Opengl thread: " + Thread.currentThread().name)
-            getEditorStuff_Test()
+        println("Current Opengl thread: " + Thread.currentThread().name)
+        getEditorStuff_Test()
 
 //            var lightEntity = SceneEntity()
 //            val meshRenderer = lightEntity.addComponent(MeshRenderer::class.java)
@@ -141,10 +145,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 //            lightTransform = meshRenderer.transform
 //            scene.entities.add(lightEntity)
 
-            MainActivity.instance.lifecycleScope.launch {
-                last_time = System.nanoTime()
-            }
-       // }
+        MainActivity.instance.lifecycleScope.launch {
+            last_time = System.nanoTime()
+        }
+        // }
     }
 
     fun addToRenderQueue(sceneEntity: SceneEntity?, renderQueue: Int) {
@@ -358,13 +362,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                         && abs(entity.colorID.y - g) <= 2
                         && abs(entity.colorID.z - b) <= 2
                     ) {
-//                        MainActivity.instance.lifecycleScope.launch {
-//                            Toast.makeText(MainActivity.instance.baseContext, "Select: " + sceneEntitiesData!![i].name, Toast.LENGTH_SHORT).show()
-//                        }
 
                         sceneEntitiesData!![i].isSelected = true
 
-                        if (repository.selectedSceneEntity != null) {
+                        if (repository.selectedSceneEntity != null && repository.selectedSceneEntity != sceneEntitiesData!![i]) {
                             repository.selectedSceneEntity?.isSelected = false
                         }
 
@@ -640,6 +641,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glDrawElements(GL_TRIANGLES, meshRenderer?.meshes!![0].indicesCount, GL_UNSIGNED_INT, meshRenderer?.meshes!![0].indexBuffer)
         meshRenderer.unBind()
     }
+
 
 
 }

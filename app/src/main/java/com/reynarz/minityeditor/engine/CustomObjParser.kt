@@ -198,7 +198,7 @@ class CustomObjParser {
             }
 
             models.add(ModelData(verticesFinal.toFloatArray(), normalsFinal.toFloatArray(), uvFinal.toFloatArray(), indices.toIntArray(), Bounds(minX, minY, minZ, maxX, maxY, maxZ)).also {
-                it.materialName = verticesGroup[0].materialName
+                it.modelName = verticesGroup[0].materialName
             })
 
             verticesFinal.clear()

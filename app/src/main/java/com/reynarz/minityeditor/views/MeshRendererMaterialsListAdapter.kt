@@ -105,8 +105,7 @@ class MeshRendererMaterialsListAdapter(private val onMaterialAdded: () -> Unit, 
 
                 // Add to the view model data, //bad.
 
-                mat.name = "Material ${(position + 1)}"
-                meshRendererComponentData.materialsData[position] = mat
+                mat.name = "Error"
 
                 val repo = get<MinityProjectRepository>(MinityProjectRepository::class.java)
 
@@ -114,9 +113,15 @@ class MeshRendererMaterialsListAdapter(private val onMaterialAdded: () -> Unit, 
 
                 //apply the data to view model first to notify.
 
-                onMaterialAdded()
+                repo.selectedSceneEntity!!.meshRendererData.materialsData[position] = mat
 
-                MainActivity.instance.updateMaterial(repo.selectedSceneEntity, position)
+
+                MainActivity.instance.updateMaterial(repo.selectedSceneEntity, position) {
+
+                    meshRendererComponentData.materialsData[position] = mat
+                }
+
+                onMaterialAdded()
 
                 //update the adapter list.
                 notifyDataSetChanged()

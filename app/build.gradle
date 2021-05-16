@@ -83,4 +83,6 @@ dependencies {
     implementation 'io.github.java-graphics:glm:1.0.1'
 
     implementation "io.insert-koin:koin-android:$koin_version"
+
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
 }

@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import com.reynarz.minityeditor.views.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlin.math.round
 import kotlin.math.sqrt

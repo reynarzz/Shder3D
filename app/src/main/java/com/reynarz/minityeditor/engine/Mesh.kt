@@ -16,7 +16,7 @@ class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray, 
 
     val indicesCount = indices.size
     val vertexCount = vertices.size
-
+    var meshName = ""
     private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_BYTES
 
 
@@ -66,11 +66,18 @@ class Mesh(val vertices: FloatArray, val indices: IntArray, val uv: FloatArray, 
 
         val uvAttrib = glGetAttribLocation(program, "_UV_")
 
-        glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, false, 2 * 4, uvBuffer)
-        glEnableVertexAttribArray(uvAttrib)
+        if (uvAttrib != -1){
+            glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, false, 2 * 4, uvBuffer)
+            glEnableVertexAttribArray(uvAttrib)
+        }
+
 
         val normalsAttrib = glGetAttribLocation(program, "_NORMAL_")
-        glVertexAttribPointer(normalsAttrib, 3, GL_FLOAT, false, 3 * 4, normalsBuffer)
-        glEnableVertexAttribArray(normalsAttrib)
+
+        if(normalsAttrib != -1){
+            glVertexAttribPointer(normalsAttrib, 3, GL_FLOAT, false, 3 * 4, normalsBuffer)
+            glEnableVertexAttribArray(normalsAttrib)
+        }
+
     }
 }
