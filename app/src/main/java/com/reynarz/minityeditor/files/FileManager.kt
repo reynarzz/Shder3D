@@ -88,9 +88,14 @@ class FileManager {
     }
 
     fun saveEntities(sceneEntitiesDataInScene: MutableList<SceneEntityData>) {
-        val directory = getFile("", "$minityEntitiesFolderName")
+        val directory = getFile(minityRootFolder, "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
+        val root = getFile("", minityRootFolder)
 
+        if(!root.exists()){
+            println("Create folder")
+            root.mkdir()
+        }
         if (!directory.exists()) {
             directory.mkdir()
 
@@ -103,6 +108,12 @@ class FileManager {
     fun saveCurrentProject() {
         val directory = getFile("", "$minityEntitiesFolderName")
         val file = File(directory, "$minityEntitiesFolderName.txt")
+
+        val root = File(Environment.getExternalStorageDirectory().absolutePath + File.separator, minityRootFolder)
+
+        if(!root.exists()){
+            root.mkdir()
+        }
 
         if (!directory.exists()) {
             directory.mkdir()
