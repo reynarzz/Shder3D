@@ -92,7 +92,7 @@
                         android:id="@+id/imageView7"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:alpha="0.2"
+                        android:alpha="0.6"
                         app:srcCompat="@drawable/round_top"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/btn_editModelComponents"
@@ -126,7 +126,7 @@
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:alpha="0.2"
+                        android:alpha="0.6"
                         app:srcCompat="@drawable/round_bottom"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +176,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/material_file"
-                app:tint="@color/semi_black" />
+                app:tint="@color/semi_black"
+                android:alpha="0.6"/>
 
 <!--            <ImageView-->
 <!--                android:layout_width="match_parent"-->
@@ -210,7 +211,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/material_file"
-                app:tint="@color/semi_black" />
+                app:tint="@color/semi_black"
+                android:alpha="0.6"/>
 
             <ImageView
                 android:layout_width="match_parent"
@@ -237,7 +239,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/botton_bar_rounded"
-                app:tint="@color/semi_black" />
+                app:tint="@color/semi_black"
+                android:alpha="0.6"/>
 
 
             <LinearLayout

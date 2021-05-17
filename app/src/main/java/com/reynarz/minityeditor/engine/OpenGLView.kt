@@ -151,6 +151,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
                 val startPointerPos = vec3(unchangedStartX, unchangedStartY, 0f)
                 //val dist = getDistance(currentPointer, startPointerPos)
 
+                // Movement
                 if (usingTwoFingers) {
                     var direction = getDiff(currentPointer, startPointerPos)
 

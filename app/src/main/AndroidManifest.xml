@@ -24,6 +24,7 @@
         <activity
             android:name=".views.SplashScreenActivity"
             android:theme="@style/Theme.Viewer3D.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,7 +34,8 @@
 
         <activity
             android:name=".views.MainActivity"
-            android:theme="@style/Theme.Viewer3D.NoActionBar">
+            android:theme="@style/Theme.Viewer3D.NoActionBar"
+            android:screenOrientation="portrait">
 
         </activity>
     </application>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <import type="androidx.databinding.Observable"/>
@@ -9,9 +11,7 @@
             type="com.reynarz.minityeditor.viewmodels.InspectorViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -33,7 +33,7 @@
                 android:id="@+id/imageView5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:srcCompat="@color/colorPrimary" />
+                app:srcCompat="@color/black2" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_activeEntity"
@@ -46,6 +46,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/et_entityName"
+                app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/rounded_rectangle"
+                app:tint="@color/black1"/>
+
             <EditText
                 android:id="@+id/et_entityName"
                 android:layout_width="0dp"
@@ -54,6 +64,11 @@
                 android:text="@={viewmodel.entityName}"
                 android:textAlignment="textStart"
                 android:textColor="@color/white"
+                android:background="@null"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="15sp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView5"
                 app:layout_constraintEnd_toStartOf="@+id/btn_closeInspector"
                 app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
@@ -63,8 +78,12 @@
                 android:id="@+id/btn_closeInspector"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:background="@color/semi_black"
+                android:background="@color/transparent"
+                android:backgroundTint="@color/white"
                 android:text="Close"
+                android:textSize="12dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/white"
                 android:onClick="@{() -> viewmodel.onCloseInspector()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

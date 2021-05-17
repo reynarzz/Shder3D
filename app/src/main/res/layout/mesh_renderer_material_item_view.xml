@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/colorAccent" />
+            app:tint="@color/black3" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout6"
@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:elevation="2dp"
                     android:fontFamily="@font/roboto_bold"
-                    android:paddingLeft="15dp"
+                    android:paddingLeft="25dp"
                     android:paddingRight="15dp"
                     android:text="The material name"
                     android:textAlignment="textStart"
@@ -174,7 +174,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@color/colorPrimary"
+                        android:src="#415A77"
                         app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
                         app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -208,7 +208,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@color/colorPrimary"
+                        android:src="#415A77"
                         app:layout_constraintBottom_toBottomOf="@+id/btn_removeTextureSlot"
                         app:layout_constraintStart_toStartOf="@+id/btn_removeTextureSlot"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -241,7 +241,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/purple_200" />
+                    app:tint="#1B263B" />
 
                 <ImageView
                     android:layout_width="0dp"

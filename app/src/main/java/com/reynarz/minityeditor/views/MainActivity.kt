@@ -1,6 +1,7 @@
 package com.reynarz.minityeditor.views
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -43,6 +44,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // for now
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         println("Current MainActivity thread: " + Thread.currentThread().name)
 
         instance = this
@@ -63,16 +68,16 @@ class MainActivity : AppCompatActivity() {
 
         // GlobalScope.launch(Dispatchers.Default) {
         // when rotating the screen this makes to not reload all the data from scratch but it has a bug.
-        if (!get<MinityProjectRepository>().initializedData) {
+       // if (!get<MinityProjectRepository>().initializedData) {
             initAllData()
-        } else {
-            val repository: MinityProjectRepository = get()
-            val project = repository.getProjectData()
-
-            repository.colorsPickupTableRBG = Utils.getPickingRGBLookUpTable(200)
-
-            loadCameraEntity(project.defaultSceneEntities[0])
-        }
+//        } else {
+//            val repository: MinityProjectRepository = get()
+//            val project = repository.getProjectData()
+//
+//            repository.colorsPickupTableRBG = Utils.getPickingRGBLookUpTable(200)
+//
+//            loadCameraEntity(project.defaultSceneEntities[0])
+//        }
         //   }
     }
 
