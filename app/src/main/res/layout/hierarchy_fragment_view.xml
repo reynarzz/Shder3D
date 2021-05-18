@@ -150,29 +150,11 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1">
-
-<!--                    <ToggleButton-->
-<!--                        android:id="@+id/toggleButton2"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:background="@drawable/rounded_rectangle"-->
-<!--                        android:backgroundTint="@color/semi_black"-->
-<!--                        android:fontFamily="@font/roboto_bold"-->
-<!--                        android:paddingLeft="20dp"-->
-<!--                        android:textAlignment="textStart"-->
-<!--                        android:textAllCaps="false"-->
-<!--                        android:textColor="@color/white"-->
-<!--                        android:textOff="Light"-->
-<!--                        android:textOn="Light"-->
-<!--                        app:layout_constraintEnd_toStartOf="@+id/btn_editDirectionalLight"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
                     <TextView
                         android:layout_width="0dp"
