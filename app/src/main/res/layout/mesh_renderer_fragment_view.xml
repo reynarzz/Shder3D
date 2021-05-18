@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/rounded_rectangle"
-            app:tint="#171717" />
+            app:tint="@color/black1" />
 
         <CheckBox
             android:id="@+id/cb_castShadows_meshRenderer"

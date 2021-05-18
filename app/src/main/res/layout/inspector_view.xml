@@ -54,21 +54,21 @@
                 app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/rounded_rectangle"
-                app:tint="@color/black1"/>
+                app:tint="@color/black1" />
 
             <EditText
                 android:id="@+id/et_entityName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@null"
+                android:fontFamily="@font/roboto_medium"
                 android:inputType="text|textNoSuggestions"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:text="@={viewmodel.entityName}"
                 android:textAlignment="textStart"
                 android:textColor="@color/white"
-                android:background="@null"
-                android:fontFamily="@font/roboto_medium"
                 android:textSize="15sp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView5"
                 app:layout_constraintEnd_toStartOf="@+id/btn_closeInspector"
                 app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
@@ -80,11 +80,11 @@
                 android:layout_height="0dp"
                 android:background="@color/transparent"
                 android:backgroundTint="@color/white"
-                android:text="Close"
-                android:textSize="12dp"
                 android:fontFamily="@font/roboto_medium"
-                android:textColor="@color/white"
                 android:onClick="@{() -> viewmodel.onCloseInspector()}"
+                android:text="Close"
+                android:textColor="@color/white"
+                android:textSize="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -99,7 +99,6 @@
             android:paddingBottom="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
 
