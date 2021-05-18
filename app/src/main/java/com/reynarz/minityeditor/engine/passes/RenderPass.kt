@@ -10,9 +10,8 @@ import com.reynarz.minityeditor.models.MaterialConfig
 import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
 
-open class RenderPass{
+open class RenderPass {
     protected val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
-
     protected lateinit var fbo: FrameBuffer
 
     val fbo_colorTexID = fbo.colorTexture

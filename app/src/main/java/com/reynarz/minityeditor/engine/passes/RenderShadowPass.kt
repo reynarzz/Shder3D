@@ -26,7 +26,6 @@ class RenderShadowPass : RenderPass() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         for (i in 0 until entities?.size!!) {
-
             // sometimes the user can destroy an entity in another thread!, this is a patch! but it can cause problems.
             val entity = entities.getOrNull(i)
 

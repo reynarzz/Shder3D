@@ -163,7 +163,7 @@ class SceneObjectManager(
 
     // This contains duplicated code
     fun recreateCameraEntity(sceneEntityData: SceneEntityData) {
-        val cameraEntity = SceneEntity()
+        val cameraEntity = SceneEntity(sceneEntityData)
         val meshRenderer = cameraEntity.addComponent(MeshRenderer::class.java)
         meshRenderer.meshes = mutableListOf(Utils.getScreenSizeQuad())
 

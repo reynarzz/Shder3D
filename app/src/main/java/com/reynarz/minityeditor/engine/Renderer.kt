@@ -45,11 +45,11 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         }
     }
 
-    fun addPrePass(pass: RenderPass) {
+    fun addPass(pass: RenderPass) {
         prePhases.add(pass)
     }
 
-    fun removePrePass(pass: RenderPass) {
+    fun removePass(pass: RenderPass) {
         prePhases.remove(pass)
     }
 

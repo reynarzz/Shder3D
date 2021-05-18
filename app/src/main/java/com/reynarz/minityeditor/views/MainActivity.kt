@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         lateinit var instance: MainActivity
             private set
-        var time = System.currentTimeMillis()
         var width = 0
             private set
         var height = 0
@@ -48,6 +47,12 @@ class MainActivity : AppCompatActivity() {
         // for now
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        width = displayMetrics.widthPixels
+        height = displayMetrics.heightPixels
+
         println("Current MainActivity thread: " + Thread.currentThread().name)
 
         instance = this
@@ -57,11 +62,7 @@ class MainActivity : AppCompatActivity() {
         sceneObjectManager = SceneObjectManager(this, openGLView.renderer)
         //shaderFragment.renderer = openGLView.renderer
 
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        width = displayMetrics.widthPixels
-        height = displayMetrics.heightPixels
         //Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 

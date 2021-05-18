@@ -27,7 +27,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     var twoFingersDir = vec3()
     private lateinit var cameraTransformData: TransformComponentData
     lateinit var touchPointer: TouchPointer
-    private var sceneEntitiesData: List<SceneEntityData>? = null
     lateinit var colorPickerPixelBuffer: ByteBuffer
 
     var scene: Scene = Scene()
@@ -111,20 +110,19 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         rot = cameraTransformData.eulerAngles
         zoom = cameraTransformData.scale.x
 
-        mainFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-        mainFrameBuffer.genNormalFrameBuffer(GL_REPEAT)
+        mainFrameBuffer = FrameBuffer()
+        mainFrameBuffer.genNormalFrameBuffer(MainActivity.width, MainActivity.height, GL_REPEAT)
 
-        shadowMapFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-        shadowMapFrameBuffer.genBufferForDepth()
+        shadowMapFrameBuffer = FrameBuffer()
+        shadowMapFrameBuffer.genBufferForDepth(MainActivity.width, MainActivity.height)
 
 
-        colorPickerFrameBuffer = FrameBuffer(MainActivity.width, MainActivity.height)
-        colorPickerFrameBuffer.genNormalFrameBuffer(GL_CLAMP_TO_EDGE)
+        colorPickerFrameBuffer = FrameBuffer()
+        colorPickerFrameBuffer.genNormalFrameBuffer(MainActivity.width, MainActivity.height, GL_CLAMP_TO_EDGE)
 
         initialized = true
 
         touchPointer = TouchPointer(scene!!.editorCamera!!)
-        sceneEntitiesData = repository.getProjectData().sceneEntities
 
         println("Current Opengl thread: " + Thread.currentThread().name)
         getEditorStuff_Test()
@@ -245,9 +243,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
 
     fun pickUpPass(xPixel: Int, yPixel: Int, test: Boolean = false) {
-        glViewport(0, 0, colorPickerFrameBuffer.width, colorPickerFrameBuffer.height)
 
         colorPickerFrameBuffer.bind()
+        glViewport(0, 0, colorPickerFrameBuffer.width, colorPickerFrameBuffer.height)
+
         //glPixelStorei(GL_UNPACK_ALIGNMENT, 2)
 
         glEnable(GL_DEPTH_TEST)
@@ -267,11 +266,10 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             val entity = scene.entities[i]
 
-            if (sceneEntitiesData!![i].active) {
+            if (entity.entityData.active) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
-
                     renderer?.bindWithMaterial(viewM, projM, pickupMaterial, meshIndex)
 
                     entity.colorID.x = repository.colorsPickupTableRBG[pickUpColorIndex + 0].toFloat()
@@ -320,34 +318,34 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             for (i in 0 until scene.entities.size) {
                 val entity = scene.entities[i]
 
-                if (sceneEntitiesData!![i].active) {
+                if (entity.entityData.active) {
                     if (abs(entity.colorID.x - r) <= 2
                         && abs(entity.colorID.y - g) <= 2
                         && abs(entity.colorID.z - b) <= 2
                     ) {
 
-                        sceneEntitiesData!![i].isSelected = true
+                        entity.entityData.isSelected = true
 
-                        if (repository.selectedSceneEntity != null && repository.selectedSceneEntity != sceneEntitiesData!![i]) {
+                        if (repository.selectedSceneEntity != null && repository.selectedSceneEntity != entity.entityData) {
                             repository.selectedSceneEntity?.isSelected = false
                         }
 
-                        repository.selectedSceneEntity = sceneEntitiesData!![i]
+                        repository.selectedSceneEntity = entity.entityData
                         println(repository?.selectedSceneEntity?.name)
 
                         MainActivity.instance.lifecycleScope.launch {
-                            onEntitySelected!!(sceneEntitiesData!![i].isSelected)
+                            onEntitySelected!!(entity.entityData.isSelected)
                         }
                         break
                     } else {
-                        sceneEntitiesData!![i].isSelected = false
+                        entity.entityData.isSelected = false
                         repository.selectedSceneEntity = null
                         MainActivity.instance.lifecycleScope.launch {
                             onEntitySelected!!(false)
                         }
                     }
                 } else {
-                    sceneEntitiesData!![i].isSelected = false
+                    entity.entityData.isSelected = false
                     repository.selectedSceneEntity = null
                     MainActivity.instance.lifecycleScope.launch {
                         onEntitySelected!!(false)
@@ -383,7 +381,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             // sometimes the user can destroy an entity in another thread!, this is a patch! but it can cause problems.
             val entity = scene.entities.getOrNull(i)
 
-            if (entity != null && sceneEntitiesData!![i].active && sceneEntitiesData!![i].meshRendererData.castShadows) {
+            if (entity != null && entity.entityData.active && entity.entityData.meshRendererData.castShadows) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
@@ -419,7 +417,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         runCommands()
 
-        // pickUpPass(0, 0, true)
+        //pickUpPass(0, 0, true)
         shadowPass()
 
         // this could have bad perfomance
@@ -470,9 +468,9 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             val entity = scene.entities.getOrNull(i)
 
-            if (entity != null && sceneEntitiesData!![i].active) {
+            if (entity != null && entity.entityData.active) {
                 val renderer = entity.getComponent(MeshRenderer::class.java)
-                val materialsData = sceneEntitiesData!![i].meshRendererData.materialsData
+                val materialsData = entity.entityData.meshRendererData.materialsData
 
                 for (meshIndex in 0 until renderer!!.meshes.size) {
 
@@ -496,7 +494,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             }
 
             //Selected entity outline.
-            if (selectedEntity != null && entity === selectedEntity && selectedEntity?.isActive!!) {
+            if (selectedEntity != null && entity === selectedEntity && entity?.entityData?.active!!) {
 
                 val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
                 glLineWidth(1.3f)

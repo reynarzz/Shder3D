@@ -2,7 +2,7 @@ package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20.*
 
-class FrameBuffer() {
+class FrameBuffer {
 
     private var frameBuffer: IntArray = IntArray(1)
 
@@ -13,8 +13,15 @@ class FrameBuffer() {
     private var _width = 0;
     private var _height = 0;
 
-    val width = _width
-    val height = _height
+    var width: Int = 0
+        get() {
+            return _width
+        }
+
+    var height: Int = 0
+        get() {
+            return _height
+        }
 
     fun genNormalFrameBuffer(width: Int, height: Int, clampParams: Int) {
         _width = width
@@ -24,13 +31,12 @@ class FrameBuffer() {
         glGenFramebuffers(1, frameBuffer, 0);
 
         colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, _width, _height, GL_NEAREST, clampParams).textureID
-        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, width, height, GL_NEAREST, clampParams).textureID
+        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, _width, _height, GL_NEAREST, clampParams).textureID
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
 
         // Associate the textures with the FBO.
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0)
-
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
 
         // Check FBO status.
