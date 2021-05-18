@@ -47,7 +47,7 @@ class MeshRendererMaterialsListAdapter(private val onMaterialAdded: () -> Unit, 
             if (materialData != null) {
                 // Texture RecyclerView
                 rvTexture.adapter = MaterialTexturesAdapter(materialData)
-                rvTexture.layoutManager = GridLayoutManager(holder.itemView.context, 3)
+                rvTexture.layoutManager = GridLayoutManager(holder.itemView.context, 4)
             }
 
             // Add Texture Slot
