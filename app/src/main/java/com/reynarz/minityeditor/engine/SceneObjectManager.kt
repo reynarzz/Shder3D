@@ -17,11 +17,10 @@ class SceneObjectManager(
 
     fun testLoadObject(sceneEntityData: SceneEntityData) {
 
-        val sceneEntity = SceneEntity()
+        val sceneEntity = SceneEntity(sceneEntityData)
 
         sceneEntity.name = sceneEntityData.name
         sceneEntity.entityID = sceneEntityData.entityID
-        sceneEntity.isActive = sceneEntityData.active
 
         val addedRenderer = sceneEntity.addComponent(MeshRenderer::class.java)
 

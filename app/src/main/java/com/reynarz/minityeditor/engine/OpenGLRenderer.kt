@@ -9,19 +9,14 @@ import androidx.lifecycle.lifecycleScope
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
-import com.reynarz.minityeditor.engine.components.Transform
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.views.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.get
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
 
@@ -63,7 +58,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private lateinit var pickupMaterial: Material
 
     private val repository: MinityProjectRepository = get(MinityProjectRepository::class.java)
-    private val rendersMap = mutableMapOf<Int, MutableList<SceneEntity?>>()
+
     private val moveMultiplier = 0.1f
     private val rotateMultiplier = 0.4f
 
@@ -77,8 +72,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             } else if (entityData?.entityType == EntityType.Editor) {
                 entity = cameraEntity
             }
-            if (entityData != null)
-                entity?.isActive = entityData.active
 
             return entity
         }
@@ -151,36 +144,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         // }
     }
 
-    fun addToRenderQueue(sceneEntity: SceneEntity?, renderQueue: Int) {
-
-        if (!rendersMap.containsKey(renderQueue)) {
-            rendersMap.set(renderQueue, mutableListOf())
-        }
-
-        rendersMap[renderQueue]?.add(sceneEntity)
-    }
-
-    fun replaceRenderQueue(sceneEntity: SceneEntity?, oldRenderQueue: Int, newRenderQueue: Int) {
-
-        removeRendererOfQueue(sceneEntity, oldRenderQueue)
-
-        // add to the new queue.
-        if (!rendersMap.containsKey(newRenderQueue)) {
-            rendersMap.set(newRenderQueue, mutableListOf())
-        }
-    }
-
-    fun removeRendererOfQueue(sceneEntity: SceneEntity?, rendererQueue: Int) {
-        if (rendersMap.containsKey(rendererQueue)) {
-            // remove from the old render queue.
-            rendersMap[rendererQueue]?.remove(sceneEntity)
-
-            // If there is not entities in this queue, clear,
-            if (rendersMap[rendererQueue]?.size == 0) {
-                rendersMap.remove(rendererQueue)
-            }
-        }
-    }
 
     fun getEditorStuff_Test() {
         val groundShaderCode = Utils.getGroundShadersCode()
@@ -521,7 +484,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                         glUniform1i(depthUniform, 0)
                     }
 
-                    setApplyMaterialConfig(materialsData.getOrNull(meshIndex)?.materialConfig)
+                    setApplyMaterialConfig_GL(materialsData.getOrNull(meshIndex)?.materialConfig)
 
                     renderer.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
 
@@ -553,8 +516,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         screenQuad()
     }
 
-
-    private fun setApplyMaterialConfig(materialConfig: MaterialConfig?) {
+    private fun setApplyMaterialConfig_GL(materialConfig: MaterialConfig?) {
 
         if (materialConfig != null) {
             // Blending
@@ -641,7 +603,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         glDrawElements(GL_TRIANGLES, meshRenderer?.meshes!![0].indicesCount, GL_UNSIGNED_INT, meshRenderer?.meshes!![0].indexBuffer)
         meshRenderer.unBind()
     }
-
 
 
 }
