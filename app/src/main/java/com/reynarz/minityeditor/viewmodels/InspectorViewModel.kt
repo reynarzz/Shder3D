@@ -16,7 +16,7 @@ class InspectorViewModel(
 
     val entityName = MutableLiveData<String>()
 
-    val active = MutableLiveData<Boolean>()
+    //val active = MutableLiveData<Boolean>()
 
     val componentsData = MutableLiveData<MutableList<ComponentData>>()
 
@@ -25,9 +25,9 @@ class InspectorViewModel(
         defaultNavigator.goBack(R.id.btn_closeInspector)
     }
 
-    fun onEntityActiveChanged() {
-        Log.d("Checked", active.value.toString())
-    }
+//    fun onEntityActiveChanged() {
+//        Log.d("Checked", active.value.toString())
+//    }
 
     fun setData(entityData: SceneEntityData) {
 
@@ -36,6 +36,6 @@ class InspectorViewModel(
         componentsData.value!!.add(entityData!!.meshRendererData)
 
         entityName.value = entityData!!.name
-        active.value = entityData!!.active
+        //active.value = entityData!!.active
     }
 }

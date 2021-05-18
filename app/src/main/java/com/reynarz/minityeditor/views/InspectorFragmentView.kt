@@ -52,10 +52,10 @@ class InspectorFragmentView : Fragment() {
             Log.d("Change to", it)
         })
 
-        viewModel.active.observe(viewLifecycleOwner, {
-            entityData.active = it
-            println("Entity Active: $it");
-        })
+//        viewModel.active.observe(viewLifecycleOwner, {
+//            entityData.active = it
+//            println("Entity Active: $it");
+//        })
 
         val adapter = InspectorRecycleViewAdapter(viewModel, navigator)
         val componentsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_componentsRecycleView)

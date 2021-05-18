@@ -25,9 +25,12 @@ class HierarchyRecyclerAdapter(private val viewModel: HierarchyViewModel) : Recy
         holder.itemView.apply {
 
             val toggle = findViewById<ToggleButton>(R.id.t_btn_entityHierarchyToggle)
+            val activeToggle = findViewById<ToggleButton>(R.id.tb_enableDisableEntity)
+
             toggles.add(toggle)
 
             toggle.isChecked = entityToggles[position].isSelected
+            activeToggle.isChecked = entityToggles[position].active
 
             if (toggle.isChecked) {
                 lastEnabledToggle = position
@@ -49,6 +52,10 @@ class HierarchyRecyclerAdapter(private val viewModel: HierarchyViewModel) : Recy
 
                 viewModel.selectedEntityIndex.value = lastEnabledToggle
                 viewModel.entitiesInScene.value = entityToggles
+            }
+
+            activeToggle.setOnCheckedChangeListener { _, checked ->
+                entityToggles[position].active = checked
             }
         }
     }

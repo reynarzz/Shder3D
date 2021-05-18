@@ -35,23 +35,25 @@
                 android:layout_height="match_parent"
                 app:srcCompat="@color/black2" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/cb_activeEntity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:checked="@={viewmodel.active}"
-                android:onClick="@{()->viewmodel.onEntityActiveChanged()}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <androidx.appcompat.widget.AppCompatCheckBox-->
+<!--                android:id="@+id/cb_activeEntity"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="15dp"-->
+<!--                android:checked="@={viewmodel.active}"-->
+<!--                android:onClick="@{()->viewmodel.onEntityActiveChanged()}"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="35dp"
+                android:layout_marginLeft="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/et_entityName"
-                app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
+                app:layout_constraintStart_toStartOf="@+id/imageView5"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/rounded_rectangle"
                 app:tint="@color/black1" />
@@ -63,7 +65,7 @@
                 android:background="@null"
                 android:fontFamily="@font/roboto_medium"
                 android:inputType="text|textNoSuggestions"
-                android:paddingLeft="15dp"
+                android:paddingLeft="30dp"
                 android:paddingRight="15dp"
                 android:text="@={viewmodel.entityName}"
                 android:textAlignment="textStart"
@@ -71,7 +73,7 @@
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView5"
                 app:layout_constraintEnd_toStartOf="@+id/btn_closeInspector"
-                app:layout_constraintStart_toEndOf="@+id/cb_activeEntity"
+                app:layout_constraintStart_toStartOf="@+id/imageView5"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
