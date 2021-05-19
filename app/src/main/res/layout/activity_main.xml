@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".views.MainActivity">
 
-    <com.reynarz.minityeditor.engine.OpenGLView
+    <com.reynarz.shder3D.engine.OpenGLView
         android:id="@+id/OpenGLView_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

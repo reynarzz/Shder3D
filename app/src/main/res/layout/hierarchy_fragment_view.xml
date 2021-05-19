@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.reynarz.minityeditor.viewmodels.HierarchyViewModel" />
+            type="com.reynarz.shder3D.viewmodels.HierarchyViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -41,10 +41,10 @@
 }
 
 # Change here com.yourcompany.yourpackage
--keep,includedescriptorclasses class com.reynarz.minityeditor.**$$serializer { *; } # <-- change package name to your app's
--keepclassmembers class com.reynarz.minityeditor.* { # <-- change package name to your app's
+-keep,includedescriptorclasses class com.reynarz.shder3D.**$$serializer { *; } # <-- change package name to your app's
+-keepclassmembers class com.reynarz.shder3D.* { # <-- change package name to your app's
     *** Companion;
 }
--keepclasseswithmembers class com.reynarz.minityeditor.* { # <-- change package name to your app's
+-keepclasseswithmembers class com.reynarz.shder3D.* { # <-- change package name to your app's
     kotlinx.serialization.KSerializer serializer(...);
 }

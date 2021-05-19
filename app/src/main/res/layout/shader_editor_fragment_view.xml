@@ -9,7 +9,7 @@
 
         <variable
             name="viewmodel"
-            type="com.reynarz.minityeditor.viewmodels.ShaderEditorViewModel" />
+            type="com.reynarz.shder3D.viewmodels.ShaderEditorViewModel" />
 
 
     </data>

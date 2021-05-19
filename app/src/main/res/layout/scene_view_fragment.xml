@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.reynarz.minityeditor.viewmodels.SceneViewModel" />
+            type="com.reynarz.shder3D.viewmodels.SceneViewModel" />
     </data>
 
 

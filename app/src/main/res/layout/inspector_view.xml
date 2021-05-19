@@ -8,7 +8,7 @@
         <import type="androidx.databinding.Observable"/>
         <variable
             name="viewmodel"
-            type="com.reynarz.minityeditor.viewmodels.InspectorViewModel" />
+            type="com.reynarz.shder3D.viewmodels.InspectorViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

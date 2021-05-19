@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/sceneFragmentView"
-        android:name="com.reynarz.minityeditor.views.SceneFragmentView"
+        android:name="com.reynarz.shder3D.views.SceneFragmentView"
         android:label="SceneFragmentView"
         tools:layout="@layout/scene_view_fragment">
 
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/hierarchyFragmentView"
-        android:name="com.reynarz.minityeditor.views.HierarchyFragmentView"
+        android:name="com.reynarz.shder3D.views.HierarchyFragmentView"
         android:label="HierarchyFragmentView"
         tools:layout="@layout/hierarchy_fragment_view">
         <action
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/inspectorFragmentView"
-        android:name="com.reynarz.minityeditor.views.InspectorFragmentView"
+        android:name="com.reynarz.shder3D.views.InspectorFragmentView"
         android:label="InspectorFragmentView"
 
         tools:layout="@layout/inspector_view">
@@ -50,7 +50,7 @@
     </fragment>
     <fragment
         android:id="@+id/shaderEditorFragment"
-        android:name="com.reynarz.minityeditor.views.ShaderEditorFragment"
+        android:name="com.reynarz.shder3D.views.ShaderEditorFragment"
         android:label="ShaderEditorFragment"
         tools:layout="@layout/shader_editor_fragment_view">
         <action
