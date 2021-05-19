@@ -5,9 +5,12 @@ import com.reynarz.minityeditor.engine.Material
 import com.reynarz.minityeditor.engine.QueuedRenderableMesh
 import com.reynarz.minityeditor.views.MainActivity
 
-class FinalPass : RenderPass() {
+class CompositePass : RenderPass() {
+
+    private val selectedPass: SelectedEntityPass
 
     init {
+        selectedPass = SelectedEntityPass()
         fbo?.genNormalFrameBuffer(MainActivity.width, MainActivity.height, GL_REPEAT)
     }
 
@@ -33,6 +36,7 @@ class FinalPass : RenderPass() {
             }
         }
 
+        selectedPass.renderPass(entities, sceneMatrices, errorMaterial, test)
         fbo?.unBind()
 
         // possible bug prone.

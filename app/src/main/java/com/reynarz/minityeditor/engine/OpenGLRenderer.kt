@@ -9,8 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
-import com.reynarz.minityeditor.engine.passes.FinalPass
+import com.reynarz.minityeditor.engine.passes.CompositePass
 import com.reynarz.minityeditor.engine.passes.SceneMatrices
+import com.reynarz.minityeditor.engine.passes.SelectedEntityPass
 import com.reynarz.minityeditor.engine.passes.ShadowPass
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.views.MainActivity
@@ -87,11 +88,11 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     private fun setupPhases(renderer: Renderer) {
-        val finalPass = FinalPass()
+        val compositePass = CompositePass()
         val shadowPass = ShadowPass()
 
         renderer.addPass(shadowPass)
-        renderer.addPass(finalPass)
+        renderer.addPass(compositePass)
     }
 
 
@@ -105,7 +106,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         repository.scene = scene
         editorObjs = mutableListOf()
 
-        outlineMaterial = Utils.getUnlitMaterial(1f)
         errorMaterial = Utils.getErrorMaterial()
         pickupMaterial = Material(Utils.getPickupShader().run {
             Shader(first, second)
