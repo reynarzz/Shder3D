@@ -14,6 +14,7 @@ class CompositePass : RenderPass() {
         fbo?.genNormalFrameBuffer(MainActivity.width, MainActivity.height, GL_REPEAT)
     }
 
+
     override fun renderPass(entities: List<QueuedRenderableMesh>, sceneMatrices: SceneMatrices, errorMaterial: Material, test: RenderPassFrameBuffers) {
         fbo?.bind()
         glViewport(0, 0, fbo?.width!!, fbo?.height!!)

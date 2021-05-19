@@ -331,6 +331,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         }
 
         if (!test) {
+            var someSelected = false
             // println("final: " + r + ", " + g + ", " + b)
             for (i in 0 until scene.entities.size) {
                 val entity = scene.entities[i]
@@ -342,31 +343,29 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
                     ) {
 
                         entity.entityData.isSelected = true
+                        someSelected = true
 
                         if (repository.selectedSceneEntity != null && repository.selectedSceneEntity != entity.entityData) {
-                            repository.selectedSceneEntity?.isSelected = false
+                            repository.selectedSceneEntity!!.isSelected = false
                         }
 
                         repository.selectedSceneEntity = entity.entityData
-                        println(repository?.selectedSceneEntity?.name)
 
                         MainActivity.instance.lifecycleScope.launch {
                             onEntitySelected!!(entity.entityData.isSelected)
                         }
-                        break
                     } else {
                         entity.entityData.isSelected = false
-                        repository.selectedSceneEntity = null
-                        MainActivity.instance.lifecycleScope.launch {
-                            onEntitySelected!!(false)
-                        }
                     }
                 } else {
                     entity.entityData.isSelected = false
+                }
+            }
+
+            if (!someSelected) {
+                MainActivity.instance.lifecycleScope.launch {
+                    onEntitySelected!!(false)
                     repository.selectedSceneEntity = null
-                    MainActivity.instance.lifecycleScope.launch {
-                        onEntitySelected!!(false)
-                    }
                 }
             }
         }
@@ -376,8 +375,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         colorPickerFrameBuffer.unBind()
         //mainFrameBuffer.bind()
-
-
     }
 
     private fun shadowPass() {
@@ -482,7 +479,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         cameraTransformData.eulerAngles = rot
         cameraTransformData.scale.x = zoom
 
-        if(newRenderer?.target == null){
+        if (newRenderer?.target == null) {
             val meshRenderer = cameraEntity.getComponent(MeshRenderer::class.java)
             newRenderer?.target = ScreenQuad(meshRenderer!!)
         }
@@ -541,36 +538,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         //    screenQuad()
     }
-
-//    private fun setApplyMaterialConfig_GL(materialConfig: MaterialConfig?) {
-//
-//        if (materialConfig != null) {
-//            // Blending
-//            if (materialConfig.gl_blendingEnabled) {
-//                glEnable(GL_BLEND)
-//                glBlendFunc(materialConfig.gl_srcFactor, materialConfig.gl_dstFactor)
-//            } else {
-//                glDisable(GL_BLEND)
-//            }
-//
-//            // Depth test
-//            if (materialConfig.gl_depthTestEnabled) {
-//                glEnable(GL_DEPTH_TEST)
-//                glDepthFunc(materialConfig.gl_depthFunc)
-//            } else {
-//                glDisable(GL_DEPTH_TEST)
-//                glDepthFunc(GL_LEQUAL)
-//            }
-//
-//            // Culling
-//            if (materialConfig.gl_cullEnabled) {
-//                glEnable(GL_CULL_FACE)
-//                glCullFace(materialConfig.gl_cullFace)
-//            } else {
-//                glDisable(GL_CULL_FACE)
-//            }
-//        }
-//    }
 
     val identityM = FloatArray(16).also {
         Matrix.setIdentityM(it, 0)
