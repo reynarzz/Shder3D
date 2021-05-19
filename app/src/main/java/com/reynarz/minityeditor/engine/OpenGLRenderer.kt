@@ -258,7 +258,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         scene.removeSceneEntityByID(it.entityID)
     }
 
-
     fun pickUpPass(xPixel: Int, yPixel: Int, test: Boolean = false) {
 
         colorPickerFrameBuffer.bind()

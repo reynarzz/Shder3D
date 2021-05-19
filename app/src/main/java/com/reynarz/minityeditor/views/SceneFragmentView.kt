@@ -28,25 +28,21 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
     private val repository: MinityProjectRepository = get()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate<SceneViewFragmentBinding>(inflater, R.layout.scene_view_fragment, container, false)
-
+        binding = DataBindingUtil.inflate(inflater, R.layout.scene_view_fragment, container, false)
 
         viewModel.onAboutToDeleteEntity = {
             binding.clEditSelectedEntityContainer.visibility = View.GONE
 
-            MainActivity.instance.openGLView.renderer.deleteEntity(it)
-
             for (matsData in it.meshRendererData.materialsData) {
                 MainActivity.instance.openGLView.renderer.newRenderer?.removeRendererOfQueue(matsData?.materialConfig?.renderQueue!!, it.entityID)
             }
-            //repository.queuedRenderers.remove()
+
             MainActivity.instance.openGLView.renderer.deleteEntity(it)
         }
 
         binding.viewmodel = viewModel
 
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

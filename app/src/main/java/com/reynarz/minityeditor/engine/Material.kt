@@ -4,6 +4,7 @@ import android.opengl.GLES20.*
 import android.opengl.Matrix
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.views.MainActivity
+import java.util.*
 
 
 class Material(val shader: Shader) {

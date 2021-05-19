@@ -6,7 +6,7 @@ import com.reynarz.minityeditor.models.MaterialConfig
 import java.nio.IntBuffer
 
 // A single mesh with a single material (this is equivalent to one pass)
-class QueuedRenderableMesh(private val sceneEntity: SceneEntity, private val modelM: FloatArray, val mesh: Mesh, val material: Material?) {
+class QueuedRenderableMesh(val meshindexInsideEntity: Int, val sceneEntity: SceneEntity, private val modelM: FloatArray, val mesh: Mesh, var material: Material?) {
 
     val entityID: String
         get() {
