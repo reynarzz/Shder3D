@@ -218,13 +218,12 @@ class SceneObjectManager(
         }
 
 
-
+        //----------- Delete this-----------
         openglView.renderer.addRenderCommand {
-            //----------- Delete this
             val entity = openglView.renderer.scene.getEntityById(sceneEntityData?.entityID)
             entity?.getComponent(MeshRenderer::class.java)!!.materials[matIndex] = null
-            //----------
         }
+        //-------------------------------
     }
 
     // This contains duplicated code
