@@ -63,6 +63,14 @@ class Material(val shader: Shader) {
 
             set("_tex${slot}", offsetSlot)
         }
+
+        glActiveTexture(GL_TEXTURE0)
+
+
+        //if (renderer?.materials?.getOrNull(phaseIndex) != null) {
+            val depthUniform = glGetUniformLocation(shader.program, "_SHADOWMAP")
+            glUniform1i(depthUniform, 0)
+        //}
     }
 
     private fun unbindTextures() {

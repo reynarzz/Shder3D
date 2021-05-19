@@ -1,21 +1,22 @@
 package com.reynarz.minityeditor.engine
 
-import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.passes.RenderPass
+import com.reynarz.minityeditor.engine.passes.RenderPassFrameBuffers
 import com.reynarz.minityeditor.engine.passes.SceneMatrices
 
 class Renderer(private val sceneMatrices: SceneMatrices) {
-    private lateinit var errorMaterial: Material
+    private var errorMaterial: Material
     private val rendersMap = mutableMapOf<Int, MutableList<QueuedRenderableMesh>>()
     private val phases = mutableListOf<RenderPass>()
+    private val passFrameBuffers = RenderPassFrameBuffers()
+
+    var target: ScreenQuad? = null
 
     init {
         errorMaterial = Utils.getErrorMaterial()
     }
 
     fun addToRenderQueue(queuedMesh: QueuedRenderableMesh) {
-
-        println("add----------------------------------------")
 
         if (!rendersMap.containsKey(queuedMesh?.RenderQueue)) {
             rendersMap[queuedMesh.RenderQueue] = mutableListOf()
@@ -55,9 +56,11 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
     fun draw() {
         for (p in phases) {
             for (key in rendersMap.keys) {
-                println("Key: " + key)
-                p.renderPass(rendersMap[key]!!, sceneMatrices, errorMaterial!!)
+                //println("Key: " + key)
+                p.renderPass(rendersMap[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }
         }
+
+        target?.draw(passFrameBuffers.mainFrameBufferPass!!, errorMaterial!!)
     }
 }

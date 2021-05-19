@@ -6,48 +6,20 @@ import com.reynarz.minityeditor.engine.FrameBuffer
 import com.reynarz.minityeditor.engine.Material
 import com.reynarz.minityeditor.engine.QueuedRenderableMesh
 import com.reynarz.minityeditor.models.MaterialConfig
+import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
 
-open class RenderPass {
-    protected val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
+abstract class RenderPass {
     protected var fbo: FrameBuffer? = null
 
     val fbo_colorTexID = fbo?.colorTexture
     val fbo_depthTexID = fbo?.depthTexture
 
     init {
-        //fbo = FrameBuffer()
+        fbo = FrameBuffer()
     }
 
-    open fun renderPass(entities: List<QueuedRenderableMesh>, sceneMatrices: SceneMatrices, errorMaterial: Material) {
-        //fbo.bind()
-        //glViewport(0, 0, fbo?.width!!, fbo?.height!!)
-
-        glEnable(GL_DEPTH_TEST)
-
-        glClearColor(0.2f, 0.2f, 0.2f, 1f)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-
-        for (entity in entities) {
-            if (entity.Active) {
-
-//                    glActiveTexture(GL_TEXTURE0)
-                //--glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
-//                    if (renderer?.materials?.getOrNull(phaseIndex) != null) {
-//                        val depthUniform = glGetUniformLocation(renderer!!.materials[phaseIndex]!!.shader.program, "_SHADOWMAP")
-//                        glUniform1i(depthUniform, 0)
-//                    }
-
-                setApplyMaterialConfig_GL(entity.materialConfig)
-
-                entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)
-
-                glDrawElements(GL_TRIANGLES, entity.meshIndicesCount, GL_UNSIGNED_INT, entity.meshIndexBuffer)
-                entity.unBind()
-            }
-        }
-        //fbo.unBind()
-    }
+    abstract fun renderPass(entities: List<QueuedRenderableMesh>, sceneMatrices: SceneMatrices, errorMaterial: Material, test: RenderPassFrameBuffers)
 
     protected fun setApplyMaterialConfig_GL(materialConfig: MaterialConfig?) {
 

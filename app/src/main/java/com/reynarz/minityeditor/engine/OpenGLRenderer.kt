@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
-import com.reynarz.minityeditor.engine.passes.RenderPass
+import com.reynarz.minityeditor.engine.passes.FinalPass
 import com.reynarz.minityeditor.engine.passes.SceneMatrices
 import com.reynarz.minityeditor.engine.passes.ShadowPass
 import com.reynarz.minityeditor.models.*
@@ -87,11 +87,11 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     }
 
     private fun setupPhases(renderer: Renderer) {
-        val normalPass = RenderPass()
-        //val shadowPass = ShadowPass()
+        val finalPass = FinalPass()
+        val shadowPass = ShadowPass()
 
-        //renderer.addPass(shadowPass)
-        renderer.addPass(normalPass)
+        renderer.addPass(shadowPass)
+        renderer.addPass(finalPass)
     }
 
 
@@ -481,6 +481,12 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         cameraTransformData.position = scene!!.editorCamera!!.transform.position
         cameraTransformData.eulerAngles = rot
         cameraTransformData.scale.x = zoom
+
+        if(newRenderer?.target == null){
+            val meshRenderer = cameraEntity.getComponent(MeshRenderer::class.java)
+            newRenderer?.target = ScreenQuad(meshRenderer!!)
+        }
+
 //
 //
 //        val viewM = scene!!.editorCamera!!.viewM
@@ -536,35 +542,35 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         //    screenQuad()
     }
 
-    private fun setApplyMaterialConfig_GL(materialConfig: MaterialConfig?) {
-
-        if (materialConfig != null) {
-            // Blending
-            if (materialConfig.gl_blendingEnabled) {
-                glEnable(GL_BLEND)
-                glBlendFunc(materialConfig.gl_srcFactor, materialConfig.gl_dstFactor)
-            } else {
-                glDisable(GL_BLEND)
-            }
-
-            // Depth test
-            if (materialConfig.gl_depthTestEnabled) {
-                glEnable(GL_DEPTH_TEST)
-                glDepthFunc(materialConfig.gl_depthFunc)
-            } else {
-                glDisable(GL_DEPTH_TEST)
-                glDepthFunc(GL_LEQUAL)
-            }
-
-            // Culling
-            if (materialConfig.gl_cullEnabled) {
-                glEnable(GL_CULL_FACE)
-                glCullFace(materialConfig.gl_cullFace)
-            } else {
-                glDisable(GL_CULL_FACE)
-            }
-        }
-    }
+//    private fun setApplyMaterialConfig_GL(materialConfig: MaterialConfig?) {
+//
+//        if (materialConfig != null) {
+//            // Blending
+//            if (materialConfig.gl_blendingEnabled) {
+//                glEnable(GL_BLEND)
+//                glBlendFunc(materialConfig.gl_srcFactor, materialConfig.gl_dstFactor)
+//            } else {
+//                glDisable(GL_BLEND)
+//            }
+//
+//            // Depth test
+//            if (materialConfig.gl_depthTestEnabled) {
+//                glEnable(GL_DEPTH_TEST)
+//                glDepthFunc(materialConfig.gl_depthFunc)
+//            } else {
+//                glDisable(GL_DEPTH_TEST)
+//                glDepthFunc(GL_LEQUAL)
+//            }
+//
+//            // Culling
+//            if (materialConfig.gl_cullEnabled) {
+//                glEnable(GL_CULL_FACE)
+//                glCullFace(materialConfig.gl_cullFace)
+//            } else {
+//                glDisable(GL_CULL_FACE)
+//            }
+//        }
+//    }
 
     val identityM = FloatArray(16).also {
         Matrix.setIdentityM(it, 0)

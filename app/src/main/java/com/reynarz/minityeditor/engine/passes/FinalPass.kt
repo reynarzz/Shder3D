@@ -5,37 +5,37 @@ import com.reynarz.minityeditor.engine.Material
 import com.reynarz.minityeditor.engine.QueuedRenderableMesh
 import com.reynarz.minityeditor.views.MainActivity
 
-class ShadowPass : RenderPass() {
+class FinalPass : RenderPass() {
 
     init {
-        fbo?.genBufferForDepth(MainActivity.width, MainActivity.height)
+        fbo?.genNormalFrameBuffer(MainActivity.width, MainActivity.height, GL_REPEAT)
     }
 
     override fun renderPass(entities: List<QueuedRenderableMesh>, sceneMatrices: SceneMatrices, errorMaterial: Material, test: RenderPassFrameBuffers) {
+        fbo?.bind()
         glViewport(0, 0, fbo?.width!!, fbo?.height!!)
 
-        fbo?.bind()
 
         glEnable(GL_DEPTH_TEST)
-        glDepthFunc(GL_LEQUAL)
-        glClear(GL_STENCIL_BUFFER_BIT)
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1f)
+        glClearColor(0.2f, 0.2f, 0.2f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         for (entity in entities) {
-            if (entity.Active && entity.canCastShadows) {
+            if (entity.Active) {
+                setApplyMaterialConfig_GL(entity.materialConfig)
 
-                entity.bind(sceneMatrices.directionalLightVIewM, sceneMatrices.directionalLightProjM, errorMaterial)
+                entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)
+                glBindTexture(GL_TEXTURE_2D, test.shadowFrameBuffer?.depthTexture!!)
 
                 glDrawElements(GL_TRIANGLES, entity.meshIndicesCount, GL_UNSIGNED_INT, entity.meshIndexBuffer)
-
                 entity.unBind()
             }
         }
 
         fbo?.unBind()
 
-        test.shadowFrameBuffer = fbo
+        // possible bug prone.
+        test.mainFrameBufferPass = fbo
     }
 }
