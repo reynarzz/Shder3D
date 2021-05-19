@@ -47,7 +47,7 @@ class HierarchyFragmentView : Fragment(R.layout.hierarchy_fragment_view) {
             repository.selectedSceneEntity = entity
         })
 
-        if(viewModel.entitiesInScene.value!!.size == 0){
+        if (viewModel.entitiesInScene.value!!.size == 0) {
             binding.rvHierarcy.visibility = View.GONE
         }
 

@@ -9,6 +9,7 @@ import org.koin.java.KoinJavaComponent.get
 
 class Renderer(private val sceneMatrices: SceneMatrices) {
     private var errorMaterial: Material
+
     //bad
     val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
 
@@ -17,6 +18,8 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
     private val beforeMeshRenderers = mutableListOf<MeshRenderer?>()
     var target: ScreenQuad? = null
+
+    private val forNowCommands_REMOVE = mutableListOf<() -> Unit>()
 
     init {
 
@@ -29,10 +32,12 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
     fun addToRenderQueue(queuedMesh: QueuedRenderableMesh) {
 
-        if (!repository.queuedRenderers.containsKey(queuedMesh?.RenderQueue)) {
-            repository.queuedRenderers[queuedMesh.RenderQueue] = mutableListOf()
+        forNowCommands_REMOVE.add {
+            if (!repository.queuedRenderers.containsKey(queuedMesh?.RenderQueue)) {
+                repository.queuedRenderers[queuedMesh.RenderQueue] = mutableListOf()
+            }
+            repository.queuedRenderers[queuedMesh.RenderQueue]?.add(queuedMesh)
         }
-        repository.queuedRenderers[queuedMesh.RenderQueue]?.add(queuedMesh)
     }
 
 //    fun replaceRenderQueue(queuedMesh: QueuedRenderableMesh) {
@@ -44,14 +49,17 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 //        }
 //    }
 
-    fun removeRendererOfQueue(queuedMesh: QueuedRenderableMesh) {
-        if (repository.queuedRenderers.containsKey(queuedMesh.RenderQueue)) {
-            // remove from the old render queue.
-            repository.queuedRenderers[queuedMesh.RenderQueue]?.remove(queuedMesh)
+    fun removeRendererOfQueue(queueValue: Int, entityID: String) {
+        forNowCommands_REMOVE.add {
+            val entities = repository.queuedRenderers[queueValue]!!
 
-            // If there is not entities in this queue, clear,
-            if (repository.queuedRenderers[queuedMesh.RenderQueue]?.size == 0) {
-                repository.queuedRenderers.remove(queuedMesh.RenderQueue)
+            if (repository.queuedRenderers.containsKey(queueValue)) {
+                for (i in entities.size - 1 downTo 0) {
+                    val entity = entities[i]
+                    if (entity.entityID == entityID) {
+                        entities.remove(entity)
+                    }
+                }
             }
         }
     }
@@ -64,7 +72,16 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         phases.remove(pass)
     }
 
+    private fun command_REmoveTHIS() {
+        for (i in forNowCommands_REMOVE) {
+            i()
+        }
+        forNowCommands_REMOVE.clear()
+    }
+
     fun draw() {
+
+        command_REmoveTHIS()
 
         for (i in beforeMeshRenderers.indices) {
             beforeMeshRenderers[i]?.bind(sceneMatrices.cameraViewM, sceneMatrices.cameraProjM, errorMaterial, i)
@@ -72,6 +89,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
         for (p in phases) {
             for (key in repository.queuedRenderers.keys) {
+
                 println("Key: " + key)
                 p.renderPass(repository.queuedRenderers[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }

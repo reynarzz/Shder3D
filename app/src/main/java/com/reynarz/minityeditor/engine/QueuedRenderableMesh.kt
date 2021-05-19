@@ -4,9 +4,14 @@ import android.opengl.GLES20.*
 import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.models.MaterialConfig
 import java.nio.IntBuffer
+
 // A single mesh with a single material (this is equivalent to one pass)
 class QueuedRenderableMesh(private val sceneEntity: SceneEntity, private val modelM: FloatArray, val mesh: Mesh, val material: Material?) {
 
+    val entityID: String
+        get() {
+            return sceneEntity.entityID
+        }
 
     val meshIndexBuffer: IntBuffer?
         get() {
@@ -30,7 +35,7 @@ class QueuedRenderableMesh(private val sceneEntity: SceneEntity, private val mod
 
     val RenderQueue: Int
         get() {
-            return if(materialConfig?.renderQueue != null) materialConfig?.renderQueue!! else 0
+            return if (materialConfig?.renderQueue != null) materialConfig?.renderQueue!! else 0
         }
 
     val materialConfig: MaterialConfig?

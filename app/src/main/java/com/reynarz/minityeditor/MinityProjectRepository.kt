@@ -9,7 +9,7 @@ import com.reynarz.minityeditor.models.SceneEntityData
 import org.koin.java.KoinJavaComponent.get
 
 // This will be between the data source and the viewmodel
-class MinityProjectRepository() {
+class MinityProjectRepository {
 
     var initializedData = false
     lateinit var colorsPickupTableRBG: Array<Int>

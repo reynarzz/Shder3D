@@ -36,6 +36,9 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
 
             MainActivity.instance.openGLView.renderer.deleteEntity(it)
 
+            for (matsData in it.meshRendererData.materialsData) {
+                MainActivity.instance.openGLView.renderer.newRenderer?.removeRendererOfQueue(matsData?.materialConfig?.renderQueue!!, it.entityID)
+            }
             //repository.queuedRenderers.remove()
             MainActivity.instance.openGLView.renderer.deleteEntity(it)
         }
