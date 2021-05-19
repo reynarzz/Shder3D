@@ -9,6 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
+import com.reynarz.minityeditor.engine.passes.RenderPass
+import com.reynarz.minityeditor.engine.passes.SceneMatrices
+import com.reynarz.minityeditor.engine.passes.ShadowPass
 import com.reynarz.minityeditor.models.*
 import com.reynarz.minityeditor.views.MainActivity
 import kotlinx.coroutines.launch
@@ -28,6 +31,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
     private lateinit var cameraTransformData: TransformComponentData
     lateinit var touchPointer: TouchPointer
     lateinit var colorPickerPixelBuffer: ByteBuffer
+
+    var newRenderer: Renderer? = null
 
     var scene: Scene = Scene()
         get() {
@@ -81,8 +86,20 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     }
 
+    private fun setupPhases(renderer: Renderer) {
+        val normalPass = RenderPass()
+        //val shadowPass = ShadowPass()
+
+        //renderer.addPass(shadowPass)
+        renderer.addPass(normalPass)
+    }
+
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+
+        newRenderer = Renderer(SceneMatrices(scene))
+
+        setupPhases(newRenderer!!)
 
         //if (!initialized) {
         repository.scene = scene
@@ -414,13 +431,18 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     var t = 0f
     var delta_time = 0f
+
     override fun onDrawFrame(gl: GL10?) {
+
         runCommands()
 
-        //pickUpPass(0, 0, true)
-        shadowPass()
+        newRenderer?.draw()
 
-        // this could have bad perfomance
+//
+//        //pickUpPass(0, 0, true)
+//        shadowPass()
+//
+//        // this could have bad perfomance
         MainActivity.instance.lifecycleScope.launch {
 
             val time = System.nanoTime()
@@ -430,28 +452,28 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             t += delta_time
             //println("t: " + t + ", dt: " + delta_time)
         }
-
-        mainFrameBuffer.bind()
-        glViewport(0, 0, MainActivity.width, MainActivity.height)
-
+//
+//        mainFrameBuffer.bind()
+//        glViewport(0, 0, MainActivity.width, MainActivity.height)
+//
         time = t
         deltaTime = delta_time
-
-        glEnable(GL_DEPTH_TEST)
-
-        glClearColor(0.2f, 0.2f, 0.2f, 1f)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-
+//
+//        glEnable(GL_DEPTH_TEST)
+//
+//        glClearColor(0.2f, 0.2f, 0.2f, 1f)
+//        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+//
         val delta = vec3(twoFingersDir.x - twoFingersNormalizedDirPrev.x, twoFingersDir.y - twoFingersNormalizedDirPrev.y, 0f)
-
+//
         twoFingersNormalizedDirPrev = vec3(twoFingersDir.x, twoFingersDir.y, 0f)
-
+//
         val pos = scene!!.editorCamera!!.transform.position
         scene!!.editorCamera!!.transform.position = vec3(
             pos.x + delta.x * moveMultiplier,
             pos.y + delta.y * moveMultiplier, -100f
         )
-
+//
         scene!!.editorCamera!!.transform.eulerAngles = vec3(rot.y * rotateMultiplier, rot.x * rotateMultiplier, rot.z * rotateMultiplier)
         //println(delta)
         scene!!.editorCamera!!.transform.scale = vec3(zoom * moveMultiplier, zoom * moveMultiplier, zoom * moveMultiplier)
@@ -459,59 +481,59 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         cameraTransformData.position = scene!!.editorCamera!!.transform.position
         cameraTransformData.eulerAngles = rot
         cameraTransformData.scale.x = zoom
+//
+//
+//        val viewM = scene!!.editorCamera!!.viewM
+//        val projM = scene!!.editorCamera!!.projectionM
+//
+//        for (i in 0 until scene!!.entities.size) {
+//
+//            val entity = scene.entities.getOrNull(i)
+//
+//            if (entity != null && entity.entityData.active) {
+//                val renderer = entity.getComponent(MeshRenderer::class.java)
+//                val materialsData = entity.entityData.meshRendererData.materialsData
+//
+//                for (meshIndex in 0 until renderer!!.meshes.size) {
+//
+//                    glActiveTexture(GL_TEXTURE0)
+//                    glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
+//
+//                    if (renderer?.materials?.getOrNull(meshIndex) != null) {
+//                        val depthUniform = glGetUniformLocation(renderer!!.materials[meshIndex]!!.shader.program, "_SHADOWMAP")
+//                        glUniform1i(depthUniform, 0)
+//                    }
+//
+//                    setApplyMaterialConfig_GL(materialsData.getOrNull(meshIndex)?.materialConfig)
+//
+//                    renderer.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
+//
+//                    val mesh = renderer.meshes[meshIndex]
+//
+//                    glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+//                    renderer.unBind()
+//                }
+//            }
+//
+//            //Selected entity outline.
+//            if (selectedEntity != null && entity === selectedEntity && entity?.entityData?.active!!) {
+//
+//                val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
+//                glLineWidth(1.3f)
+//
+//                glEnable(GL_DEPTH_TEST)
+//
+//                for (meshIndex in 0 until renderer!!.meshes.size) {
+//                    val mesh = renderer.meshes[meshIndex]
+//                    renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, meshIndex)
+//                    glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
+//                }
+//            }
+//        }
+//
+//        mainFrameBuffer.unBind()
 
-
-        val viewM = scene!!.editorCamera!!.viewM
-        val projM = scene!!.editorCamera!!.projectionM
-
-        for (i in 0 until scene!!.entities.size) {
-
-            val entity = scene.entities.getOrNull(i)
-
-            if (entity != null && entity.entityData.active) {
-                val renderer = entity.getComponent(MeshRenderer::class.java)
-                val materialsData = entity.entityData.meshRendererData.materialsData
-
-                for (meshIndex in 0 until renderer!!.meshes.size) {
-
-                    glActiveTexture(GL_TEXTURE0)
-                    glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
-
-                    if (renderer?.materials?.getOrNull(meshIndex) != null) {
-                        val depthUniform = glGetUniformLocation(renderer!!.materials[meshIndex]!!.shader.program, "_SHADOWMAP")
-                        glUniform1i(depthUniform, 0)
-                    }
-
-                    setApplyMaterialConfig_GL(materialsData.getOrNull(meshIndex)?.materialConfig)
-
-                    renderer.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
-
-                    val mesh = renderer.meshes[meshIndex]
-
-                    glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-                    renderer.unBind()
-                }
-            }
-
-            //Selected entity outline.
-            if (selectedEntity != null && entity === selectedEntity && entity?.entityData?.active!!) {
-
-                val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-                glLineWidth(1.3f)
-
-                glEnable(GL_DEPTH_TEST)
-
-                for (meshIndex in 0 until renderer!!.meshes.size) {
-                    val mesh = renderer.meshes[meshIndex]
-                    renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, meshIndex)
-                    glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-                }
-            }
-        }
-
-        mainFrameBuffer.unBind()
-
-        screenQuad()
+        //    screenQuad()
     }
 
     private fun setApplyMaterialConfig_GL(materialConfig: MaterialConfig?) {

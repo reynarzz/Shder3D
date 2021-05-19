@@ -2,6 +2,7 @@ package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20.*
 import android.opengl.Matrix
+import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.views.MainActivity
 
 
@@ -16,6 +17,7 @@ class Material(val shader: Shader) {
     val MV = FloatArray(16)
 
     val InvModel = FloatArray(16)
+    var materialData: MaterialData? = null
 
 //    var MainColor: Vec4 = Vec4()
 //        set(color) {

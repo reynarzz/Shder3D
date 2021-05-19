@@ -7,7 +7,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.reynarz.minityeditor.DefaultNavigator
@@ -59,18 +58,19 @@ class MainActivity : AppCompatActivity() {
         navigator.activity = this
         openGLView = findViewById(R.id.OpenGLView_activity)
 
-        sceneObjectManager = SceneObjectManager(this, openGLView.renderer)
+        sceneObjectManager = SceneObjectManager(this, openGLView)
         //shaderFragment.renderer = openGLView.renderer
 
 
         //Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-
         // GlobalScope.launch(Dispatchers.Default) {
         // when rotating the screen this makes to not reload all the data from scratch but it has a bug.
        // if (!get<MinityProjectRepository>().initializedData) {
             initAllData()
+        println("initialized")
+
 //        } else {
 //            val repository: MinityProjectRepository = get()
 //            val project = repository.getProjectData()

@@ -5,59 +5,58 @@ import com.reynarz.minityeditor.engine.passes.RenderPass
 import com.reynarz.minityeditor.engine.passes.SceneMatrices
 
 class Renderer(private val sceneMatrices: SceneMatrices) {
-    private var errorMaterial: Material
-    private val rendersMap = mutableMapOf<Int, MutableList<SceneEntity?>>()
-    private val prePhases = mutableListOf<RenderPass>()
-
+    private lateinit var errorMaterial: Material
+    private val rendersMap = mutableMapOf<Int, MutableList<QueuedRenderableMesh>>()
+    private val phases = mutableListOf<RenderPass>()
 
     init {
         errorMaterial = Utils.getErrorMaterial()
     }
 
-    fun addToRenderQueue(sceneEntity: SceneEntity?, renderQueue: Int) {
+    fun addToRenderQueue(queuedMesh: QueuedRenderableMesh) {
 
-        if (!rendersMap.containsKey(renderQueue)) {
-            rendersMap.set(renderQueue, mutableListOf())
+        println("add----------------------------------------")
+
+        if (!rendersMap.containsKey(queuedMesh?.RenderQueue)) {
+            rendersMap[queuedMesh.RenderQueue] = mutableListOf()
         }
-
-        rendersMap[renderQueue]?.add(sceneEntity)
+        rendersMap[queuedMesh.RenderQueue]?.add(queuedMesh)
     }
 
-    fun replaceRenderQueue(sceneEntity: SceneEntity?, oldRenderQueue: Int, newRenderQueue: Int) {
+//    fun replaceRenderQueue(queuedMesh: QueuedRenderableMesh) {
+//        removeRendererOfQueue(queuedMesh)
+//
+//        // add to the new queue.
+//        if (!rendersMap.containsKey(newRenderQueue)) {
+//            rendersMap.set(newRenderQueue, mutableListOf())
+//        }
+//    }
 
-        removeRendererOfQueue(sceneEntity, oldRenderQueue)
-
-        // add to the new queue.
-        if (!rendersMap.containsKey(newRenderQueue)) {
-            rendersMap.set(newRenderQueue, mutableListOf())
-        }
-    }
-
-    fun removeRendererOfQueue(sceneEntity: SceneEntity?, rendererQueue: Int) {
-        if (rendersMap.containsKey(rendererQueue)) {
+    fun removeRendererOfQueue(queuedMesh: QueuedRenderableMesh) {
+        if (rendersMap.containsKey(queuedMesh.RenderQueue)) {
             // remove from the old render queue.
-            rendersMap[rendererQueue]?.remove(sceneEntity)
+            rendersMap[queuedMesh.RenderQueue]?.remove(queuedMesh)
 
             // If there is not entities in this queue, clear,
-            if (rendersMap[rendererQueue]?.size == 0) {
-                rendersMap.remove(rendererQueue)
+            if (rendersMap[queuedMesh.RenderQueue]?.size == 0) {
+                rendersMap.remove(queuedMesh.RenderQueue)
             }
         }
     }
 
     fun addPass(pass: RenderPass) {
-        prePhases.add(pass)
+        phases.add(pass)
     }
 
     fun removePass(pass: RenderPass) {
-        prePhases.remove(pass)
+        phases.remove(pass)
     }
 
     fun draw() {
-        for (p in prePhases) {
+        for (p in phases) {
             for (key in rendersMap.keys) {
-
-                p.renderPass(rendersMap[key]!!, sceneMatrices, errorMaterial)
+                println("Key: " + key)
+                p.renderPass(rendersMap[key]!!, sceneMatrices, errorMaterial!!)
             }
         }
     }

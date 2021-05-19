@@ -1,22 +1,21 @@
 package com.reynarz.minityeditor.engine
 
 import android.opengl.GLES20
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.components.SceneEntity
 import com.reynarz.minityeditor.engine.data.ModelsDataBase
 import com.reynarz.minityeditor.models.MaterialData
 import com.reynarz.minityeditor.models.SceneEntityData
-import kotlinx.coroutines.*
 
 class SceneObjectManager(
     private val activity: AppCompatActivity?,
-    private val openGLRenderer: OpenGLRenderer
+    private val openglView: OpenGLView
 ) {
 
     fun testLoadObject(sceneEntityData: SceneEntityData) {
 
+        println("to here")
         val sceneEntity = SceneEntity(sceneEntityData)
 
         sceneEntity.name = sceneEntityData.name
@@ -28,41 +27,41 @@ class SceneObjectManager(
         addedRenderer.transform.eulerAngles = sceneEntityData.transformData.eulerAngles
         addedRenderer.transform.scale = sceneEntityData.transformData.scale
 
-     //   GlobalScope.launch(Dispatchers.Main) {
-            if (sceneEntityData.entityModelPath.isNotEmpty()) {
+        //   GlobalScope.launch(Dispatchers.Main) {
+        if (sceneEntityData.entityModelPath.isNotEmpty()) {
 
-                val dataBase = ModelsDataBase()
-                val meshes = mutableListOf<Mesh>()
-                var modelsData: List<ModelData>? = null
+            val dataBase = ModelsDataBase()
+            val meshes = mutableListOf<Mesh>()
+            var modelsData: List<ModelData>? = null
 
-             //   withContext(Dispatchers.Default) {
-                    modelsData = dataBase.getModels(sceneEntityData.entityModelPath)
-                    println("Loaded")
-           //     }
+            //   withContext(Dispatchers.Default) {
+            modelsData = dataBase.getModels(sceneEntityData.entityModelPath)
+            println("Loaded")
+            //     }
 
-                println("To process")
+            println("To process")
 
-                var index = 0
-                for (model in modelsData!!) {
-                    meshes.add(Mesh(model.mVertices, model.mIndices, model.mUVs, model.mNormals).also { it.meshName = model.modelName })
+            var index = 0
+            for (model in modelsData!!) {
+                meshes.add(Mesh(model.mVertices, model.mIndices, model.mUVs, model.mNormals).also { it.meshName = model.modelName })
 
-                    if (sceneEntityData.meshRendererData.materialsData.size - 1 < index) {
+                if (sceneEntityData.meshRendererData.materialsData.size - 1 < index) {
 
 //                        val materialData = get<MaterialData>(MaterialData::class.java)
 //                        materialData.name = model.modelName
-                        sceneEntityData.meshRendererData.materialsData.add(null)
-                    }
-
-                    index++
+                    sceneEntityData.meshRendererData.materialsData.add(null)
                 }
 
-                addedRenderer!!.meshes = meshes
-            } else {
-                //empty mesh testing
-                addedRenderer!!.meshes = mutableListOf(Mesh(FloatArray(1), IntArray(1), FloatArray(1), FloatArray(1)))
+                index++
             }
 
-            //addedRenderer!!.material = mat
+            addedRenderer!!.meshes = meshes
+        } else {
+            //empty mesh testing
+            addedRenderer!!.meshes = mutableListOf(Mesh(FloatArray(1), IntArray(1), FloatArray(1), FloatArray(1)))
+        }
+
+        //addedRenderer!!.material = mat
 
 //        val bounding = boundingBoxTest(objData.bounds)
 //
@@ -72,17 +71,26 @@ class SceneObjectManager(
 //        openGLRenderer.scene.entities.add(boundingBox)
 
 // bug
-          //  withContext(Dispatchers.Main) {
-                //openGLRenderer.addRenderCommand {
+        //  withContext(Dispatchers.Main) {
+        //openGLRenderer.addRenderCommand {
+        println("to add")
+        //sceneEntity.entityData.meshRendererData.materialsData[0].materialConfig.renderQueue
 
-                    openGLRenderer.scene.entities.add(sceneEntity)
 
-                    addMaterials(sceneEntityData)
-                    println("Add materials")
 
-              //  }
-            //}
+        openglView.renderer.scene.entities.add(sceneEntity)
+
+        addMaterials(sceneEntityData)
+        println("Add materials")
+
+        //  }
         //}
+        //}
+        // TESTING REFACTOR THIS
+        for (i in addedRenderer.meshes.indices){
+            println("to add")
+            openglView.renderer.newRenderer?.addToRenderQueue(QueuedRenderableMesh(sceneEntity, addedRenderer.transform.modelM, addedRenderer.meshes[i], addedRenderer.materials[i]))
+        }
     }
 
 //    fun boundingBoxTest(bounds: Bounds): MeshRenderer {
@@ -96,7 +104,7 @@ class SceneObjectManager(
 //    }
 
     private fun addMaterials(sceneEntityData: SceneEntityData) {
-        val entity = openGLRenderer.scene.getEntityById(sceneEntityData.entityID)
+        val entity = openglView.renderer.scene.getEntityById(sceneEntityData.entityID)
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
 
         for ((index, materialData) in sceneEntityData.meshRendererData.materialsData.withIndex()) {
@@ -105,7 +113,7 @@ class SceneObjectManager(
     }
 
     fun addMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
-        val entity = openGLRenderer.scene.getEntityById(sceneEntityData!!.entityID)
+        val entity = openglView.renderer.scene.getEntityById(sceneEntityData!!.entityID)
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
 
         val materialData = sceneEntityData.meshRendererData.materialsData[matIndex]
@@ -122,6 +130,7 @@ class SceneObjectManager(
 
                 val material = Material(Shader(vertex, fragment))
                 material.id = materialData.materialDataId
+                material.materialData = materialData
 
                 println("Meshes: " + meshRenderer.meshes.size)
 
@@ -157,7 +166,7 @@ class SceneObjectManager(
 
     fun removeMaterial(sceneEntityData: SceneEntityData?, index: Int) {
 
-        val entity = openGLRenderer.scene.getEntityById(sceneEntityData?.entityID)
+        val entity = openglView.renderer.scene.getEntityById(sceneEntityData?.entityID)
         entity?.getComponent(MeshRenderer::class.java)!!.materials[index] = null
     }
 
@@ -185,6 +194,6 @@ class SceneObjectManager(
             }
         }
 
-        openGLRenderer.cameraEntity = cameraEntity
+        openglView.renderer.cameraEntity = cameraEntity
     }
 }

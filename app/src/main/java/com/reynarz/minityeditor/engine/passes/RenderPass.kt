@@ -4,61 +4,49 @@ import android.opengl.GLES20.*
 import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.FrameBuffer
 import com.reynarz.minityeditor.engine.Material
-import com.reynarz.minityeditor.engine.components.MeshRenderer
-import com.reynarz.minityeditor.engine.components.SceneEntity
+import com.reynarz.minityeditor.engine.QueuedRenderableMesh
 import com.reynarz.minityeditor.models.MaterialConfig
-import com.reynarz.minityeditor.views.MainActivity
 import org.koin.java.KoinJavaComponent.get
 
 open class RenderPass {
     protected val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
-    protected lateinit var fbo: FrameBuffer
+    protected var fbo: FrameBuffer? = null
 
-    val fbo_colorTexID = fbo.colorTexture
-    val fbo_depthTexID = fbo.depthTexture
+    val fbo_colorTexID = fbo?.colorTexture
+    val fbo_depthTexID = fbo?.depthTexture
 
     init {
-        fbo = FrameBuffer()
+        //fbo = FrameBuffer()
     }
 
-    open fun renderPass(entities: List<SceneEntity?>, sceneMatrices: SceneMatrices, errorMaterial: Material) {
-        fbo.bind()
-        glViewport(0, 0, fbo.width, fbo.height)
+    open fun renderPass(entities: List<QueuedRenderableMesh>, sceneMatrices: SceneMatrices, errorMaterial: Material) {
+        //fbo.bind()
+        //glViewport(0, 0, fbo?.width!!, fbo?.height!!)
 
         glEnable(GL_DEPTH_TEST)
 
         glClearColor(0.2f, 0.2f, 0.2f, 1f)
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        for (i in 0 until entities.size) {
+        for (entity in entities) {
+            if (entity.Active) {
 
-            val entity = entities.getOrNull(i)
+//                    glActiveTexture(GL_TEXTURE0)
+                //--glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
+//                    if (renderer?.materials?.getOrNull(phaseIndex) != null) {
+//                        val depthUniform = glGetUniformLocation(renderer!!.materials[phaseIndex]!!.shader.program, "_SHADOWMAP")
+//                        glUniform1i(depthUniform, 0)
+//                    }
 
-            if (entity != null && entity.entityData.active) {
-                val renderer = entity.getComponent(MeshRenderer::class.java)
-                val materialsData = entity.entityData.meshRendererData.materialsData
+                setApplyMaterialConfig_GL(entity.materialConfig)
 
-                for (meshIndex in 0 until renderer!!.meshes.size) {
+                entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)
 
-                    glActiveTexture(GL_TEXTURE0)
-                    //--glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
-
-                    if (renderer?.materials?.getOrNull(meshIndex) != null) {
-                        val depthUniform = glGetUniformLocation(renderer!!.materials[meshIndex]!!.shader.program, "_SHADOWMAP")
-                        glUniform1i(depthUniform, 0)
-                    }
-
-                    setApplyMaterialConfig_GL(materialsData.getOrNull(meshIndex)?.materialConfig)
-
-                    renderer.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM, meshIndex)
-
-                    val mesh = renderer.meshes[meshIndex]
-
-                    glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-                    renderer.unBind()
-                }
+                glDrawElements(GL_TRIANGLES, entity.meshIndicesCount, GL_UNSIGNED_INT, entity.meshIndexBuffer)
+                entity.unBind()
             }
         }
+        //fbo.unBind()
     }
 
     protected fun setApplyMaterialConfig_GL(materialConfig: MaterialConfig?) {

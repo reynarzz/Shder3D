@@ -60,7 +60,7 @@ class Transform { // : Component()
             updateModelMatrix()
         }
 
-    var modelM: FloatArray? = null
+    var modelM: FloatArray
         //private set
 
     var modelMInv: FloatArray? = null

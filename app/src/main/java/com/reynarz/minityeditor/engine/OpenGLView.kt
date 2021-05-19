@@ -2,14 +2,14 @@ package com.reynarz.minityeditor.engine
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import com.reynarz.minityeditor.engine.passes.RenderPass
+import com.reynarz.minityeditor.engine.passes.ShadowPass
+import com.reynarz.minityeditor.engine.passes.SceneMatrices
 import com.reynarz.minityeditor.views.MainActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.launch
 import kotlin.math.round
 import kotlin.math.sqrt
 
@@ -31,11 +31,15 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
     var renderer = OpenGLRenderer(context)
 
     init {
+        //renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
+
+
         setEGLContextClientVersion(2)
         setPreserveEGLContextOnPause(true)
         setRenderer(renderer)
-        //renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
     }
+
+
 
     private var startX = 0f
     private var startY = 0f
@@ -51,7 +55,7 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
 
     fun getDistance(a: vec3, b: vec3): Float {
         //--dispat
-       // GlobalScope.launch(Dispatchers.) {  }
+        // GlobalScope.launch(Dispatchers.) {  }
         val diff = getDiff(a, b)
         return sqrt(dot(diff, diff))
     }
@@ -65,7 +69,6 @@ class OpenGLView(context: Context, attributeSet: AttributeSet) :
     private var deltaTwo = vec3
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-
 
         val action = event!!.actionMasked
         when (action) {
