@@ -480,6 +480,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         cameraTransformData.scale.x = zoom
 
         if (newRenderer?.target == null) {
+            println("target")
             val meshRenderer = cameraEntity.getComponent(MeshRenderer::class.java)
             newRenderer?.target = ScreenQuad(meshRenderer!!)
         }

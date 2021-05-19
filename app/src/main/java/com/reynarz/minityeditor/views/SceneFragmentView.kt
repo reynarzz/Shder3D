@@ -35,11 +35,12 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
             binding.clEditSelectedEntityContainer.visibility = View.GONE
 
             MainActivity.instance.openGLView.renderer.deleteEntity(it)
+
+            //repository.queuedRenderers.remove()
+            MainActivity.instance.openGLView.renderer.deleteEntity(it)
         }
 
         binding.viewmodel = viewModel
-
-
 
         return binding.root
 

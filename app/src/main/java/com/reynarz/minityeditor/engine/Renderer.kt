@@ -1,13 +1,17 @@
 package com.reynarz.minityeditor.engine
 
+import com.reynarz.minityeditor.MinityProjectRepository
 import com.reynarz.minityeditor.engine.components.MeshRenderer
 import com.reynarz.minityeditor.engine.passes.RenderPass
 import com.reynarz.minityeditor.engine.passes.RenderPassFrameBuffers
 import com.reynarz.minityeditor.engine.passes.SceneMatrices
+import org.koin.java.KoinJavaComponent.get
 
 class Renderer(private val sceneMatrices: SceneMatrices) {
     private var errorMaterial: Material
-    private val rendersMap = mutableMapOf<Int, MutableList<QueuedRenderableMesh>>()
+    //bad
+    val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
+
     private val phases = mutableListOf<RenderPass>()
     private val passFrameBuffers = RenderPassFrameBuffers()
 
@@ -15,6 +19,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
     var target: ScreenQuad? = null
 
     init {
+
         errorMaterial = Utils.getErrorMaterial()
     }
 
@@ -24,10 +29,10 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
     fun addToRenderQueue(queuedMesh: QueuedRenderableMesh) {
 
-        if (!rendersMap.containsKey(queuedMesh?.RenderQueue)) {
-            rendersMap[queuedMesh.RenderQueue] = mutableListOf()
+        if (!repository.queuedRenderers.containsKey(queuedMesh?.RenderQueue)) {
+            repository.queuedRenderers[queuedMesh.RenderQueue] = mutableListOf()
         }
-        rendersMap[queuedMesh.RenderQueue]?.add(queuedMesh)
+        repository.queuedRenderers[queuedMesh.RenderQueue]?.add(queuedMesh)
     }
 
 //    fun replaceRenderQueue(queuedMesh: QueuedRenderableMesh) {
@@ -40,13 +45,13 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 //    }
 
     fun removeRendererOfQueue(queuedMesh: QueuedRenderableMesh) {
-        if (rendersMap.containsKey(queuedMesh.RenderQueue)) {
+        if (repository.queuedRenderers.containsKey(queuedMesh.RenderQueue)) {
             // remove from the old render queue.
-            rendersMap[queuedMesh.RenderQueue]?.remove(queuedMesh)
+            repository.queuedRenderers[queuedMesh.RenderQueue]?.remove(queuedMesh)
 
             // If there is not entities in this queue, clear,
-            if (rendersMap[queuedMesh.RenderQueue]?.size == 0) {
-                rendersMap.remove(queuedMesh.RenderQueue)
+            if (repository.queuedRenderers[queuedMesh.RenderQueue]?.size == 0) {
+                repository.queuedRenderers.remove(queuedMesh.RenderQueue)
             }
         }
     }
@@ -66,12 +71,13 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         }
 
         for (p in phases) {
-            for (key in rendersMap.keys) {
-                //println("Key: " + key)
-                p.renderPass(rendersMap[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
+            for (key in repository.queuedRenderers.keys) {
+                println("Key: " + key)
+                p.renderPass(repository.queuedRenderers[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }
         }
 
-        target?.draw(passFrameBuffers.mainFrameBufferPass!!, errorMaterial!!)
+        if (passFrameBuffers.mainFrameBufferPass != null)
+            target?.draw(passFrameBuffers.mainFrameBufferPass!!, errorMaterial!!)
     }
 }

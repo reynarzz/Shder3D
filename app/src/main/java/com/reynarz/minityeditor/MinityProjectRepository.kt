@@ -1,5 +1,6 @@
 package com.reynarz.minityeditor
 
+import com.reynarz.minityeditor.engine.QueuedRenderableMesh
 import com.reynarz.minityeditor.engine.Scene
 import com.reynarz.minityeditor.files.FileManager
 import com.reynarz.minityeditor.models.MaterialData
@@ -18,6 +19,8 @@ class MinityProjectRepository() {
 
     var selectedSceneEntity: SceneEntityData? = null
     var scene: Scene? = null
+
+    val queuedRenderers = mutableMapOf<Int, MutableList<QueuedRenderableMesh>>()
 
     fun getProjectData(): ProjectData {
 

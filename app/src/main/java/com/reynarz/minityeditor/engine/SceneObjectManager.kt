@@ -77,7 +77,6 @@ class SceneObjectManager(
         //sceneEntity.entityData.meshRendererData.materialsData[0].materialConfig.renderQueue
 
 
-
         openglView.renderer.scene.entities.add(sceneEntity)
 
         addMaterials(sceneEntityData)
@@ -87,7 +86,7 @@ class SceneObjectManager(
         //}
         //}
         // TESTING REFACTOR THIS
-        for (i in addedRenderer.meshes.indices){
+        for (i in addedRenderer.meshes.indices) {
             println("to add")
             openglView.renderer.newRenderer?.addToRenderQueue(QueuedRenderableMesh(sceneEntity, addedRenderer.transform.modelM, addedRenderer.meshes[i], addedRenderer.materials[i]))
         }
@@ -118,6 +117,11 @@ class SceneObjectManager(
 
         val materialData = sceneEntityData.meshRendererData.materialsData[matIndex]
         addMaterial(meshRenderer, materialData, matIndex)
+
+//        for (i in addedRenderer.meshes.indices) {
+//            println("to add")
+//            openglView.renderer.newRenderer?.addToRenderQueue(QueuedRenderableMesh(sceneEntity, addedRenderer.transform.modelM, addedRenderer.meshes[i], addedRenderer.materials[i]))
+//        }
     }
 
     private fun addMaterial(meshRenderer: MeshRenderer?, materialData: MaterialData?, matIndex: Int) {
