@@ -109,33 +109,46 @@ class SceneObjectManager(
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
 
         for ((index, materialData) in sceneEntityData.meshRendererData.materialsData.withIndex()) {
-            addMaterial(meshRenderer, materialData, index)
+
+            var newMat: Material? = null
+            if (materialData != null) {
+                newMat = getNewMaterial(materialData!!)
+            }
+
+            addMaterial(meshRenderer, newMat, materialData, index)
         }
     }
 
     fun addMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
+        val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
+        val materialData = sceneEntityData?.meshRendererData!!.materialsData[matIndex]
+
+        val queuedEntities = repository.queuedRenderers[materialData?.materialConfig?.renderQueue!!]
+
+        val newMat = getNewMaterial(materialData)
+
+        for (i in queuedEntities!!) {
+            if (i.entityID == sceneEntityData.entityID && i.meshindexInsideEntity == matIndex) {
+                i.material = newMat
+
+                break
+            }
+        }
+
+
+        //------------
+        // important for legacy(remove this later when shader edit is using new rendering)
         val entity = openglView.renderer.scene.getEntityById(sceneEntityData!!.entityID)
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
 
         // important for legacy(remove this later when shader edit is using new rendering)
-        val materialData = sceneEntityData.meshRendererData.materialsData[matIndex]
-        addMaterial(meshRenderer, materialData, matIndex)
-
-        val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
-
-        val queuedEntities = repository.queuedRenderers[materialData?.materialConfig?.renderQueue!!]
-
-        for (i in queuedEntities!!) {
-            if (i.entityID == sceneEntityData.entityID && i.meshindexInsideEntity == matIndex) {
-                i.material = getNewMaterial(materialData)
-            }
-        }
+        addMaterial(meshRenderer, newMat, materialData, matIndex)
+        //-----------------
     }
 
-    private fun addMaterial(meshRenderer: MeshRenderer?, materialData: MaterialData?, matIndex: Int) {
+    private fun addMaterial(meshRenderer: MeshRenderer?, material: Material?, materialData: MaterialData?, matIndex: Int) {
         if (meshRenderer != null) {
             if (materialData != null) {
-                val material = getNewMaterial(materialData)
 
                 if (meshRenderer.meshes.getOrNull(matIndex) != null) {
                     materialData.name = meshRenderer.meshes.getOrNull(matIndex)?.meshName!!
@@ -158,33 +171,60 @@ class SceneObjectManager(
         }
     }
 
-    private fun getNewMaterial(materialData: MaterialData): Material {
-        val shaderData = materialData?.shaderData
+    private fun getNewMaterial(materialData: MaterialData?): Material? {
 
-        val vertex = Utils.processMinityInclude(activity!!, shaderData.vertexShader)
-        val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
+        if (materialData != null) {
+            val shaderData = materialData?.shaderData
 
-        val material = Material(Shader(vertex, fragment))
-        material.id = materialData.materialDataId
-        material.materialData = materialData
+            val vertex = Utils.processMinityInclude(activity!!, shaderData.vertexShader)
+            val fragment = Utils.processMinityInclude(activity!!, shaderData.fragmentShader)
 
-        for (textureData in materialData.texturesData) {
+            val material = Material(Shader(vertex, fragment))
+            material.id = materialData.materialDataId
+            material.materialData = materialData
 
-            if (textureData.path != null) {
-                val bitmap = Utils.getBitmapFromPath(textureData.path!!)
-                material.textures?.add(Texture(bitmap, GLES20.GL_REPEAT))
+            for (textureData in materialData.texturesData) {
 
-                textureData.previewBitmap = bitmap
+                if (textureData.path != null) {
+                    val bitmap = Utils.getBitmapFromPath(textureData.path!!)
+                    material.textures?.add(Texture(bitmap, GLES20.GL_REPEAT))
+
+                    textureData.previewBitmap = bitmap
+                }
+            }
+
+            return material
+        }
+
+        return null
+    }
+
+    fun removeMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
+        openglView.renderer.newRenderer?.forNowCommands_REMOVE?.add {
+            val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
+            val materialData = sceneEntityData?.meshRendererData!!.materialsData[matIndex]
+
+            val renderQueueIndex = materialData?.materialConfig?.renderQueue
+            val queuedEntities = repository.queuedRenderers[renderQueueIndex]
+
+            if(queuedEntities != null)
+            for (i in queuedEntities) {
+                if (i.entityID == sceneEntityData?.entityID && i.meshindexInsideEntity == matIndex) {
+                    i.material = null
+                    sceneEntityData?.meshRendererData!!.materialsData[matIndex] = null
+                    break
+                }
             }
         }
 
-        return material
-    }
 
-    fun removeMaterial(sceneEntityData: SceneEntityData?, index: Int) {
 
-        val entity = openglView.renderer.scene.getEntityById(sceneEntityData?.entityID)
-        entity?.getComponent(MeshRenderer::class.java)!!.materials[index] = null
+        openglView.renderer.addRenderCommand {
+            //----------- Delete this
+            val entity = openglView.renderer.scene.getEntityById(sceneEntityData?.entityID)
+            entity?.getComponent(MeshRenderer::class.java)!!.materials[matIndex] = null
+            //----------
+        }
     }
 
     // This contains duplicated code

@@ -19,7 +19,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
     private val beforeMeshRenderers = mutableListOf<MeshRenderer?>()
     var target: ScreenQuad? = null
 
-    private val forNowCommands_REMOVE = mutableListOf<() -> Unit>()
+    val forNowCommands_REMOVE = mutableListOf<() -> Unit>()
 
     init {
 
@@ -90,7 +90,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         for (p in phases) {
             for (key in repository.queuedRenderers.keys) {
 
-                println("Key: " + key)
+                //println("Key: " + key)
                 p.renderPass(repository.queuedRenderers[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }
         }

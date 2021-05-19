@@ -216,7 +216,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
             val mat = getSelectedMat()
 
-            println(mat!!.id)
+            println("mat idtoChange: " + mat!!.id)
 
             if (mat?.textures?.size!! > repository.selectedTextureSlot) {
                 mat?.textures!![repository.selectedTextureSlot] = Texture(bitmap, GL_REPEAT)

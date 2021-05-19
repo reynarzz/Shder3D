@@ -91,10 +91,8 @@ class MeshRendererMaterialsListAdapter(private val onMaterialAdded: () -> Unit, 
             // Remove material.
             removeMatButton.setOnClickListener {
 
-                // no, clean material slot.
-                meshRendererComponentData.materialsData[position] = null
-
                 MainActivity.instance.removeMaterial(minityRepository.selectedSceneEntity, position)
+
                 notifyDataSetChanged()
             }
 

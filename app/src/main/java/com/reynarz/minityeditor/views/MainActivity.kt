@@ -188,9 +188,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun removeMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
-        openGLView.renderer.addRenderCommand {
             sceneObjectManager.removeMaterial(sceneEntityData, matIndex)
-        }
     }
 
     override fun onResume() {
