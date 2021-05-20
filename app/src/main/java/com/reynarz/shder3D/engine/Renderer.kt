@@ -104,6 +104,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
         command_REmoveTHIS()
 
+        // for some reason i can't put this in the method where you add a new queuedRenderer, why?
         if (renderKeysOrdered.size != repository.queuedRenderers.size) {
             renderKeysOrdered = repository.queuedRenderers.keys.sortedBy { it }
         }
@@ -112,12 +113,9 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
             p.clear()
         }
 
-
-
-
         for (p in phases) {
             for (key in renderKeysOrdered) {
-                println("Key: " + key)
+                //println("Key: " + key)
                 p.renderPass(repository.queuedRenderers[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }
         }

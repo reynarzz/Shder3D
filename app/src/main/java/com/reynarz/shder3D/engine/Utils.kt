@@ -252,13 +252,14 @@ void main()
 attribute vec2 _UV_;
 
 uniform mat4 UNITY_MATRIX_MVP;
+uniform mat4 unity_ObjectToWorld;
 varying vec3 _pixelPos;
 varying vec2 _uv;
 
 void main()
 {
 	_uv = _UV_ - 0.5;
-	_pixelPos = _VERTEX_.xyz;
+	_pixelPos =  (unity_ObjectToWorld * _VERTEX_).xyz;
 	gl_Position = UNITY_MATRIX_MVP * _VERTEX_;
 }
     """
@@ -273,9 +274,9 @@ varying vec3 _pixelPos;
 
 void main()
 {
-    float maxDist = 250.;
+    float maxDist = 170.;
 
-    //float alpha = (maxDist - length(_pixelPos - _WorldSpaceCameraPos));
+    float alpha = clamp(length(_pixelPos - _WorldSpaceCameraPos), 0., maxDist);
 
     float thickness = 0.1;
     float spacing = 1.;
@@ -292,18 +293,15 @@ void main()
         }
         else
         {
-        
-        //gl_FragColor = vec4(alpha);
-           // gl_FragColor = vec4(vec3(0.5), smoothstep(alpha, 0.0, 0.2));
             gl_FragColor = vec4(vec3(0.13),  1.);
         }
+        
+        gl_FragColor =  mix(gl_FragColor, vec4(vec3(0.2),  1.), alpha/maxDist);
     }
     else
     {
         discard;
     }
-
-//gl_FragColor = vec4(0.3);
 }
 """
 
@@ -460,8 +458,7 @@ vec4 color = vec4(vec3(shadow), 1.);
                         zwriteOptions(code, matConfig)
                     } else if (lower.contains("queue")) {
                         queueOptions(code, matConfig)
-                    }
-                    else if (lower.contains("nobackpassed")) {
+                    } else if (lower.contains("nobackpassed")) {
                         matConfig.hiddeFromBackPass = true
                         queueOptions(code, matConfig)
                     }
@@ -617,7 +614,7 @@ vec4 color = vec4(vec3(shadow), 1.);
             var endIndex = 0
         }
 
-         fun getWordsFromText(text: String): List<WordToHightlight> {
+        fun getWordsFromText(text: String): List<WordToHightlight> {
             val words = mutableListOf<WordToHightlight>()
 
             val stringBuilder = StringBuilder()
@@ -756,6 +753,7 @@ vec4 color = vec4(vec3(shadow), 1.);
             "cos" to functionsColor,
             "acos" to functionsColor,
             "tan" to functionsColor,
-            "atan" to functionsColor)
+            "atan" to functionsColor
+        )
     }
 }
