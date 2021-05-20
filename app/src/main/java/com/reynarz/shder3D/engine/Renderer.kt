@@ -18,7 +18,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
     private val phases = mutableListOf<RenderPass>()
     private val passFrameBuffers = RenderPassFrameBuffers()
 
-    private val beforeMeshRenderers = mutableListOf<MeshRenderer?>()
+    private val beforeDrawScreenQuadRenderers = mutableListOf<MeshRenderer?>()
     var target: ScreenQuad? = null
 
     val forNowCommands_REMOVE = mutableListOf<() -> Unit>()
@@ -26,10 +26,24 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
     init {
 
         errorMaterial = Utils.getErrorMaterial()
+
+        getEditorStuff_Remove()
+    }
+
+    fun getEditorStuff_Remove() {
+        val groundShaderCode = Utils.getGroundShadersCode()
+
+        val material = Material(Shader(groundShaderCode.first, groundShaderCode.second))
+
+        val plane = Utils.getPlane(2000f)
+        //plane.bind(material.program)
+        val meshRenderer = MeshRenderer(mutableListOf(plane), material)
+
+        beforeDrawScreenQuadRenderers!!.add(meshRenderer)
     }
 
     fun addToRenderBeforeQueued(meshRenderer: MeshRenderer) {
-        beforeMeshRenderers.add(meshRenderer)
+        beforeDrawScreenQuadRenderers.add(meshRenderer)
     }
 
     fun addToRenderQueue(queuedMesh: QueuedRenderableMesh) {
@@ -39,8 +53,6 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         }
 
         repository.queuedRenderers[queuedMesh.renderQueue]?.add(queuedMesh)
-
-        renderKeysOrdered = repository.queuedRenderers.keys.sortedBy { it }
     }
 
 //    fun replaceRenderQueue(queuedMesh: QueuedRenderableMesh) {
@@ -92,23 +104,36 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
         command_REmoveTHIS()
 
+        if (renderKeysOrdered.size != repository.queuedRenderers.size) {
+            renderKeysOrdered = repository.queuedRenderers.keys.sortedBy { it }
+        }
+
         for (p in phases) {
             p.clear()
         }
 
 
-        for (i in beforeMeshRenderers.indices) {
-            beforeMeshRenderers[i]?.bind(sceneMatrices.cameraViewM, sceneMatrices.cameraProjM, errorMaterial, i)
-        }
+
 
         for (p in phases) {
             for (key in renderKeysOrdered) {
-                //println("Key: " + key)
+                println("Key: " + key)
                 p.renderPass(repository.queuedRenderers[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }
         }
 
-        if (passFrameBuffers.mainFrameBufferPass != null)
+        if (passFrameBuffers.mainFrameBufferPass != null){
+            // editor pass
+            passFrameBuffers.mainFrameBufferPass?.bind()
+            for (i in beforeDrawScreenQuadRenderers.indices) {
+                beforeDrawScreenQuadRenderers[i]?.bind(sceneMatrices.cameraViewM, sceneMatrices.cameraProjM, errorMaterial, i)
+                GLES20.glDrawElements(GLES20.GL_TRIANGLES, beforeDrawScreenQuadRenderers[i]!!.meshes[i].indicesCount, GLES20.GL_UNSIGNED_INT, beforeDrawScreenQuadRenderers[i]!!.meshes[i].indexBuffer)
+            }
+            passFrameBuffers.mainFrameBufferPass?.unBind()
+
+            //draw in target (screen quad)
             target?.draw(passFrameBuffers.mainFrameBufferPass!!, errorMaterial!!)
+
+        }
     }
 }

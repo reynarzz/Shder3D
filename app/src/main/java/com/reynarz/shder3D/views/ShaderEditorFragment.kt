@@ -66,7 +66,14 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
             shaderData.fragmentShader = shaderViewModel.fragmentShader.value!!
 
             val materialConfig = Utils.processMaterialConfig(shaderData.fragmentShader)
+
+
+            if (materialData?.materialConfig!!.renderQueue != materialConfig.renderQueue) {
+                println("render queue modified")
+            }
+
             materialData?.materialConfig = materialConfig
+
 
             MainActivity.instance.openGLView.renderer.setReplaceShadersCommand(
                 Utils.processInclude(include1, shaderData.vertexShader),
@@ -139,7 +146,6 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
     // this needs optimization
     private fun colorText(text: String, start: Int, count: Int, editText: EditText, spannableString: SpannableStringBuilder) {
-
 
 
         fun processText(): SpannableStringBuilder {
