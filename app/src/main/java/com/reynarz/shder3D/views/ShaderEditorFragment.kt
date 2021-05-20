@@ -34,6 +34,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
     private val shaderViewModel: ShaderEditorViewModel by viewModel()
     private lateinit var shaderData: ShaderData
     private var materialData: MaterialData? = null
+    val minityRepository: MinityProjectRepository = get()
 
     // lateinit var renderer: OpenGLRenderer
 
@@ -41,7 +42,7 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.shader_editor_fragment_view, null, false)
 
-        val minityRepository: MinityProjectRepository = get()
+
         materialData = minityRepository.selectedMaterial
         shaderData = materialData?.shaderData!!
 
@@ -67,9 +68,11 @@ class ShaderEditorFragment : Fragment(R.layout.shader_editor_fragment_view) {
 
             val materialConfig = Utils.processMaterialConfig(shaderData.fragmentShader)
 
+            val oldRenderQueue = materialData?.materialConfig!!.renderQueue
 
-            if (materialData?.materialConfig!!.renderQueue != materialConfig.renderQueue) {
+            if (oldRenderQueue != materialConfig.renderQueue) {
                 println("render queue modified")
+                MainActivity.instance.openGLView.renderer.newRenderer?.changeRendererQueue(oldRenderQueue, minityRepository.selectedSceneEntity!!.entityID, minityRepository.selectedMaterialIndex)
             }
 
             materialData?.materialConfig = materialConfig

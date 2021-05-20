@@ -15,6 +15,7 @@ class MinityProjectRepository {
     lateinit var colorsPickupTableRBG: Array<Int>
     private var projectData: ProjectData? = null
     var selectedMaterial: MaterialData? = null
+    var selectedMaterialIndex = 0
     var selectedTextureSlot = 0
 
     var selectedSceneEntity: SceneEntityData? = null

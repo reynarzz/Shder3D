@@ -64,21 +64,33 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 //        }
 //    }
 
-    fun removeRendererOfQueue(queueValue: Int, entityID: String) {
+    fun changeRendererQueue(oldQueueValue: Int, entityID: String, index: Int) {
         forNowCommands_REMOVE.add {
-            val entities = repository.queuedRenderers[queueValue]!!
+            val removed = removeRendererOfQueue(oldQueueValue, entityID, index)
 
-            if (repository.queuedRenderers.containsKey(queueValue)) {
-                for (i in entities.size - 1 downTo 0) {
-                    val entity = entities[i]
-                    if (entity.entityID == entityID) {
-                        entities.remove(entity)
-                    }
-                }
-            }
+            addToRenderQueue(removed!!)
         }
     }
 
+    fun removeRendererOfQueue(queueValue: Int, entityID: String, index: Int): QueuedRenderableMesh? {
+
+        val entities = repository.queuedRenderers[queueValue]!!
+
+        if (repository.queuedRenderers.containsKey(queueValue)) {
+            for (i in entities.size - 1 downTo 0) {
+                val entity = entities[i]
+                if (entity.entityID == entityID && entity.meshindexInsideEntity == index) {
+                    entities.remove(entity)
+                    println("remove from old queue")
+                    return entity
+                }
+            }
+        }
+
+        return null
+    }
+
+    // for now because i don't know yet how to call from the open gl thread.
     fun removeCompleteEntity(entityID: String) {
         forNowCommands_REMOVE.add {
             repository.removeCompleteEntity(entityID)
@@ -120,7 +132,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
             }
         }
 
-        if (passFrameBuffers.mainFrameBufferPass != null){
+        if (passFrameBuffers.mainFrameBufferPass != null) {
             // editor pass
             passFrameBuffers.mainFrameBufferPass?.bind()
             for (i in beforeDrawScreenQuadRenderers.indices) {

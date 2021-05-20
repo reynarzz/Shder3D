@@ -274,7 +274,7 @@ varying vec3 _pixelPos;
 
 void main()
 {
-    float maxDist = 170.;
+    float maxDist = 180.;
 
     float alpha = clamp(length(_pixelPos - _WorldSpaceCameraPos), 0., maxDist);
 

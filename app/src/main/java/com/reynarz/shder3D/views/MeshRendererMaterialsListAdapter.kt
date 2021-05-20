@@ -79,6 +79,7 @@ class MeshRendererMaterialsListAdapter(private val onMaterialAdded: () -> Unit, 
 
             editMatButton.setOnClickListener {
                 minityRepository.selectedMaterial = materialData
+                minityRepository.selectedMaterialIndex = position
 
                 navigator.goToShaderEditor()
 
