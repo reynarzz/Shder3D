@@ -24,7 +24,7 @@ class CompositePass : RenderPass() {
         for (entity in entities) {
             if (entity.active) {
 
-                //setApplyMaterialConfig_GL(entity.materialConfig)
+                setApplyMaterialConfig_GL(entity.materialConfig)
 
                 entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)
                 glActiveTexture(GL_TEXTURE0)

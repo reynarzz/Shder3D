@@ -9,6 +9,7 @@ import org.koin.java.KoinJavaComponent.get
 
 class Renderer(private val sceneMatrices: SceneMatrices) {
     private var errorMaterial: Material
+    private var renderKeysOrdered = mutableListOf<Int>()
 
     //bad
     val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
@@ -99,7 +100,6 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
         for (p in phases) {
             for (key in repository.queuedRenderers.keys) {
-
                 //println("Key: " + key)
                 p.renderPass(repository.queuedRenderers[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }
