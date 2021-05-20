@@ -21,13 +21,10 @@ class CompositePass : RenderPass() {
 
         glEnable(GL_DEPTH_TEST)
 
-        glClearColor(0.2f, 0.2f, 0.2f, 1f)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-
         for (entity in entities) {
             if (entity.active) {
 
-                setApplyMaterialConfig_GL(entity.materialConfig)
+                //setApplyMaterialConfig_GL(entity.materialConfig)
 
                 entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)
                 glActiveTexture(GL_TEXTURE0)

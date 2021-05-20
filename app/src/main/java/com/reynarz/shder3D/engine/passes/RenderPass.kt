@@ -47,4 +47,11 @@ abstract class RenderPass {
             }
         }
     }
+
+    fun clear(){
+        fbo?.bind()
+        glClearColor(0.2f, 0.2f, 0.2f, 1f)
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+        fbo?.unBind()
+    }
 }

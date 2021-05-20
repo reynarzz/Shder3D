@@ -88,6 +88,11 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
         command_REmoveTHIS()
 
+        for (p in phases) {
+            p.clear()
+        }
+
+
         for (i in beforeMeshRenderers.indices) {
             beforeMeshRenderers[i]?.bind(sceneMatrices.cameraViewM, sceneMatrices.cameraProjM, errorMaterial, i)
         }

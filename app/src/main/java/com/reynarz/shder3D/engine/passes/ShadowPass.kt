@@ -18,10 +18,6 @@ class ShadowPass : RenderPass() {
 
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
-        glClear(GL_STENCIL_BUFFER_BIT)
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1f)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         for (entity in entities) {
             if (entity.active && entity.canCastShadows && entity.materialConfig != null && entity.materialConfig!!.gl_depthTestEnabled) {

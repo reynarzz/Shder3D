@@ -16,9 +16,6 @@ class ScreenPass : RenderPass() {
         fbo?.bind()
         glViewport(0, 0, fbo?.width!!, fbo?.height!!)
 
-        glClearColor(0.2f, 0.2f, 0.2f, 1f)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-
         for (entity in entities) {
             if (entity.active && entity.materialConfig != null && entity.materialConfig?.gl_depthTestEnabled!! && !entity.materialConfig?.hiddeFromBackPass!!) {
                 setApplyMaterialConfig_GL(entity.materialConfig)
