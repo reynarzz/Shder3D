@@ -5,6 +5,7 @@ import android.opengl.GLES20.*
 class FrameBuffer {
 
     private var frameBuffer: IntArray = IntArray(1)
+    private var renderBuffer: IntArray = IntArray(1)
 
     var colorTexture = -1
     var depthTexture = -1
@@ -29,15 +30,20 @@ class FrameBuffer {
 
         // Create a frame buffer
         glGenFramebuffers(1, frameBuffer, 0);
+        //glGenRenderbuffers(1, renderBuffer, 0)
+
 
         colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, _width, _height, GL_LINEAR, clampParams).textureID
         depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, _width, _height, GL_LINEAR, clampParams).textureID
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
+        //glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer[0])
+        //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _width, _height)
 
         // Associate the textures with the FBO.
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0)
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
+        //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer[0])
 
         // Check FBO status.
         val status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -58,6 +64,12 @@ class FrameBuffer {
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
+
+
+//        glGenFramebuffers(1, frameBuffer, 0)
+//        glGenRenderbuffers(GL_RENDERBUFFER, renderBuffer, 0)
+//        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
+//        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer[0])
         unBind()
     }
 

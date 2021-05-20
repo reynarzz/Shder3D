@@ -319,8 +319,8 @@ varying vec4 pos;
 
 void main() 
 {
-_uv = _UV_;
-gl_Position = vec4( _VERTEX_.x,  _VERTEX_.y, 0, 1);
+ _uv = _UV_;
+ gl_Position = vec4(_VERTEX_.x,  _VERTEX_.y, 0, 1);
 }"""
             var screenFragTex = """
             
@@ -374,7 +374,7 @@ void main()
 
             var fragCode = """#minity
                             
-precision mediump float; 
+precision highp float; 
 varying vec4 pos;
 
 varying vec2 _uv;

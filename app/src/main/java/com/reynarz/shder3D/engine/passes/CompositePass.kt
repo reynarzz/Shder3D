@@ -25,7 +25,7 @@ class CompositePass : RenderPass() {
             if (entity.active) {
 
                 setApplyMaterialConfig_GL(entity.materialConfig)
-
+                glDepthRangef(0f, 1.0f)
                 entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)
                 glActiveTexture(GL_TEXTURE0)
                 glBindTexture(GL_TEXTURE_2D, test.shadowFrameBuffer?.depthTexture!!)

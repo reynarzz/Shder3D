@@ -101,8 +101,8 @@ class Material(val shader: Shader) {
 
         Matrix.invertM(InvModel, 0, model, 0)
 
-        val nearPlane = 1f
-        val farPlane = 500f
+        val nearPlane = 30f
+        val farPlane = 250f
         val t = OpenGLRenderer.time // need the current time of the app.
         val deltaTime = OpenGLRenderer.deltaTime // need current delta time of the app.
 

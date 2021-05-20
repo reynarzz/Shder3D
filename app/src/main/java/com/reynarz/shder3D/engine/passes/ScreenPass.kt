@@ -19,6 +19,7 @@ class ScreenPass : RenderPass() {
         for (entity in entities) {
             if (entity.active && entity.materialConfig != null && entity.materialConfig?.gl_depthTestEnabled!! && !entity.materialConfig?.hiddeFromBackPass!!) {
                 setApplyMaterialConfig_GL(entity.materialConfig)
+                glDepthRangef(0f, 1.0f)
 
                 entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)
                 glActiveTexture(GL_TEXTURE0)

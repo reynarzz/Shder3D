@@ -71,6 +71,16 @@ vec3 lerp(vec3 a, vec3 b, float t)
 	return  vec3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
 }
 
+vec3 lerp(vec4 a, vec4 b, float t)
+{
+	if(t > 1.)
+	{
+		t = 1.;
+	}
+
+	return  vec3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
+}
+
 float LinearDepth(float d,float zNear,float zFar)
 {
    return (2.0 * zNear) / (zFar + zNear - d * (zFar - zNear));
