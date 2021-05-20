@@ -34,7 +34,7 @@ class SceneFragmentView : Fragment(R.layout.scene_view_fragment) {
             binding.clEditSelectedEntityContainer.visibility = View.GONE
 
             for (matsData in it.meshRendererData.materialsData) {
-                MainActivity.instance.openGLView.renderer.newRenderer?.removeRendererOfQueue(matsData?.materialConfig?.renderQueue!!, it.entityID)
+                MainActivity.instance.openGLView.renderer.newRenderer?.removeCompleteEntity(it.entityID)
             }
 
             MainActivity.instance.openGLView.renderer.deleteEntity(it)

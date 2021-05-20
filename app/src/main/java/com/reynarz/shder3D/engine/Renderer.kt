@@ -63,6 +63,12 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         }
     }
 
+    fun removeCompleteEntity(entityID: String) {
+        forNowCommands_REMOVE.add {
+            repository.removeCompleteEntity(entityID)
+        }
+    }
+
     fun addPass(pass: RenderPass) {
         phases.add(pass)
     }

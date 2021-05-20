@@ -42,4 +42,12 @@ class MinityProjectRepository {
         }
         return projectData!!
     }
+
+    fun removeCompleteEntity(entityID: String) {
+        for (key in queuedRenderers.keys) {
+            queuedRenderers[key]!!.removeAll {
+                it.entityID == entityID
+            }
+        }
+    }
 }
