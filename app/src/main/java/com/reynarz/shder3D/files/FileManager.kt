@@ -130,6 +130,7 @@ class FileManager {
 
         //test
         file.writeText(Json.encodeToString(project))
+        println("Project saved")
     }
 
     fun loadProject(): ProjectData {
