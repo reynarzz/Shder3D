@@ -1,5 +1,6 @@
 package com.reynarz.shder3D.engine
 
+import android.opengl.GLES20
 import com.reynarz.shder3D.MinityProjectRepository
 import com.reynarz.shder3D.engine.components.MeshRenderer
 import com.reynarz.shder3D.engine.passes.RenderPass
@@ -9,7 +10,7 @@ import org.koin.java.KoinJavaComponent.get
 
 class Renderer(private val sceneMatrices: SceneMatrices) {
     private var errorMaterial: Material
-    private var renderKeysOrdered = mutableListOf<Int>()
+    private var renderKeysOrdered = listOf<Int>()
 
     //bad
     val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
@@ -38,6 +39,8 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         }
 
         repository.queuedRenderers[queuedMesh.renderQueue]?.add(queuedMesh)
+
+        renderKeysOrdered = repository.queuedRenderers.keys.sortedBy { it }
     }
 
 //    fun replaceRenderQueue(queuedMesh: QueuedRenderableMesh) {
@@ -99,7 +102,7 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         }
 
         for (p in phases) {
-            for (key in repository.queuedRenderers.keys) {
+            for (key in renderKeysOrdered) {
                 //println("Key: " + key)
                 p.renderPass(repository.queuedRenderers[key]!!, sceneMatrices, errorMaterial!!, passFrameBuffers)
             }
