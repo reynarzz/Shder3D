@@ -41,6 +41,7 @@ enum class RenderQueue(val queueValue: Int) {
 
 @Serializable
 class MaterialConfig {
+    var hiddeFromBackPass = false
     var gl_blendingEnabled = false
     var gl_srcFactor = 0
     var gl_dstFactor = 0
@@ -50,7 +51,7 @@ class MaterialConfig {
 
     var gl_cullEnabled = false
     var gl_cullFace = GLES20.GL_BACK
-    var renderQueue = 0
+    var renderQueue = RenderQueue.Geometry.queueValue
 
     // Queue {Background, }                                 // ver2
     // Blend {SRCALPHA/OneMinusSRCAlpha, etc..}

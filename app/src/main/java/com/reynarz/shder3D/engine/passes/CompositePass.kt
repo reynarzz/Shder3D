@@ -25,7 +25,8 @@ class CompositePass : RenderPass() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         for (entity in entities) {
-            if (entity.Active) {
+            if (entity.active) {
+
                 setApplyMaterialConfig_GL(entity.materialConfig)
 
                 entity.bindShadow(sceneMatrices.cameraViewM!!, sceneMatrices.cameraProjM!!, errorMaterial, sceneMatrices.directionalLightVIewProjM)

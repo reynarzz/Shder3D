@@ -16,7 +16,7 @@ class SelectedEntityPass : RenderPass() {
     override fun renderPass(entities: List<QueuedRenderableMesh>, sceneMatrices: SceneMatrices, errorMaterial: Material, test: RenderPassFrameBuffers) {
 
         for (entity in entities) {
-            if (entity.Active && entity.Selected) {
+            if (entity.active && entity.selected) {
                 glLineWidth(1.3f)
 
                 glEnable(GL_DEPTH_TEST)

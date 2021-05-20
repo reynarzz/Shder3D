@@ -23,19 +23,19 @@ class QueuedRenderableMesh(val meshindexInsideEntity: Int, val sceneEntity: Scen
             return mesh.indicesCount
         }
 
-    val Active: Boolean
+    val active: Boolean
         get() {
             return sceneEntity.entityData.active
         }
 
-    val Selected: Boolean
+    val selected: Boolean
         get() {
             return sceneEntity.entityData.isSelected
         }
 
-    val RenderQueue: Int
+    val renderQueue: Int
         get() {
-            return if (materialConfig?.renderQueue != null) materialConfig?.renderQueue!! else 0
+            return if (materialConfig != null) materialConfig?.renderQueue!! else 0
         }
 
     val materialConfig: MaterialConfig?

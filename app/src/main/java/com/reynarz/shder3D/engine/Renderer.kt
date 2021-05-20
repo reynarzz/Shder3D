@@ -32,12 +32,11 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
 
     fun addToRenderQueue(queuedMesh: QueuedRenderableMesh) {
 
-        forNowCommands_REMOVE.add {
-            if (!repository.queuedRenderers.containsKey(queuedMesh?.RenderQueue)) {
-                repository.queuedRenderers[queuedMesh.RenderQueue] = mutableListOf()
-            }
-            repository.queuedRenderers[queuedMesh.RenderQueue]?.add(queuedMesh)
+        if (!repository.queuedRenderers.containsKey(queuedMesh?.renderQueue)) {
+            repository.queuedRenderers[queuedMesh.renderQueue] = mutableListOf()
         }
+
+        repository.queuedRenderers[queuedMesh.renderQueue]?.add(queuedMesh)
     }
 
 //    fun replaceRenderQueue(queuedMesh: QueuedRenderableMesh) {

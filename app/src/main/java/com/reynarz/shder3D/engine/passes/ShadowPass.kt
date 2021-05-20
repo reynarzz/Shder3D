@@ -24,7 +24,7 @@ class ShadowPass : RenderPass() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         for (entity in entities) {
-            if (entity.Active && entity.canCastShadows && entity.materialConfig != null && entity.materialConfig!!.gl_depthTestEnabled) {
+            if (entity.active && entity.canCastShadows && entity.materialConfig != null && entity.materialConfig!!.gl_depthTestEnabled) {
 
                 entity.bind(sceneMatrices.directionalLightVIewM, sceneMatrices.directionalLightProjM, errorMaterial)
 

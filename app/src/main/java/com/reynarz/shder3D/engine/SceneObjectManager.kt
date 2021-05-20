@@ -17,7 +17,6 @@ class SceneObjectManager(
 
     fun testLoadObject(sceneEntityData: SceneEntityData) {
 
-        println("to here")
         val sceneEntity = SceneEntity(sceneEntityData)
 
         sceneEntity.name = sceneEntityData.name
@@ -38,10 +37,9 @@ class SceneObjectManager(
 
             //   withContext(Dispatchers.Default) {
             modelsData = dataBase.getModels(sceneEntityData.entityModelPath)
-            println("Loaded")
+
             //     }
 
-            println("To process")
 
             var index = 0
             for (model in modelsData!!) {
@@ -71,31 +69,30 @@ class SceneObjectManager(
 //        boundingBox.name = "Bounds"
 //        boundingBox.testMeshRenderer = bounding
 //        openGLRenderer.scene.entities.add(boundingBox)
-
 // bug
         //  withContext(Dispatchers.Main) {
         //openGLRenderer.addRenderCommand {
-        println("to add")
-        //sceneEntity.entityData.meshRendererData.materialsData[0].materialConfig.renderQueue
 
+        //sceneEntity.entityData.meshRendererData.materialsData[0].materialConfig.renderQueue
 
         openglView.renderer.scene.entities.add(sceneEntity)
 
         addMaterials(sceneEntityData)
         println("Add materials")
 
-        //  }
-        //}
-        //}
-        // TESTING REFACTOR THIS
-        for (i in addedRenderer.meshes.indices) {
-            println("to add")
-            openglView.renderer.newRenderer?.addToRenderQueue(QueuedRenderableMesh(i, sceneEntity, addedRenderer.transform.modelM, addedRenderer.meshes[i], addedRenderer.materials[i]))
+        openglView.renderer.newRenderer!!.forNowCommands_REMOVE.add {
+            // TESTING REFACTOR THIS
+            for (index in addedRenderer.meshes.indices) {
+                //println("to add")
+
+                if (addedRenderer.materials[index]?.materialData != null)
+                    println("materialID: " + addedRenderer.materials[index]?.materialData!!.materialDataId + ", queue: " + addedRenderer.materials[index]?.materialData!!.materialConfig.renderQueue)
+                openglView.renderer.newRenderer?.addToRenderQueue(QueuedRenderableMesh(index, sceneEntity, addedRenderer.transform.modelM, addedRenderer.meshes[index], addedRenderer.materials[index]))
+            }
         }
     }
 
 //    fun boundingBoxTest(bounds: Bounds): MeshRenderer {
-//
 //        var cube = ObjParser(activity!!.baseContext!!, "models/cube.obj").getModelData()
 //
 //        val mesh = Mesh(bounds.verts!!, bounds.indices!!, FloatArray(1), FloatArray(1))
@@ -115,25 +112,17 @@ class SceneObjectManager(
                 newMat = getNewMaterial(materialData!!)
             }
 
-            addMaterial(meshRenderer, newMat, materialData, index)
+            addNewMaterial(meshRenderer, newMat, materialData, index)
         }
     }
 
-    fun addMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
+    fun addNewMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
         val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
         val materialData = sceneEntityData?.meshRendererData!!.materialsData[matIndex]
 
-        val queuedEntities = repository.queuedRenderers[materialData?.materialConfig?.renderQueue!!]
-
+        val queuedRenderable = repository.getMeshOfEntityID(sceneEntityData.entityID, matIndex)
         val newMat = getNewMaterial(materialData)
-
-        for (i in queuedEntities!!) {
-            if (i.entityID == sceneEntityData.entityID && i.meshindexInsideEntity == matIndex) {
-                i.material = newMat
-
-                break
-            }
-        }
+        queuedRenderable!!.material = newMat
 
 
         //------------
@@ -142,11 +131,11 @@ class SceneObjectManager(
         val meshRenderer = entity?.getComponent(MeshRenderer::class.java)
 
         // important for legacy(remove this later when shader edit is using new rendering)
-        addMaterial(meshRenderer, newMat, materialData, matIndex)
+        addNewMaterial(meshRenderer, newMat, materialData, matIndex)
         //-----------------
     }
 
-    private fun addMaterial(meshRenderer: MeshRenderer?, material: Material?, materialData: MaterialData?, matIndex: Int) {
+    private fun addNewMaterial(meshRenderer: MeshRenderer?, material: Material?, materialData: MaterialData?, matIndex: Int) {
         if (meshRenderer != null) {
             if (materialData != null) {
 
@@ -159,8 +148,6 @@ class SceneObjectManager(
                 } else {
                     meshRenderer!!.materials[matIndex] = material
                 }
-
-
             } else {
                 if (meshRenderer!!.materials.size - 1 < matIndex) {
                     meshRenderer!!.materials.add(null)
@@ -172,7 +159,6 @@ class SceneObjectManager(
     }
 
     private fun getNewMaterial(materialData: MaterialData?): Material? {
-
         if (materialData != null) {
             val shaderData = materialData?.shaderData
 
@@ -202,19 +188,10 @@ class SceneObjectManager(
     fun removeMaterial(sceneEntityData: SceneEntityData?, matIndex: Int) {
         openglView.renderer.newRenderer?.forNowCommands_REMOVE?.add {
             val repository = get<MinityProjectRepository>(MinityProjectRepository::class.java)
-            val materialData = sceneEntityData?.meshRendererData!!.materialsData[matIndex]
 
-            val renderQueueIndex = materialData?.materialConfig?.renderQueue
-            val queuedEntities = repository.queuedRenderers[renderQueueIndex]
-
-            if(queuedEntities != null)
-            for (i in queuedEntities) {
-                if (i.entityID == sceneEntityData?.entityID && i.meshindexInsideEntity == matIndex) {
-                    i.material = null
-                    sceneEntityData?.meshRendererData!!.materialsData[matIndex] = null
-                    break
-                }
-            }
+            val renderable = repository.getMeshOfEntityID(sceneEntityData!!.entityID, matIndex)
+            renderable!!.material = null
+            sceneEntityData?.meshRendererData!!.materialsData[matIndex] = null
         }
 
 

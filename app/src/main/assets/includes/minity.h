@@ -14,8 +14,9 @@ uniform vec4 _ZBufferParams;//done
 uniform vec4 _WorldSpaceLightPos0;
 uniform vec4 _LightColor0;
 
-uniform vec4 _Time;
-uniform vec4 unity_DeltaTime;
+uniform vec4 _Time;//done
+uniform vec4 unity_DeltaTime;//done
+uniform sampler2D _SHADOWMAP;
 
 #define float4 vec4
 #define float3 vec3
@@ -70,11 +71,32 @@ vec3 lerp(vec3 a, vec3 b, float t)
 	return  vec3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
 }
 
-float linearD(float d)
+float LinearDepth(float d,float zNear,float zFar)
 {
-float zNear=1.;
-float zFar = 500.;
+   return (2.0 * zNear) / (zFar + zNear - d * (zFar - zNear));
+}
 
-    float z_n = 2.0 * d - 1.0;
-    return 2.0 * zNear * zFar / (zFar + zNear - z_n * (zFar - zNear));
+float shadow(vec4 lpos)
+{
+  vec3 proj = lpos.xyz/lpos.w;
+  proj = proj*0.5+0.5;
+  float closestD = texture2D(_SHADOWMAP, proj.xy).r;
+  float current = proj.z;
+
+  float shadow = 0.;
+
+   if(current-0.004 > closestD)
+   {
+   shadow = 1.;
+   }
+   else
+   {
+   shadow = 0.;
+   }
+
+  if(proj.z > 1.0)
+      shadow = 0.0;
+
+  return shadow;
+
 }

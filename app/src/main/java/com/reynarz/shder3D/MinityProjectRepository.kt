@@ -22,6 +22,18 @@ class MinityProjectRepository {
 
     val queuedRenderers = mutableMapOf<Int, MutableList<QueuedRenderableMesh>>()
 
+    fun getMeshOfEntityID(entityID: String, meshIndex: Int): QueuedRenderableMesh? {
+        for (key in queuedRenderers.keys) {
+            for (queuedMesh in queuedRenderers[key]!!) {
+                if (queuedMesh.entityID == entityID && queuedMesh.meshindexInsideEntity == meshIndex) {
+                    return queuedMesh
+                }
+            }
+        }
+
+        return null
+    }
+
     fun getProjectData(): ProjectData {
 
         if (projectData == null) {

@@ -30,10 +30,7 @@ class Texture {
         glBindTexture(GL_TEXTURE_2D, _textureID!![0])
 
         // Width and height do not have to be a power of two
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, internalFormat,
-            width, height,
-            0, format, type, null
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,width, height,0, format, type, null
         )
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampParams)

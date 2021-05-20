@@ -110,6 +110,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         editorObjs = mutableListOf()
 
         errorMaterial = Utils.getErrorMaterial()
+        errorMaterial.materialData = get(MaterialData::class.java)
+
         pickupMaterial = Material(Utils.getPickupShader().run {
             Shader(first, second)
         })
@@ -213,7 +215,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
     fun setTextureCommand(textureData: TextureData) {
 
-        addRenderCommand {
+        addRenderCommand  {
 
             val bitmap = Utils.getBitmapFromPath(textureData.path!!)
 
@@ -265,8 +267,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         colorPickerFrameBuffer.bind()
         glViewport(0, 0, colorPickerFrameBuffer.width, colorPickerFrameBuffer.height)
-
-        //glPixelStorei(GL_UNPACK_ALIGNMENT, 2)
 
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
@@ -379,44 +379,7 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
         //mainFrameBuffer.bind()
     }
 
-    private fun shadowPass() {
 
-        glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
-
-        shadowMapFrameBuffer.bind()
-
-        glEnable(GL_DEPTH_TEST)
-        glDepthFunc(GL_LEQUAL)
-        glClear(GL_STENCIL_BUFFER_BIT)
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1f)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-
-        for (i in 0 until scene!!.entities.size) {
-
-            // sometimes the user can destroy an entity in another thread!, this is a patch! but it can cause problems.
-            val entity = scene.entities.getOrNull(i)
-
-            if (entity != null && entity.entityData.active && entity.entityData.meshRendererData.castShadows) {
-                val renderer = entity.getComponent(MeshRenderer::class.java)
-
-                for (meshIndex in 0 until renderer!!.meshes.size) {
-
-                    renderer?.bind(scene!!.directionalLight.getLightViewMatrix(), scene!!.directionalLight.getProjectionM(), errorMaterial, meshIndex)
-
-                    val mesh = renderer.meshes[meshIndex]
-
-                    glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-
-                    renderer.unBind()
-                }
-            }
-        }
-
-        shadowMapFrameBuffer.unBind()
-
-        glViewport(0, 0, shadowMapFrameBuffer.width, shadowMapFrameBuffer.height)
-    }
 
     companion object {
         var time = 0f
@@ -437,11 +400,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
 
         newRenderer?.draw()
 
-//
-//        //pickUpPass(0, 0, true)
-//        shadowPass()
-//
-//        // this could have bad perfomance
         MainActivity.instance.lifecycleScope.launch {
 
             val time = System.nanoTime()
@@ -449,12 +407,8 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             last_time = time
 
             t += delta_time
-            //println("t: " + t + ", dt: " + delta_time)
         }
-//
-//        mainFrameBuffer.bind()
-//        glViewport(0, 0, MainActivity.width, MainActivity.height)
-//
+
         time = t
         deltaTime = delta_time
 //
@@ -486,60 +440,6 @@ class OpenGLRenderer(val context: Context) : GLSurfaceView.Renderer {
             val meshRenderer = cameraEntity.getComponent(MeshRenderer::class.java)
             newRenderer?.target = ScreenQuad(meshRenderer!!)
         }
-
-//
-//
-//        val viewM = scene!!.editorCamera!!.viewM
-//        val projM = scene!!.editorCamera!!.projectionM
-//
-//        for (i in 0 until scene!!.entities.size) {
-//
-//            val entity = scene.entities.getOrNull(i)
-//
-//            if (entity != null && entity.entityData.active) {
-//                val renderer = entity.getComponent(MeshRenderer::class.java)
-//                val materialsData = entity.entityData.meshRendererData.materialsData
-//
-//                for (meshIndex in 0 until renderer!!.meshes.size) {
-//
-//                    glActiveTexture(GL_TEXTURE0)
-//                    glBindTexture(GL_TEXTURE_2D, shadowMapFrameBuffer.depthTexture)
-//
-//                    if (renderer?.materials?.getOrNull(meshIndex) != null) {
-//                        val depthUniform = glGetUniformLocation(renderer!!.materials[meshIndex]!!.shader.program, "_SHADOWMAP")
-//                        glUniform1i(depthUniform, 0)
-//                    }
-//
-//                    setApplyMaterialConfig_GL(materialsData.getOrNull(meshIndex)?.materialConfig)
-//
-//                    renderer.bindShadow(viewM, projM, errorMaterial, scene.directionalLight.getViewProjLight(), meshIndex)
-//
-//                    val mesh = renderer.meshes[meshIndex]
-//
-//                    glDrawElements(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-//                    renderer.unBind()
-//                }
-//            }
-//
-//            //Selected entity outline.
-//            if (selectedEntity != null && entity === selectedEntity && entity?.entityData?.active!!) {
-//
-//                val renderer = selectedEntity!!.getComponent(MeshRenderer::class.java)
-//                glLineWidth(1.3f)
-//
-//                glEnable(GL_DEPTH_TEST)
-//
-//                for (meshIndex in 0 until renderer!!.meshes.size) {
-//                    val mesh = renderer.meshes[meshIndex]
-//                    renderer!!.bindWithMaterial(viewM, projM, outlineMaterial, meshIndex)
-//                    glDrawElements(GL_LINES, mesh.indicesCount, GL_UNSIGNED_INT, mesh.indexBuffer)
-//                }
-//            }
-//        }
-//
-//        mainFrameBuffer.unBind()
-
-        //    screenQuad()
     }
 
     val identityM = FloatArray(16).also {

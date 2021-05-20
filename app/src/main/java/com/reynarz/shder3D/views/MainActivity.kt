@@ -178,8 +178,8 @@ class MainActivity : AppCompatActivity() {
 
     fun updateMaterial(sceneEntityData: SceneEntityData?, matIndex: Int, uiCallback: () -> Unit) {
         openGLView.renderer.addRenderCommand {
-            sceneObjectManager.addMaterial(sceneEntityData!!, matIndex)
             uiCallback()
+            sceneObjectManager.addNewMaterial(sceneEntityData!!, matIndex)
         }
     }
 

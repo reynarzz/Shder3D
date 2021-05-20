@@ -9,7 +9,9 @@ import android.opengl.GLES20
 import androidx.appcompat.app.AppCompatActivity
 import com.reynarz.shder3D.R
 import com.reynarz.shder3D.models.MaterialConfig
+import com.reynarz.shder3D.models.MaterialData
 import com.reynarz.shder3D.models.RenderQueue
+import org.koin.java.KoinJavaComponent.get
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.StringBuilder
@@ -95,7 +97,9 @@ class Utils {
         fun getErrorMaterial(): Material {
             val shader = getErrorShaderCode()
 
-            return Material(Shader(shader.first, shader.second))
+            return Material(Shader(shader.first, shader.second)).also {
+                it.materialData = get(MaterialData::class.java)
+            }
         }
 
         fun getUnlitShader(unlitAmount: Float): Pair<String, String> {
@@ -157,7 +161,7 @@ void main()
         }
 
         fun getTexturizedShader(): Pair<String, String> {
-            var vertexTex = """ 
+            var vertexTex = """
             
 attribute vec4 _VERTEX_; 
            
@@ -370,7 +374,7 @@ void main()
 
             """.trimIndent()
 
-            var fragCode = """
+            var fragCode = """#minity
                             
 precision mediump float; 
 varying vec4 pos;
@@ -378,33 +382,8 @@ varying vec4 pos;
 varying vec2 _uv;
 
 uniform sampler2D _tex0;
-uniform sampler2D _SHADOWMAP;
 varying vec4 fragPosLS;
 
-float shadow(vec4 lpos)
-{
-  vec3 proj = lpos.xyz/lpos.w;
-  proj = proj*0.5+0.5;
-  float closestD = texture2D(_SHADOWMAP, proj.xy).r;
-  float current = proj.z;
-
-  float shadow = 0.;
-   
-   if(current-0.004 > closestD)
-   {
-   shadow = 1.;
-   }
-   else
-   {
-   shadow = 0.;
-   }
-  
-  if(proj.z > 1.0)
-      shadow = 0.0;
-      
-  return shadow;
- 
-}
 
 void main()
 {
@@ -412,7 +391,7 @@ float shadow = clamp(1.- shadow(fragPosLS) + 0.7, 0., 1.);
 
 vec4 color = vec4(vec3(shadow), 1.);
 
- gl_FragColor =color * texture2D(_tex0,_uv);
+ gl_FragColor = color * texture2D(_tex0,_uv);
 }
             """.trimIndent()
 
@@ -480,6 +459,10 @@ vec4 color = vec4(vec3(shadow), 1.);
                     } else if (lower.contains("zwrite")) {
                         zwriteOptions(code, matConfig)
                     } else if (lower.contains("queue")) {
+                        queueOptions(code, matConfig)
+                    }
+                    else if (lower.contains("nobackpassed")) {
+                        matConfig.hiddeFromBackPass = true
                         queueOptions(code, matConfig)
                     }
                 }

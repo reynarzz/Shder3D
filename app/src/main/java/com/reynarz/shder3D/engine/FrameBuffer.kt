@@ -30,8 +30,8 @@ class FrameBuffer {
         // Create a frame buffer
         glGenFramebuffers(1, frameBuffer, 0);
 
-        colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, _width, _height, GL_NEAREST, clampParams).textureID
-        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, _width, _height, GL_NEAREST, clampParams).textureID
+        colorTexture = Texture(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, _width, _height, GL_LINEAR, clampParams).textureID
+        depthTexture = Texture(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, _width, _height, GL_LINEAR, clampParams).textureID
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer[0])
 

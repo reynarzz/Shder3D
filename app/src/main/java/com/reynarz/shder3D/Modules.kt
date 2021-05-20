@@ -1,5 +1,6 @@
 package com.reynarz.shder3D
 
+import com.reynarz.shder3D.engine.Material
 import com.reynarz.shder3D.engine.Shader
 import com.reynarz.shder3D.engine.Utils
 import com.reynarz.shder3D.engine.components.MeshRenderer
