@@ -68,6 +68,8 @@ class Renderer(private val sceneMatrices: SceneMatrices) {
         forNowCommands_REMOVE.add {
             val removed = removeRendererOfQueue(oldQueueValue, entityID, index)
 
+            // if the material is created, and the entire shader is changed, 'remove' returns null, why?
+            if(removed!= null)
             addToRenderQueue(removed!!)
         }
     }
