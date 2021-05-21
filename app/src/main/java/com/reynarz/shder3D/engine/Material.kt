@@ -103,8 +103,8 @@ class Material(val shader: Shader) {
 
         val nearPlane = 30f
         val farPlane = 250f
-        val t = OpenGLRenderer.time // need the current time of the app.
-        val deltaTime = OpenGLRenderer.deltaTime // need current delta time of the app.
+        val t = OpenGLRenderer.time
+        val deltaTime = OpenGLRenderer.deltaTime
 
         set("UNITY_MATRIX_MVP", MVP)
         set("UNITY_MATRIX_MV", MV)
