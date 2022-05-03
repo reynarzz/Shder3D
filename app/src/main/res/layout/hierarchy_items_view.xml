@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp">
+
+    <ToggleButton
+        android:id="@+id/tb_enableDisableEntity"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/eye_toggle"
+        android:textOff=" "
+        android:textOn=" "
+        app:layout_constraintBottom_toBottomOf="@+id/t_btn_entityHierarchyToggle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/t_btn_entityHierarchyToggle"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/toggle"
+        android:checked="false"
+        android:layout_marginLeft="10dp"
+        android:paddingLeft="15dp"
+        android:text="Entity name"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textOff="Entity Name"
+        android:textOn="Entity Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tb_enableDisableEntity"
+        app:layout_constraintTop_toTopOf="parent"></ToggleButton>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

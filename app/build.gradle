@@ -1,14 +1,33 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+
 }
+
+apply plugin: 'kotlinx-serialization'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/INDEX.LIST'
+    }
+
+    dataBinding {
+        enabled = true
+    }
 
     defaultConfig {
-        applicationId "com.example.viewer3d"
+        applicationId "com.reynarz.minityeditor"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -23,14 +42,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
 }
+
+repositories {
+    mavenCentral()
+}
+def lifecycle_version = "2.2.0"
+def koin_version = "3.0.1"
 
 dependencies {
 
@@ -39,7 +67,22 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    implementation files('libs\\com.mokiat.data.front-2.0.0.jar')
+    implementation 'com.github.jaiselrahman:FilePicker:1.3.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation 'com.github.gazman-sdk:signals:1.5'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0"
+    implementation 'io.github.java-graphics:glm:1.0.1'
+
+    implementation "io.insert-koin:koin-android:$koin_version"
+
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
 }

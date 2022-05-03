@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_addMaterialContainerUI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imageView11"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:src="@drawable/rounded_rectangle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#D7191919" />
+
+        <Button
+            android:id="@+id/btn_newMaterial"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView11"
+            app:layout_constraintEnd_toEndOf="@+id/imageView11"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView11" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/plus"
+            android:layout_marginRight="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_SetMaterial"
+            app:layout_constraintEnd_toStartOf="@+id/tv_SetMaterial"
+            app:layout_constraintTop_toTopOf="@+id/tv_SetMaterial" />
+
+        <TextView
+            android:id="@+id/tv_SetMaterial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Set Material"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView11"
+            app:layout_constraintEnd_toEndOf="@+id/imageView11"
+            app:layout_constraintStart_toStartOf="@+id/imageView11"
+            app:layout_constraintTop_toTopOf="@+id/imageView11" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="visible"
+
+        android:id="@+id/cl_materialUI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--                <Button-->
+        <!--                    android:id="@+id/btn_editMaterial"-->
+        <!--                    android:layout_width="0dp"-->
+        <!--                    android:layout_height="60dp"-->
+        <!--                    android:layout_marginRight="2dp"-->
+        <!--                    android:background="@color/transparent"-->
+        <!--                    app:layout_constraintEnd_toStartOf="@+id/btn_removeMaterial"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toTopOf="parent"-->
+        <!--                    app:tint="@color/black" />-->
+
+
+        <ImageView
+            android:id="@+id/backgroundImageFill"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:minHeight="55dp"
+            android:src="@drawable/rounded_rectangle"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#292929" />
+
+        <ImageView
+            android:id="@+id/backgroundImage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:minHeight="55dp"
+            android:src="@drawable/rounded_rectangle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/black3" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/iv_mr_materialImage"-->
+<!--                    android:layout_width="35dp"-->
+<!--                    android:layout_height="35dp"-->
+<!--                    android:layout_marginLeft="15dp"-->
+<!--                    android:src="@drawable/material_file"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+                <TextView
+                    android:id="@+id/tv_meshRendererMaterialName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:elevation="2dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="15dp"
+                    android:text="The material name"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="13dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/btn_editMaterialShaderFromInspector"
+                    app:layout_constraintStart_toStartOf="@+id/btn_editMaterialShaderFromInspector"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btn_editMaterialShaderFromInspector"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/transparent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/cl_removeTextureContainer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_addTextureContainer"
+                    android:layout_width="45dp"
+                    android:layout_height="55dp"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_removeMaterial"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/btn_addTextureSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="#415A77"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:src="@drawable/plus"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintEnd_toEndOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_addTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:scaleX="0.4"
+                        android:scaleY="0.4"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_removeTextureContainer"
+                    android:layout_width="45dp"
+                    android:layout_height="55dp"
+                    app:layout_constraintEnd_toStartOf="@+id/cl_addTextureContainer"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/btn_removeTextureSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="#415A77"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/minus"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintEnd_toEndOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintStart_toStartOf="@+id/btn_removeTextureSlot"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--Remove material section-->
+                <Button
+                    android:id="@+id/btn_removeMaterial"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/round_right"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#1B263B" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:elevation="2dp"
+                    android:scaleX="0.35"
+                    android:scaleY="0.35"
+                    android:src="@drawable/delete"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_removeMaterial"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="@+id/btn_removeMaterial" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_textureList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+                tools:itemCount="4"
+                tools:listitem="@layout/texture_item_view" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

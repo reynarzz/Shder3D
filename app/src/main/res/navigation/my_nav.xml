@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/sceneFragmentView">
+
+    <fragment
+        android:id="@+id/sceneFragmentView"
+        android:name="com.reynarz.shder3D.views.SceneFragmentView"
+        android:label="SceneFragmentView"
+        tools:layout="@layout/scene_view_fragment">
+
+        <action
+            android:id="@+id/action_sceneTo_Hierarchy"
+            app:destination="@id/hierarchyFragmentView"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_sceneTo_Inspector"
+            app:destination="@id/inspectorFragmentView" />
+    </fragment>
+    <fragment
+        android:id="@+id/hierarchyFragmentView"
+        android:name="com.reynarz.shder3D.views.HierarchyFragmentView"
+        android:label="HierarchyFragmentView"
+        tools:layout="@layout/hierarchy_fragment_view">
+        <action
+            android:id="@+id/action_hierarchyTo_scene"
+            app:destination="@id/sceneFragmentView"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_hierarchyFragmentView_to_inspectorFragmentView2"
+            app:destination="@id/inspectorFragmentView" />
+    </fragment>
+    <fragment
+        android:id="@+id/inspectorFragmentView"
+        android:name="com.reynarz.shder3D.views.InspectorFragmentView"
+        android:label="InspectorFragmentView"
+
+        tools:layout="@layout/inspector_view">
+        <action
+            android:id="@+id/action_inspectorFragmentView_to_sceneFragmentView"
+            app:destination="@id/sceneFragmentView" />
+        <action
+            android:id="@+id/action_inspectorFragmentView_to_shaderEditorFragment"
+            app:destination="@id/shaderEditorFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/shaderEditorFragment"
+        android:name="com.reynarz.shder3D.views.ShaderEditorFragment"
+        android:label="ShaderEditorFragment"
+        tools:layout="@layout/shader_editor_fragment_view">
+        <action
+            android:id="@+id/action_shaderEditorFragment_to_inspectorFragmentView"
+            app:destination="@id/inspectorFragmentView" />
+    </fragment>
+</navigation>

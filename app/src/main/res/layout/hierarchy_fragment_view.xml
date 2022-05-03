@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.reynarz.shder3D.viewmodels.HierarchyViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="270dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/black2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:paddingLeft="25dp"
+            android:text="Entities"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_closeHierarchy"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/transparent"
+            android:onClick="@{() -> viewmodel.closeHierarchy()}"
+            android:textSize="12dp"
+            android:text="Close"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_medium"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+            app:layout_constraintEnd_toEndOf="@+id/imageView6"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/black0"
+            android:alpha="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+
+        <!--Default Entities-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView6">
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:padding="10dp"
+                android:src="@drawable/rounded_rectangle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:tint="#131313" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:padding="20dp"
+
+                app:layout_constraintBottom_toBottomOf="@+id/imageView10"
+                app:layout_constraintEnd_toEndOf="@+id/imageView10"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView10">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="Camera"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_editCamera"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!--                    <ToggleButton-->
+                    <!--                        android:id="@+id/toggleButton"-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:background="@drawable/rounded_rectangle"-->
+                    <!--                        android:backgroundTint="@color/semi_black"-->
+                    <!--                        android:fontFamily="@font/roboto_bold"-->
+                    <!--                        android:paddingLeft="20dp"-->
+                    <!--                        android:textAlignment="textStart"-->
+                    <!--                        android:textAllCaps="false"-->
+                    <!--                        android:textColor="@color/white"-->
+                    <!--                        android:textOff="Camera"-->
+                    <!--                        android:textOn="Camera"-->
+                    <!--                        app:layout_constraintEnd_toStartOf="@+id/btn_editCamera"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+                    <Button
+                        android:id="@+id/btn_editCamera"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:onClick="@{()->viewmodel.openCameraInspector()}"/>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleX="0.6"
+                        android:scaleY="0.6"
+                        android:src="@drawable/nut"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_editCamera"
+                        app:layout_constraintEnd_toEndOf="@+id/btn_editCamera"
+                        app:layout_constraintStart_toEndOf="@+id/textView"
+                        app:layout_constraintTop_toTopOf="@+id/btn_editCamera" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="Directional Light"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/btn_editDirectionalLight"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleX="0.6"
+                        android:scaleY="0.6"
+                        android:src="@drawable/nut"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_editDirectionalLight"
+                        app:layout_constraintEnd_toEndOf="@+id/btn_editDirectionalLight"
+                        app:layout_constraintStart_toStartOf="@+id/btn_editDirectionalLight"
+                        app:layout_constraintTop_toTopOf="@+id/btn_editDirectionalLight" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_hierarcy"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout7"
+            tools:listitem="@layout/hierarchy_items_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
