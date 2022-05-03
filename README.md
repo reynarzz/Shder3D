@@ -3,7 +3,7 @@ Load your 3D models and try your glsl shaders on them!
 
 
 ### Preview:
-![](readmefiles/Shder3D.gif | width=70)
+![](readmefiles/Shder3D.gif = 250x250)
 
 ### What it needs to be done? 
 - [ ] Refactor.
