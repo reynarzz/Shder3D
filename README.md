@@ -3,6 +3,9 @@ Load your 3D models and try your glsl shaders on them!
 
 
 ### Preview:
+<img src="https://github.com/reynarzz/Shder3D/blob/master/readmefiles/Shder3D.gif" width="200" height="400">
+
+
 ![](readmefiles/Shder3D.gif)
 
 ### What it needs to be done? 
