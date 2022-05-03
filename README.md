@@ -3,7 +3,7 @@ Load your 3D models and try your glsl shaders on them!
 
 
 ### Preview:
-![](readmefiles/Shder3D.gif = 250x250)
+![](readmefiles/Shder3D.gif)
 
 ### What it needs to be done? 
 - [ ] Refactor.
@@ -13,6 +13,3 @@ Load your 3D models and try your glsl shaders on them!
 - [x] Directional light.
 - [X] Shadow mapping.
 - [ ] Support more devices.
-
-## Version:
-
